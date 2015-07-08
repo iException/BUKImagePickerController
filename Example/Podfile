@@ -1,11 +1,10 @@
 source 'https://github.com/CocoaPods/Specs.git'
-use_frameworks!
 
-target 'BUKImagePickerController_Example', :exclusive => true do
+target 'BUKImagePickerController-Example', :exclusive => true do
   pod "BUKImagePickerController", :path => "../"
 end
 
-target 'BUKImagePickerController_Tests', :exclusive => true do
+target 'Tests', :exclusive => true do
   pod "BUKImagePickerController", :path => "../"
 
   pod 'Specta'

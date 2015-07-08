@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6003F589195388D20070C39A"
-               BuildableName = "BUKImagePickerController_Example.app"
-               BlueprintName = "BUKImagePickerController_Example"
+               BuildableName = "BUKImagePickerController-Example.app"
+               BlueprintName = "BUKImagePickerController-Example"
                ReferencedContainer = "container:BUKImagePickerController.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6003F5AD195388D20070C39A"
-               BuildableName = "BUKImagePickerController_Tests.xctest"
-               BlueprintName = "BUKImagePickerController_Tests"
+               BuildableName = "Tests.xctest"
+               BlueprintName = "Tests"
                ReferencedContainer = "container:BUKImagePickerController.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "BUKImagePickerController_Example.app"
-            BlueprintName = "BUKImagePickerController_Example"
+            BuildableName = "BUKImagePickerController-Example.app"
+            BlueprintName = "BUKImagePickerController-Example"
             ReferencedContainer = "container:BUKImagePickerController.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,8 +63,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "BUKImagePickerController_Example.app"
-            BlueprintName = "BUKImagePickerController_Example"
+            BuildableName = "BUKImagePickerController-Example.app"
+            BlueprintName = "BUKImagePickerController-Example"
             ReferencedContainer = "container:BUKImagePickerController.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -82,8 +82,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "BUKImagePickerController_Example.app"
-            BlueprintName = "BUKImagePickerController_Example"
+            BuildableName = "BUKImagePickerController-Example.app"
+            BlueprintName = "BUKImagePickerController-Example"
             ReferencedContainer = "container:BUKImagePickerController.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
