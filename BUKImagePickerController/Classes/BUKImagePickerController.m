@@ -7,31 +7,80 @@
 //
 
 #import "BUKImagePickerController.h"
+#import "BUKAssetsViewController.h"
 
-@interface BUKImagePickerController ()
+@interface BUKImagePickerController () <BUKAssetsViewControllerDelegate>
+
+@property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
+@property (nonatomic) ALAssetsLibrary *assetsLibrary;
 
 @end
 
 @implementation BUKImagePickerController
 
+#pragma mark - NSObject
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _assetsLibrary = [[ALAssetsLibrary alloc] init];
+        _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
+        _mediaType = BUKImagePickerMediaTypeImage;
+        _allowsMultipleSelection = YES;
+        _numberOfColumnsInPortrait = 4;
+        _numberOfColumnsInLandscape = 7;
+        _minimumNumberOfSelection = 0;
+        _maximumNumberOfSelection = 0;
+    }
+    return self;
+}
+
+
+#pragma mark - UIViewController
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    // Add child view controller
+    BUKAssetsViewController *assetsViewController = [[BUKAssetsViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:assetsViewController];
+    
+    [navigationController beginAppearanceTransition:YES animated:NO];
+    [self addChildViewController:navigationController];
+    [self.view addSubview:navigationController.view];
+    [navigationController didMoveToParentViewController:self];
+    [navigationController endAppearanceTransition];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+#pragma mark - BUKAssetsViewControllerDelegate
+
+- (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController shouldSelectAsset:(ALAsset *)asset {
+    return YES;
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didSelectAsset:(ALAsset *)asset {
+    
 }
-*/
+
+
+- (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didDeselectAsset:(ALAsset *)asset {
+    
+}
+
+
+- (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didFinishPickingAssets:(NSArray *)assets {
+    
+}
+
+
+- (void)assetsViewControllerDidCancel:(BUKAssetsViewController *)assetsViewController {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerDidCancel:)]) {
+        [self.delegate buk_imagePickerControllerDidCancel:self];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
 
 @end

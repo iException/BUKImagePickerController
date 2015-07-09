@@ -6,8 +6,17 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
+@class BUKCheckmarkView;
+@class BUKVideoIndicatorView;
 
 @interface BUKAssetCollectionViewCell : UICollectionViewCell
+
+@property (nonatomic, readonly) UIImageView *imageView;
+@property (nonatomic, readonly) BUKCheckmarkView *checkmarkView;
+@property (nonatomic, readonly) BUKVideoIndicatorView *videoIndicatorView;
+@property (nonatomic, readonly) UIView *overlayView;
+@property (nonatomic) BOOL showsOverlayViewWhenSelected;
 
 @end

@@ -13,6 +13,8 @@
 
 #pragma mark - Accessors
 
+@synthesize window = _window;
+
 - (UIWindow *)window {
     if (!_window) {
         _window = [[UIWindow alloc] init];

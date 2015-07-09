@@ -1,98 +1,181 @@
 //
 //  BUKAssetsViewController.m
-//  Pods
+//  BUKImagePickerController
 //
 //  Created by Yiming Tang on 7/8/15.
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
+@import AssetsLibrary;
+
 #import "BUKAssetsViewController.h"
+#import "BUKImagePickerController.h"
+#import "BUKAssetCollectionViewCell.h"
+
+static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 @interface BUKAssetsViewController ()
+
+@property (nonatomic, readwrite) NSArray *assets;
+@property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
+@property (nonatomic) CGFloat minimumInteritemSpacing;
+@property (nonatomic) CGFloat minimumLineSpacing;
 
 @end
 
 @implementation BUKAssetsViewController
 
-static NSString * const reuseIdentifier = @"Cell";
+#pragma mark - Accessors
+
+- (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup {
+    if (_assetsGroup == assetsGroup) {
+        return;
+    }
+    
+    _assetsGroup = assetsGroup;
+    
+    // TODO: Update assets and reload data
+}
+
+
+#pragma mark - NSObject
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+- (instancetype)init {
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    
+    if ((self = [super initWithCollectionViewLayout:layout])) {
+        _minimumInteritemSpacing = 2.0;
+        _minimumLineSpacing = 2.0;
+        _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
+        
+        layout.minimumInteritemSpacing = _minimumInteritemSpacing;
+        layout.minimumLineSpacing = _minimumLineSpacing;
+    }
+    
+    return self;
+}
+
+
+#pragma mark - UIViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
     
-    // Register cell classes
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
+    self.collectionView.allowsMultipleSelection = YES;
+    [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kCellReuseIdentifier];
     
-    // Do any additional setup after loading the view.
+    // Register observer
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+#pragma mark - Actions
+
+- (void)cancel:(id)sender {
+    NSLog(@"Cancel");
+    
+    if ([self.delegate respondsToSelector:@selector(assetsViewControllerDidCancel:)]) {
+        [self.delegate assetsViewControllerDidCancel:self];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)finishPicking:(id)sender {
+    NSLog(@"Did Finish Picking");
+    
+    if ([self.delegate respondsToSelector:@selector(assetsViewController:didFinishPickingAssets:)]) {
+        [self.delegate assetsViewController:self didFinishPickingAssets:nil];
+        return;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
-*/
 
-#pragma mark <UICollectionViewDataSource>
+
+#pragma mark - UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-#warning Incomplete method implementation -- Return the number of sections
-    return 0;
+    return 1;
 }
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-#warning Incomplete method implementation -- Return the number of items in the section
     return 0;
 }
 
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell
+    BUKAssetCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseIdentifier forIndexPath:indexPath];
+    [self configureCell:cell forItemAtIndexPath:indexPath];
     
     return cell;
 }
 
-#pragma mark <UICollectionViewDelegate>
 
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
+#pragma mark - UICollectionViewDelegate
 
-/*
-// Uncomment this method to specify if the specified item should be selected
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self.delegate respondsToSelector:@selector(assetsViewController:shouldSelectAsset:)]) {
+        ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+        return [self.delegate assetsViewController:self shouldSelectAsset:asset];
+    }
+    
     return YES;
 }
-*/
 
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
 }
 
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSUInteger numberOfColumns;
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        numberOfColumns = self.numberOfColumnsInPortrait;
+    } else {
+        numberOfColumns = self.numberOfColumnsInLandscape;
+    }
+
+    CGFloat width = (self.view.bounds.size.width - 2.0 * (numberOfColumns + 1)) / numberOfColumns;
+
+    return CGSizeMake(width, width);
 }
-*/
+
+
+#pragma mark - Private
+
+- (ALAsset *)assetItemAtIndexPath:(NSIndexPath *)indexPath {
+    return self.assets[indexPath.item];
+}
+
+
+- (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+    
+    // TODO:
+}
+
+
+- (void)assetsLibraryChanged:(NSNotification *)notification {
+    
+}
 
 @end
