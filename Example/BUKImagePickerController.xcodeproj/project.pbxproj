@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B5F5575FFF398CDE7489F1C /* libPods-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC9689B73BC0DA73C52AC513 /* libPods-Example.a */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -60,7 +59,6 @@
 		8EAD2A42E684CFA552DFC7A6 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		940693F096931DF80248232E /* Pods-BUKImagePickerController-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BUKImagePickerController-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example.release.xcconfig"; sourceTree = "<group>"; };
 		AA6153914C3B1D67FBAC90E3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		AC9689B73BC0DA73C52AC513 /* libPods-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B041037E0A48B26B03CF7190 /* Pods-BUKImagePickerController-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BUKImagePickerController-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		BC5F8EE040D0446AF94BF8F1 /* BUKImagePickerController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BUKImagePickerController.podspec; path = ../BUKImagePickerController.podspec; sourceTree = "<group>"; };
 		D0680E3D25FE9B85841D270D /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -75,7 +73,6 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				3B5F5575FFF398CDE7489F1C /* libPods-Example.a in Frameworks */,
 				6E671543CB5E6E855A63B87C /* libPods-BUKImagePickerController-Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,7 +130,6 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				AC9689B73BC0DA73C52AC513 /* libPods-Example.a */,
 				707DA4107C55C6B8AF33FC2D /* libPods-Tests.a */,
 				57D23BA01FA8900F6321E985 /* libPods-BUKImagePickerController-Example.a */,
 			);
