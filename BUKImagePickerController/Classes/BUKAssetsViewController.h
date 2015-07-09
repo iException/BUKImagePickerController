@@ -16,9 +16,11 @@
 @property (nonatomic) ALAssetsGroup *assetsGroup;
 @property (nonatomic, readonly) NSArray *assets;
 @property (nonatomic, weak) id<BUKAssetsViewControllerDelegate> delegate;
-@property (nonatomic) BOOL allowsMultipleSelection;
+@property (nonatomic) CGFloat minimumInteritemSpacing;
+@property (nonatomic) CGFloat minimumLineSpacing;
 @property (nonatomic) NSUInteger numberOfColumnsInPortrait;
 @property (nonatomic) NSUInteger numberOfColumnsInLandscape;
+@property (nonatomic) BOOL allowsMultipleSelection;
 
 @end
 

@@ -18,8 +18,6 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 @property (nonatomic, readwrite) NSArray *assets;
 @property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
-@property (nonatomic) CGFloat minimumInteritemSpacing;
-@property (nonatomic) CGFloat minimumLineSpacing;
 
 @end
 
@@ -69,6 +67,7 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
     
+    self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.allowsMultipleSelection = YES;
     [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kCellReuseIdentifier];
     
@@ -110,7 +109,7 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 0;
+    return 10;
 }
 
 
@@ -162,6 +161,43 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 #pragma mark - Private
 
+//- (void)updateAssetsGroupsWithCompletion:(void (^)(void))completion {
+//    [self fetchAssetsGroupsWithTypes:self.imagePickerController.groupTypes completion:^(NSArray *assetsGroups) {
+//        // Map assets group to dictionary
+//        NSMutableDictionary *mappedAssetsGroups = [NSMutableDictionary dictionaryWithCapacity:assetsGroups.count];
+//        for (ALAssetsGroup *assetsGroup in assetsGroups) {
+//            NSMutableArray *array = mappedAssetsGroups[[assetsGroup valueForProperty:ALAssetsGroupPropertyType]];
+//            if (!array) {
+//                array = [NSMutableArray array];
+//            }
+//            
+//            [array addObject:assetsGroup];
+//            
+//            mappedAssetsGroups[[assetsGroup valueForProperty:ALAssetsGroupPropertyType]] = array;
+//        }
+//        
+//        // Pick the groups to be shown
+//        NSMutableArray *sortedAssetsGroups = [NSMutableArray arrayWithCapacity:self.imagePickerController.groupTypes.count];
+//        
+//        for (NSValue *groupType in self.imagePickerController.groupTypes) {
+//            NSArray *array = mappedAssetsGroups[groupType];
+//            
+//            if (array) {
+//                [sortedAssetsGroups addObjectsFromArray:array];
+//            }
+//        }
+//        
+//        self.assetsGroups = sortedAssetsGroups;
+//        
+//        if (completion) {
+//            completion();
+//        }
+//    }];
+//}
+
+
+
+
 - (ALAsset *)assetItemAtIndexPath:(NSIndexPath *)indexPath {
     return self.assets[indexPath.item];
 }
@@ -174,8 +210,20 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 }
 
 
+#pragma mark - Handle Assets Library Changes
+
 - (void)assetsLibraryChanged:(NSNotification *)notification {
-    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSSet *updatedAssetsGroups = notification.userInfo[ALAssetLibraryUpdatedAssetGroupsKey];
+//        NSURL *assetsGroupURL = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
+//        
+//        for (NSURL *updatedAssetsGroupURL in updatedAssetsGroups) {
+//            if ([updatedAssetsGroupURL isEqual:assetsGroupURL]) {
+//                [self updateAssets];
+//                [self.collectionView reloadData];
+//            }
+//        }
+//    });
 }
 
 @end

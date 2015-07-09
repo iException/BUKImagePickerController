@@ -31,6 +31,7 @@
     if (!_checkmarkView) {
         _checkmarkView = [[BUKCheckmarkView alloc] init];
         _checkmarkView.translatesAutoresizingMaskIntoConstraints = NO;
+        _checkmarkView.hidden = YES;
     }
     return _checkmarkView;
 }
@@ -94,8 +95,8 @@
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[overlayView]|" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[videoIndicatorView]|" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[videoIndicatorView]|" options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[videoIndicatorView]-2-|" options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[videoIndicatorView]" options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[checkmarkView]-2-|" options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[checkmarkView]" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.checkmarkView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:24.0]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.checkmarkView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:24.0]];
 }
