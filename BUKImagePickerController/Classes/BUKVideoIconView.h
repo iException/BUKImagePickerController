@@ -10,4 +10,6 @@
 
 @interface BUKVideoIconView : UIView
 
+@property (nonatomic) UIColor *iconColor UI_APPEARANCE_SELECTOR;
+
 @end

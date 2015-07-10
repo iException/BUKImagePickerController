@@ -70,7 +70,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     // Add child view controller
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self.assetsViewController];
     [navigationController beginAppearanceTransition:YES animated:NO];
