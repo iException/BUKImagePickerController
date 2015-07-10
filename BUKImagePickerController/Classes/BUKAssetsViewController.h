@@ -25,10 +25,11 @@
 @end
 
 
+@class ALAsset;
+
 @protocol BUKAssetsViewControllerDelegate <NSObject>
 
 @optional
-
 - (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController shouldSelectAsset:(ALAsset *)asset;
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didSelectAsset:(ALAsset *)asset;
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didDeselectAsset:(ALAsset *)asset;

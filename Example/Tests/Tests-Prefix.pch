@@ -2,9 +2,9 @@
 
 #ifdef __OBJC__
 
-  @import Specta;
-  @import Expecta;
-  @import FBSnapshotTestCase;
-  @import Expecta_Snapshots;
+  #import <Specta.h>
+  #import <Expecta.h>
+  #import <FBSnapshotTestCase.h>
+  #import <Expecta+Snapshots/EXPMatchers+FBSnapshotTest.h>
 
 #endif
