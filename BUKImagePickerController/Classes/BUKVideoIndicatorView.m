@@ -7,15 +7,78 @@
 //
 
 #import "BUKVideoIndicatorView.h"
+#import "BUKVideoIconView.h"
 
 @implementation BUKVideoIndicatorView
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+#pragma mark - Accessors
+
+@synthesize videoIconView = _videoIconView;
+@synthesize timeLabel = _timeLabel;
+
+- (BUKVideoIconView *)videoIconView {
+    if (!_videoIconView) {
+        _videoIconView = [[BUKVideoIconView alloc] init];
+        _videoIconView.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _videoIconView;
 }
-*/
+
+
+- (UILabel *)timeLabel {
+    if (!_timeLabel) {
+        _timeLabel = [[UILabel alloc] init];
+        _timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _timeLabel.font = [UIFont systemFontOfSize:12.0];
+        _timeLabel.textColor = [UIColor whiteColor];
+        _timeLabel.textAlignment = NSTextAlignmentRight;
+        _timeLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    }
+    return _timeLabel;
+}
+
+
+#pragma mark - UIView
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if ((self = [super initWithCoder:aDecoder])) {
+        [self initialize];
+    }
+    return self;
+}
+
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if ((self = [super initWithFrame:frame])) {
+        [self initialize];
+    }
+    return self;
+}
+
+
+#pragma mark - Private
+
+- (void)initialize {
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4f];
+    [self addSubview:self.videoIconView];
+    [self addSubview:self.timeLabel];
+    
+    [self setupViewConstraints];
+}
+
+
+- (void)setupViewConstraints {
+    NSDictionary *views =  @{
+        @"videoIconView": self.videoIconView,
+        @"timeLabel": self.timeLabel,
+    };
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:14.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.videoIconView attribute:NSLayoutAttributeWidth multiplier:(8.0 / 14.0) constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.timeLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[videoIconView]-4-[timeLabel]-5-|" options:kNilOptions metrics:nil views:views]];
+}
 
 @end

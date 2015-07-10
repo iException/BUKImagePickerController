@@ -22,6 +22,7 @@
 - (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
+        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _imageView;
 }
@@ -48,9 +49,11 @@
 
 - (UIView *)overlayView {
     if (!_overlayView) {
-        _overlayView = [[UIView alloc] initWithFrame:CGRectZero];
+        _overlayView = [[UIView alloc] init];
+        _overlayView.translatesAutoresizingMaskIntoConstraints = NO;
         _overlayView.backgroundColor = [UIColor whiteColor];
         _overlayView.alpha = 0.4f;
+        _overlayView.hidden = YES;
     }
     return _overlayView;
 }
@@ -60,6 +63,8 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
+        self.showsOverlayViewWhenSelected = YES;
+        
         [self.contentView addSubview:self.imageView];
         [self.contentView addSubview:self.videoIndicatorView];
         [self.contentView addSubview:self.overlayView];
@@ -91,12 +96,16 @@
     
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:kNilOptions metrics:nil views:views]];
+    
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[overlayView]|" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[overlayView]|" options:kNilOptions metrics:nil views:views]];
+    
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[videoIndicatorView]|" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[videoIndicatorView]|" options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[checkmarkView]-2-|" options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[checkmarkView]" options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIndicatorView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:20.0]];
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[checkmarkView]-4-|" options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-4-[checkmarkView]" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.checkmarkView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:24.0]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.checkmarkView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:24.0]];
 }

@@ -11,6 +11,7 @@
 #import "BUKAssetsViewController.h"
 #import "BUKImagePickerController.h"
 #import "BUKAssetCollectionViewCell.h"
+#import "UIImage+BUKImagePickerController.h"
 
 static NSString *const kCellReuseIdentifier = @"AssetCell";
 
@@ -204,7 +205,8 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 
 - (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+//    ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+    cell.imageView.image = [UIImage buk_albumPlaceholderImageWithSize:CGSizeMake(60.0, 60.0)];
     
     // TODO:
 }

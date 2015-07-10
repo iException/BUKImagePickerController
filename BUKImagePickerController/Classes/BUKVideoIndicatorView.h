@@ -8,6 +8,11 @@
 
 @import UIKit;
 
+@class BUKVideoIconView;
+
 @interface BUKVideoIndicatorView : UIView
+
+@property (nonatomic, readonly) BUKVideoIconView *videoIconView;
+@property (nonatomic, readonly) UILabel *timeLabel;
 
 @end
