@@ -8,6 +8,7 @@
 
 #import "BUKViewController.h"
 #import <BUKImagePickerController/BUKImagePickerController.h>
+#import <BUKImagePickerController/BUKCameraViewController.h>
 
 @interface BUKViewController ()
 @property (nonatomic, readonly) UIButton *imagePickerButton;
@@ -48,8 +49,11 @@
 - (void)showImagePicker:(id)sender {
     NSLog(@"Show Image Picker");
     
-    BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
-    [self presentViewController:imagePickerController animated:YES completion:NULL];
+//    BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
+//    [self presentViewController:imagePickerController animated:YES completion:NULL];
+    
+    BUKCameraViewController *cameraViewController = [[BUKCameraViewController alloc] init];
+    [self presentViewController:cameraViewController animated:YES completion:nil];
 }
 
 

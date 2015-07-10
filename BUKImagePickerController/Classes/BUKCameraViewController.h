@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface BUKCameraViewController : UIViewController
 
