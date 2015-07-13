@@ -44,6 +44,11 @@ static NSString *const kCellReuseIdentifier = @"albumCell";
 }
 
 
+- (void)done:(id)sender {
+    
+}
+
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

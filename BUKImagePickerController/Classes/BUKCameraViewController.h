@@ -13,6 +13,7 @@
 @interface BUKCameraViewController : UIViewController
 
 @property (nonatomic, weak) id<BUKCameraViewControllerDelegate> delegate;
+@property (nonatomic) CGSize thumbnailSize;
 
 @end
 

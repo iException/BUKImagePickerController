@@ -104,6 +104,11 @@
 }
 
 
+- (BOOL)prefersStatusBarHidden {
+    return self.sourceType == BUKImagePickerControllerSourceTypeCamera;
+}
+
+
 #pragma mark - BUKAlbumsViewControllerDelegate
 
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup {

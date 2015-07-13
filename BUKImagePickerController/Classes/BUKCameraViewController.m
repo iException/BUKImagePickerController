@@ -8,6 +8,7 @@
 
 #import <FastttCamera/FastttCamera.h>
 #import "BUKCameraViewController.h"
+#import "BUKImageCollectionViewCell.h"
 
 static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
@@ -124,6 +125,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_collectionView) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        flowLayout.itemSize = self.thumbnailSize;
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
         _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
         _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4f];
@@ -131,7 +133,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
+        [_collectionView registerClass:[BUKImageCollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
     }
     return _collectionView;
 }
@@ -175,6 +177,14 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 #pragma mark - NSObject
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _thumbnailSize = CGSizeMake(72.0, 72.0);
+        _selectedImages = [NSMutableOrderedSet orderedSet];
+    }
+    return self;
+}
 
 
 #pragma mark - UIViewController
@@ -279,7 +289,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier forIndexPath:indexPath];
+    BUKImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier forIndexPath:indexPath];
     
     [self configureCell:cell forItemAtIndexPath:indexPath];
     
@@ -287,15 +297,18 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
-#pragma mark - Private
+#pragma mark - UICollectionViewDelegate
 
-- (void)configureCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    cell.backgroundColor = [UIColor redColor];
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"didSelectItemAtIndexPath");
 }
 
 
-- (void)updateDoneButton {
-    
+#pragma mark - Private
+
+- (void)configureCell:(BUKImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    cell.backgroundColor = [UIColor redColor];
+    cell.imageView.backgroundColor = [UIColor blueColor];
 }
 
 
@@ -312,32 +325,40 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         @"collectionView": self.collectionView,
     };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView]" options:kNilOptions metrics:nil views:views]];
+    NSDictionary *metrics = @{
+        @"thumbnailHeight": @(self.thumbnailSize.height + 4.0),
+        @"margin": @5.0,
+    };
+    
+    // Top toolbar
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView(40.0)]" options:kNilOptions metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topToolbarView]|" options:kNilOptions metrics:nil views:views]];
-    [self.topToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.topToolbarView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:40.0]];
     
+    // Flash mode button and camera device button
+    [self.topToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(margin)-[flashModeButton]-(>=0)-[cameraDeviceButton]-(margin)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
     [self.topToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.flashModeButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self.topToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[flashModeButton]" options:kNilOptions metrics:nil views:views]];
     
-    [self.topToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraDeviceButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self.topToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[cameraDeviceButton]-5-|" options:kNilOptions metrics:nil views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomToolbarView]|" options:kNilOptions metrics:nil views:views]];
+    // Bottom toolbar
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomToolbarView(100.0)]|" options:kNilOptions metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bottomToolbarView]|" options:kNilOptions metrics:nil views:views]];
-    [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomToolbarView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:100.0]];
     
+    // Take picture button
     [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.takePictureButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.takePictureButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     [self.takePictureButton addConstraint:[NSLayoutConstraint constraintWithItem:self.takePictureButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:66.0]];
     [self.takePictureButton addConstraint:[NSLayoutConstraint constraintWithItem:self.takePictureButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.takePictureButton attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
     
+    // Cancel button
     [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.cancelButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[cancelButton]" options:kNilOptions metrics:nil views:views]];
-    [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.doneButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[doneButton]-5-|" options:kNilOptions metrics:nil views:views]];
+    [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(margin)-[cancelButton]" options:kNilOptions metrics:metrics views:views]];
     
+    // Done button
+    [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.doneButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[doneButton]-(margin)-|" options:kNilOptions metrics:metrics views:views]];
+    
+    // Collection view
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:kNilOptions metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(60.0)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(thumbnailHeight)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:metrics views:views]];
 }
 
 @end
