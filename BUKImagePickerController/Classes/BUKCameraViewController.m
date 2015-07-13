@@ -9,7 +9,9 @@
 #import <FastttCamera/FastttCamera.h>
 #import "BUKCameraViewController.h"
 
-@interface BUKCameraViewController () <FastttCameraDelegate>
+static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
+
+@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) FastttCamera *fastCamera;
 @property (nonatomic) UIButton *takePictureButton;
@@ -20,11 +22,12 @@
 @property (nonatomic) UIView *topToolbarView;
 @property (nonatomic) UIView *bottomToolbarView;
 @property (nonatomic) UICollectionView *collectionView;
-
+@property (nonatomic) NSOrderedSet *selectedImages;
 @property (nonatomic) FastttCameraFlashMode flashMode;
 @property (nonatomic) FastttCameraDevice cameraDevice;
 
 @end
+
 
 @implementation BUKCameraViewController
 
@@ -117,6 +120,23 @@
 }
 
 
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
+        _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4f];
+        _collectionView.showsHorizontalScrollIndicator = NO;
+        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.delegate = self;
+        _collectionView.dataSource = self;
+        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
+    }
+    return _collectionView;
+}
+
+
 - (FastttCameraFlashMode)flashMode {
     return self.fastCamera.cameraFlashMode;
 }
@@ -164,16 +184,22 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     
+    // Camera view
     [self fastttAddChildViewController:self.fastCamera];
     
+    // Top toolbar
     [self.topToolbarView addSubview:self.flashModeButton];
     [self.topToolbarView addSubview:self.cameraDeviceButton];
     [self.view addSubview:self.topToolbarView];
     
+    // Bottom toolbar
     [self.bottomToolbarView addSubview:self.takePictureButton];
     [self.bottomToolbarView addSubview:self.cancelButton];
     [self.bottomToolbarView addSubview:self.doneButton];
     [self.view addSubview:self.bottomToolbarView];
+    
+    // Collection view
+    [self.view addSubview:self.collectionView];
     
     [self setupViewConstraints];
     
@@ -221,6 +247,7 @@
             flashMode = FastttCameraFlashModeAuto;
             break;
     }
+    
     self.flashMode = flashMode;
 }
 
@@ -239,8 +266,32 @@
     self.cameraDevice = cameraDevice;
 }
 
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return 10;
+}
+
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier forIndexPath:indexPath];
+    
+    [self configureCell:cell forItemAtIndexPath:indexPath];
+    
+    return cell;
+}
+
 
 #pragma mark - Private
+
+- (void)configureCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    cell.backgroundColor = [UIColor redColor];
+}
 
 
 - (void)updateDoneButton {
@@ -258,6 +309,7 @@
         @"takePictureButton": self.takePictureButton,
         @"doneButton": self.doneButton,
         @"cancelButton": self.cancelButton,
+        @"collectionView": self.collectionView,
     };
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView]" options:kNilOptions metrics:nil views:views]];
@@ -283,6 +335,9 @@
     [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[cancelButton]" options:kNilOptions metrics:nil views:views]];
     [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.doneButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[doneButton]-5-|" options:kNilOptions metrics:nil views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:kNilOptions metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(60.0)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:nil views:views]];
 }
 
 @end
