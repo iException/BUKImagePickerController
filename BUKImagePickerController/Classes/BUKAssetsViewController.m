@@ -135,7 +135,10 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+    // Take photos
+    if (indexPath.item == 0) {
+        
+    }
 }
 
 
@@ -162,43 +165,6 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 #pragma mark - Private
 
-//- (void)updateAssetsGroupsWithCompletion:(void (^)(void))completion {
-//    [self fetchAssetsGroupsWithTypes:self.imagePickerController.groupTypes completion:^(NSArray *assetsGroups) {
-//        // Map assets group to dictionary
-//        NSMutableDictionary *mappedAssetsGroups = [NSMutableDictionary dictionaryWithCapacity:assetsGroups.count];
-//        for (ALAssetsGroup *assetsGroup in assetsGroups) {
-//            NSMutableArray *array = mappedAssetsGroups[[assetsGroup valueForProperty:ALAssetsGroupPropertyType]];
-//            if (!array) {
-//                array = [NSMutableArray array];
-//            }
-//            
-//            [array addObject:assetsGroup];
-//            
-//            mappedAssetsGroups[[assetsGroup valueForProperty:ALAssetsGroupPropertyType]] = array;
-//        }
-//        
-//        // Pick the groups to be shown
-//        NSMutableArray *sortedAssetsGroups = [NSMutableArray arrayWithCapacity:self.imagePickerController.groupTypes.count];
-//        
-//        for (NSValue *groupType in self.imagePickerController.groupTypes) {
-//            NSArray *array = mappedAssetsGroups[groupType];
-//            
-//            if (array) {
-//                [sortedAssetsGroups addObjectsFromArray:array];
-//            }
-//        }
-//        
-//        self.assetsGroups = sortedAssetsGroups;
-//        
-//        if (completion) {
-//            completion();
-//        }
-//    }];
-//}
-
-
-
-
 - (ALAsset *)assetItemAtIndexPath:(NSIndexPath *)indexPath {
     return self.assets[indexPath.item];
 }
@@ -207,7 +173,6 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 - (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 //    ALAsset *asset = [self assetItemAtIndexPath:indexPath];
     cell.imageView.image = [UIImage buk_albumPlaceholderImageWithSize:CGSizeMake(60.0, 60.0)];
-    
     // TODO:
 }
 
@@ -215,17 +180,7 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 #pragma mark - Handle Assets Library Changes
 
 - (void)assetsLibraryChanged:(NSNotification *)notification {
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        NSSet *updatedAssetsGroups = notification.userInfo[ALAssetLibraryUpdatedAssetGroupsKey];
-//        NSURL *assetsGroupURL = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
-//        
-//        for (NSURL *updatedAssetsGroupURL in updatedAssetsGroups) {
-//            if ([updatedAssetsGroupURL isEqual:assetsGroupURL]) {
-//                [self updateAssets];
-//                [self.collectionView reloadData];
-//            }
-//        }
-//    });
+    
 }
 
 @end
