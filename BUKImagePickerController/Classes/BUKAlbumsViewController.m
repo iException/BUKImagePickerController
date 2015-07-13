@@ -24,7 +24,23 @@ static NSString *const kCellReuseIdentifier = @"albumCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+    self.title = NSLocalizedString(@"Photos", nil);
+    
     [self.tableView registerClass:[BUKAlbumTableViewCell class] forCellReuseIdentifier:kCellReuseIdentifier];
+}
+
+
+#pragma mark - Actions
+
+- (void)cancel:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(albumsViewControllerDidCancel:)]) {
+        [self.delegate albumsViewControllerDidCancel:self];
+        return;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

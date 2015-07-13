@@ -6,16 +6,19 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
+#import <FastttCamera/UIViewController+FastttCamera.h>
 #import "BUKImagePickerController.h"
 #import "BUKAssetsViewController.h"
 #import "BUKAlbumsViewController.h"
+#import "BUKCameraViewController.h"
 
-@interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate>
+@interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate, BUKCameraViewControllerDelegate>
 
 @property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
 @property (nonatomic) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic) BUKAlbumsViewController *albumsViewController;
 @property (nonatomic) BUKAssetsViewController *assetsViewController;
+@property (nonatomic) BUKCameraViewController *cameraViewController;
 
 @end
 
@@ -47,14 +50,23 @@
 }
 
 
+- (BUKCameraViewController *)cameraViewController {
+    if (!_cameraViewController) {
+        _cameraViewController = [[BUKCameraViewController alloc] init];
+        _cameraViewController.delegate = self;
+    }
+    return _cameraViewController;
+}
+
+
 #pragma mark - NSObject
 
 - (instancetype)init {
-    self = [super init];
-    if (self) {
+    if ((self = [super init])) {
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
         _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
-        _mediaType = BUKImagePickerMediaTypeImage;
+        _mediaType = BUKImagePickerControllerMediaTypeImage;
+        _sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
         _allowsMultipleSelection = YES;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
@@ -70,13 +82,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Add child view controller
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self.assetsViewController];
-    [navigationController beginAppearanceTransition:YES animated:NO];
-    [self addChildViewController:navigationController];
-    [self.view addSubview:navigationController.view];
-    [navigationController didMoveToParentViewController:self];
-    [navigationController endAppearanceTransition];
+    UIViewController *viewController;
+    switch (self.sourceType) {
+        case BUKImagePickerControllerSourceTypeSavedPhotosAlbum: {
+            viewController = [[UINavigationController alloc] initWithRootViewController:self.assetsViewController];
+            break;
+        }
+        case BUKImagePickerControllerSourceTypeLibrary: {
+            viewController = [[UINavigationController alloc] initWithRootViewController:self.albumsViewController];
+            break;
+        }
+        case BUKImagePickerControllerSourceTypeCamera: {
+            viewController = self.cameraViewController;
+            break;
+        }
+    }
+    
+    if (viewController) {
+        [self fastttAddChildViewController:viewController];
+    }
 }
 
 
@@ -84,6 +108,11 @@
 
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup {
     self.assetsViewController.assetsGroup = assetsGroup;
+}
+
+
+- (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController {
+    [viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -116,5 +145,9 @@
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
+
+
+#pragma mark - Private
+
 
 @end

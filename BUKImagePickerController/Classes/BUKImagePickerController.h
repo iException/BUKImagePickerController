@@ -9,18 +9,26 @@
 @import UIKit;
 @import AssetsLibrary;
 
-typedef NS_ENUM(NSUInteger, BUKImagePickerMediaType) {
-    BUKImagePickerMediaTypeAny,
-    BUKImagePickerMediaTypeImage,
-    BUKImagePickerMediaTypeVideo,
+typedef NS_ENUM(NSUInteger, BUKImagePickerControllerMediaType) {
+    BUKImagePickerControllerMediaTypeAny,
+    BUKImagePickerControllerMediaTypeImage,
+    BUKImagePickerControllerMediaTypeVideo,
 };
+
+typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
+    BUKImagePickerControllerSourceTypeLibrary,
+    BUKImagePickerControllerSourceTypeCamera,
+    BUKImagePickerControllerSourceTypeSavedPhotosAlbum,
+};
+
 
 @protocol BUKImagePickerControllerDelegate;
 
 @interface BUKImagePickerController : UIViewController
 
 @property (nonatomic, weak) id<BUKImagePickerControllerDelegate> delegate;
-@property (nonatomic) BUKImagePickerMediaType mediaType;
+@property (nonatomic) BUKImagePickerControllerMediaType mediaType;
+@property (nonatomic) BUKImagePickerControllerSourceType sourceType;
 @property (nonatomic, readonly) NSOrderedSet *selectedAssetURLs;
 
 @property (nonatomic) BOOL allowsMultipleSelection;

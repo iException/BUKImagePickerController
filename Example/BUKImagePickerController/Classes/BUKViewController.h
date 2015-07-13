@@ -8,6 +8,6 @@
 
 @import UIKit;
 
-@interface BUKViewController : UIViewController
+@interface BUKViewController : UITableViewController
 
 @end

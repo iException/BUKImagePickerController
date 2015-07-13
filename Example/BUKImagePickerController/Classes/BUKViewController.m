@@ -10,58 +10,112 @@
 #import <BUKImagePickerController/BUKImagePickerController.h>
 #import <BUKImagePickerController/BUKCameraViewController.h>
 
-@interface BUKViewController ()
-@property (nonatomic, readonly) UIButton *imagePickerButton;
-@end
-
+static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 @implementation BUKViewController
-
-#pragma mark - Accessors
-
-@synthesize imagePickerButton = _imagePickerButton;
-
-- (UIButton *)imagePickerButton {
-    if (!_imagePickerButton) {
-        _imagePickerButton = [[UIButton alloc] init];
-        _imagePickerButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _imagePickerButton.titleLabel.font = [UIFont systemFontOfSize:20.0];
-        [_imagePickerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [_imagePickerButton setTitle:@"Show Image Picker" forState:UIControlStateNormal];
-        [_imagePickerButton addTarget:self action:@selector(showImagePicker:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _imagePickerButton;
-}
-
 
 #pragma mark - UIViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.view addSubview:self.imagePickerButton];
-    [self setupViewConstraints];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kBUKViewControllerCellIdentifier];
+    self.tableView.rowHeight = 40.0;
+    
+    self.title = @"BUKImagePicker";
 }
 
 
-#pragma mark - Actions
+#pragma mark - UITableViewDataSource
 
-- (void)showImagePicker:(id)sender {
-    NSLog(@"Show Image Picker");
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 3;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kBUKViewControllerCellIdentifier forIndexPath:indexPath];
+    [self configureCell:cell forRowAtIndexPath:indexPath];
     
-//    BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
-//    [self presentViewController:imagePickerController animated:YES completion:NULL];
+    return cell;
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
+    imagePickerController.mediaType = BUKImagePickerControllerMediaTypeImage;
+    if (indexPath.row == 0) {
+        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+    } else if (indexPath.row == 1) {
+        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
+    } else if (indexPath.row == 2) {
+        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeCamera;
+    } else {
+        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+    }
     
-    BUKCameraViewController *cameraViewController = [[BUKCameraViewController alloc] init];
-    [self presentViewController:cameraViewController animated:YES completion:nil];
+    [self presentViewController:imagePickerController animated:YES completion:NULL];
 }
 
 
 #pragma mark - Private
 
-- (void)setupViewConstraints {
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.imagePickerButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.imagePickerButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+- (void)configureCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Library and camera
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"Library and Camera";
+    } else if (indexPath.row == 1) {
+        cell.textLabel.text = @"Library";
+    } else if (indexPath.row == 2) {
+        cell.textLabel.text = @"Camera";
+    } else {
+        // Should never reach here
+        cell.textLabel.text = nil;
+    }
+}
+
+
+#pragma mark - BUKImagePickerControllerDelegate
+
+- (BOOL)buk_imagePickerController:(BUKImagePickerController *)imagePickerController shouldSelectAsset:(ALAsset *)asset {
+    return YES;
+}
+
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset {
+    NSLog(@"%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+}
+
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didDeselectAsset:(ALAsset *)asset {
+    NSLog(@"%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+}
+
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFulfillMinimumSelection:(NSUInteger)minimumNumberOfSelection {
+    
+}
+
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didReachMaximumSelection:(NSUInteger)maximumNumberOfSelection {
+    
+}
+
+
+- (void)buk_imagePickerControllerDidCancel:(BUKImagePickerController *)imagePickerController {
+    
+}
+
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
+    
 }
 
 @end

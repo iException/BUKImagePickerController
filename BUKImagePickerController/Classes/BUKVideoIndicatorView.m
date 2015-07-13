@@ -73,12 +73,9 @@
         @"timeLabel": self.timeLabel,
     };
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:14.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.videoIconView attribute:NSLayoutAttributeWidth multiplier:(8.0 / 14.0) constant:0]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5.0-[videoIconView(14.0)]-4.0-[timeLabel]-5.0-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.timeLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[videoIconView]-4-[timeLabel]-5-|" options:kNilOptions metrics:nil views:views]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.videoIconView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.videoIconView attribute:NSLayoutAttributeWidth multiplier:(8.0 / 14.0) constant:0]];
 }
 
 @end

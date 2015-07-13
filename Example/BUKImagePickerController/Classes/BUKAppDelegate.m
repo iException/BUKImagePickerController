@@ -20,13 +20,14 @@
         _window = [[UIWindow alloc] init];
         _window.frame = [[UIScreen mainScreen] bounds];
         _window.backgroundColor = [UIColor whiteColor];
-        _window.rootViewController = [[BUKViewController alloc] init];
     }
     return _window;
 }
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[BUKViewController alloc] init]];
+    self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
     return YES;
 }

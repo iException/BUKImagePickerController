@@ -25,5 +25,6 @@
 
 @optional
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
+- (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController;
 
 @end
