@@ -19,6 +19,7 @@
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _imageView;
 }

@@ -23,7 +23,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 @property (nonatomic) UIView *topToolbarView;
 @property (nonatomic) UIView *bottomToolbarView;
 @property (nonatomic) UICollectionView *collectionView;
-@property (nonatomic) NSOrderedSet *selectedImages;
+@property (nonatomic) NSMutableOrderedSet *selectedImages;
 @property (nonatomic) FastttCameraFlashMode flashMode;
 @property (nonatomic) FastttCameraDevice cameraDevice;
 
@@ -41,6 +41,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_fastCamera) {
         _fastCamera = [[FastttCamera alloc] init];
         _fastCamera.delegate = self;
+        _fastCamera.maxScaledDimension = 60.0;
     }
     return _fastCamera;
 }
@@ -196,6 +197,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     // Camera view
     [self fastttAddChildViewController:self.fastCamera];
+    self.fastCamera.view.translatesAutoresizingMaskIntoConstraints = NO;
     
     // Top toolbar
     [self.topToolbarView addSubview:self.flashModeButton];
@@ -284,7 +286,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 10;
+    return self.selectedImages.count;
 }
 
 
@@ -304,11 +306,56 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+#pragma mark - FastttCameraDelegate
+
+- (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishCapturingImage:(FastttCapturedImage *)capturedImage {
+    NSLog(@"didFinishCapturingImage");
+    UIImage *fullImage = capturedImage.fullImage;
+    UIImage *scaledImage = capturedImage.scaledImage;
+    UIImage *rotatedPreviewImage = capturedImage.rotatedPreviewImage;
+    
+    NSLog(@"fullImage %@", fullImage);
+    NSLog(@"scaledImage %@", scaledImage);
+    NSLog(@"rotatedPreviewImage %@", rotatedPreviewImage);
+}
+
+
+- (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishScalingCapturedImage:(FastttCapturedImage *)capturedImage {
+    NSLog(@"didFinishScalingCapturedImage");
+    
+    UIImage *fullImage = capturedImage.fullImage;
+    UIImage *scaledImage = capturedImage.scaledImage;
+    UIImage *rotatedPreviewImage = capturedImage.rotatedPreviewImage;
+    
+    NSLog(@"fullImage %@", fullImage);
+    NSLog(@"scaledImage %@", scaledImage);
+    NSLog(@"rotatedPreviewImage %@", rotatedPreviewImage);
+    
+    NSUInteger count = self.selectedImages.count;
+    [self.selectedImages addObject:capturedImage];
+    NSUInteger newCount = self.selectedImages.count;
+    
+    if (newCount > count) {
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(self.selectedImages.count - 1) inSection:0]]];
+    }
+}
+
+
+- (void)userDeniedCameraPermissionsForCameraController:(id<FastttCameraInterface>)cameraController {
+    NSLog(@"userDeniedCameraPermissionsForCameraController");
+}
+
+
 #pragma mark - Private
+
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.selectedImages objectAtIndex:indexPath.item];
+}
+
 
 - (void)configureCell:(BUKImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor redColor];
-    cell.imageView.backgroundColor = [UIColor blueColor];
+    cell.imageView.image = [[self objectAtIndexPath:indexPath] scaledImage];
 }
 
 
@@ -330,8 +377,12 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         @"margin": @5.0,
     };
     
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView(40.0)][cameraView][bottomToolbarView(100.0)]|" options:kNilOptions metrics:nil views:views]];
+    
+    // Camera view
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[cameraView]|" options:kNilOptions metrics:nil views:views]];
+    
     // Top toolbar
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView(40.0)]" options:kNilOptions metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topToolbarView]|" options:kNilOptions metrics:nil views:views]];
     
     // Flash mode button and camera device button
@@ -339,7 +390,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.topToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.flashModeButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     
     // Bottom toolbar
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomToolbarView(100.0)]|" options:kNilOptions metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bottomToolbarView]|" options:kNilOptions metrics:nil views:views]];
     
     // Take picture button
