@@ -14,6 +14,7 @@
 
 @property (nonatomic, weak) id<BUKCameraViewControllerDelegate> delegate;
 @property (nonatomic) CGSize thumbnailSize;
+@property (nonatomic) BOOL savesToPhotoLibrary;
 
 @end
 

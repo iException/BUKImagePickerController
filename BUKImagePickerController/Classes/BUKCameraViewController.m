@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
+@import AssetsLibrary;
 #import <FastttCamera/FastttCamera.h>
 #import "BUKCameraViewController.h"
 #import "BUKImageCollectionViewCell.h"
@@ -22,6 +23,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 @property (nonatomic) UIButton *cancelButton;
 @property (nonatomic) UIView *topToolbarView;
 @property (nonatomic) UIView *bottomToolbarView;
+@property (nonatomic) UIView *flashView;
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) NSMutableOrderedSet *selectedImages;
 @property (nonatomic) FastttCameraFlashMode flashMode;
@@ -41,7 +43,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_fastCamera) {
         _fastCamera = [[FastttCamera alloc] init];
         _fastCamera.delegate = self;
-        _fastCamera.maxScaledDimension = 60.0;
     }
     return _fastCamera;
 }
@@ -122,6 +123,16 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+- (UIView *)flashView {
+    if (!_flashView) {
+        _flashView = [[UIView alloc] init];
+        _flashView.translatesAutoresizingMaskIntoConstraints = NO;
+        _flashView.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1.0];
+    }
+    return _flashView;
+}
+
+
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -132,6 +143,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4f];
         _collectionView.showsHorizontalScrollIndicator = NO;
         _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.alwaysBounceHorizontal = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
         [_collectionView registerClass:[BUKImageCollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
@@ -309,35 +321,31 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 #pragma mark - FastttCameraDelegate
 
 - (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishCapturingImage:(FastttCapturedImage *)capturedImage {
-    NSLog(@"didFinishCapturingImage");
-    UIImage *fullImage = capturedImage.fullImage;
-    UIImage *scaledImage = capturedImage.scaledImage;
-    UIImage *rotatedPreviewImage = capturedImage.rotatedPreviewImage;
+    [self flash:YES];
     
-    NSLog(@"fullImage %@", fullImage);
-    NSLog(@"scaledImage %@", scaledImage);
-    NSLog(@"rotatedPreviewImage %@", rotatedPreviewImage);
+    if (self.savesToPhotoLibrary) {
+        [self savesToPhotoLibrary];
+    }
 }
 
 
 - (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishScalingCapturedImage:(FastttCapturedImage *)capturedImage {
-    NSLog(@"didFinishScalingCapturedImage");
+    if (!capturedImage || !capturedImage.fullImage || !capturedImage.scaledImage) {
+        return;
+    }
     
-    UIImage *fullImage = capturedImage.fullImage;
-    UIImage *scaledImage = capturedImage.scaledImage;
-    UIImage *rotatedPreviewImage = capturedImage.rotatedPreviewImage;
-    
-    NSLog(@"fullImage %@", fullImage);
-    NSLog(@"scaledImage %@", scaledImage);
-    NSLog(@"rotatedPreviewImage %@", rotatedPreviewImage);
-    
+    // Since we don't need preview image, release it to save memory.
+    capturedImage.rotatedPreviewImage = nil;
     NSUInteger count = self.selectedImages.count;
     [self.selectedImages addObject:capturedImage];
     NSUInteger newCount = self.selectedImages.count;
-    
-    if (newCount > count) {
-        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(self.selectedImages.count - 1) inSection:0]]];
+    if (newCount <= count) {
+        return;
     }
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(newCount - 1) inSection:0];
+    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
 }
 
 
@@ -348,13 +356,82 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 #pragma mark - Private
 
+- (void)saveImageToCameraRoll:(FastttCapturedImage *)capturedImage {
+    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+    UIImage *fullImage = capturedImage.fullImage;
+    
+    [assetsLibrary writeImageToSavedPhotosAlbum:[fullImage CGImage] orientation:(ALAssetOrientation)fullImage.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error) {
+        if (assetURL) {
+            NSLog(@"[BUKImagePicker] Saved image to photos album.");
+        } else {
+            NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
+        }
+    }];
+}
+
+
+- (void)flash:(BOOL)animated {
+    if (self.flashView.superview) {
+        return;
+    }
+    
+    self.flashView.alpha = 0;
+    [self.view addSubview:self.flashView];
+    
+    UIView *cameraView = self.fastCamera.view;
+    [self.view addConstraints:@[
+        [NSLayoutConstraint constraintWithItem:self.flashView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cameraView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0],
+        [NSLayoutConstraint constraintWithItem:self.flashView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:cameraView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0],
+        [NSLayoutConstraint constraintWithItem:self.flashView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cameraView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0],
+        [NSLayoutConstraint constraintWithItem:self.flashView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:cameraView attribute:NSLayoutAttributeRight multiplier:1.0 constant:0]
+    ]];
+    
+    __weak typeof(self)weakSelf = self;
+    void (^change)(void) = ^{
+        weakSelf.flashView.alpha = 1.0;
+    };
+    
+    void (^completion)(BOOL finished) = ^(BOOL finished) {
+        [weakSelf hideFlashView:animated];
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.15f delay:0 options:UIViewAnimationOptionCurveEaseIn animations:change completion:completion];
+    } else {
+        change();
+        completion(YES);
+    }
+}
+
+
+- (void)hideFlashView:(BOOL)animated {
+    if (!self.flashView.superview) {
+        return;
+    }
+    
+    void (^change)(void) = ^{
+        self.flashView.alpha = 0.0f;
+    };
+    
+    void (^completion)(BOOL finished) = ^(BOOL finished) {
+        [self.flashView removeFromSuperview];
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.15f delay:0.05f options:UIViewAnimationOptionCurveEaseOut animations:change completion:completion];
+    } else {
+        change();
+        completion(YES);
+    }
+}
+
+
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath {
     return [self.selectedImages objectAtIndex:indexPath.item];
 }
 
 
 - (void)configureCell:(BUKImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    cell.backgroundColor = [UIColor redColor];
     cell.imageView.image = [[self objectAtIndexPath:indexPath] scaledImage];
 }
 

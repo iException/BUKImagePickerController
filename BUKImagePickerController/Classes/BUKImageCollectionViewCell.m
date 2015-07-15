@@ -20,6 +20,7 @@
         _imageView = [[UIImageView alloc] init];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _imageView.backgroundColor = [UIColor colorWithWhite:0.1f alpha:0.6f];
     }
     return _imageView;
 }
