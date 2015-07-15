@@ -175,7 +175,12 @@
 
 
 - (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingImages:)]) {
+        [self.delegate buk_imagePickerController:self didFinishPickingImages:images];
+        return;
+    }
     
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

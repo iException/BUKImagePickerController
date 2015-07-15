@@ -51,6 +51,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
     imagePickerController.mediaType = BUKImagePickerControllerMediaTypeImage;
+    imagePickerController.delegate = self;
     if (indexPath.row == 0) {
         imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
     } else if (indexPath.row == 1) {
@@ -116,6 +117,12 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     
+}
+
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingImages:(NSArray *)images {
+    NSLog(@"didFinishPickingImages: %@", images);
+    [imagePickerController dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
