@@ -20,7 +20,7 @@
         _imageView = [[UIImageView alloc] init];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        _imageView.backgroundColor = [UIColor colorWithWhite:0.1f alpha:0.6f];
+        _imageView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5f];
     }
     return _imageView;
 }
@@ -31,6 +31,7 @@
         _deleteButton = [[UIButton alloc] init];
         _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
         [_deleteButton setTitle:@"X" forState:UIControlStateNormal];
+        [_deleteButton addTarget:self action:@selector(deleteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _deleteButton;
 }
@@ -45,6 +46,15 @@
         [self setupViewConstraints];
     }
     return self;
+}
+
+
+#pragma mark - Actions
+
+- (void)deleteButtonClicked:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(imageCollectionViewCell:didClickDeleteButton:)]) {
+        [self.delegate imageCollectionViewCell:self didClickDeleteButton:sender];
+    }
 }
 
 

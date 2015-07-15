@@ -19,6 +19,7 @@
 @property (nonatomic) BUKAlbumsViewController *albumsViewController;
 @property (nonatomic) BUKAssetsViewController *assetsViewController;
 @property (nonatomic) BUKCameraViewController *cameraViewController;
+@property (nonatomic) UINavigationController *childNavigationController;
 
 @end
 
@@ -66,7 +67,7 @@
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
         _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
         _mediaType = BUKImagePickerControllerMediaTypeImage;
-        _sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+        _sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
         _allowsMultipleSelection = YES;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
@@ -84,12 +85,17 @@
     
     UIViewController *viewController;
     switch (self.sourceType) {
-        case BUKImagePickerControllerSourceTypeSavedPhotosAlbum: {
-            viewController = [[UINavigationController alloc] initWithRootViewController:self.assetsViewController];
+        case BUKImagePickerControllerSourceTypeLibraryAndCamera: {
+            UINavigationController *navigationController = [[UINavigationController alloc] init];
+            [navigationController setViewControllers:@[self.albumsViewController, self.assetsViewController]];
+            self.childNavigationController = navigationController;
+            viewController = navigationController;
             break;
         }
         case BUKImagePickerControllerSourceTypeLibrary: {
-            viewController = [[UINavigationController alloc] initWithRootViewController:self.albumsViewController];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self.albumsViewController];
+            self.childNavigationController = navigationController;
+            viewController = navigationController;
             break;
         }
         case BUKImagePickerControllerSourceTypeCamera: {
@@ -149,6 +155,27 @@
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+
+#pragma mark - BUKCameraViewControllerDelegate
+
+- (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController {
+    if (self.sourceType == BUKImagePickerControllerSourceTypeCamera) {
+        if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerDidCancel:)]) {
+            [self.delegate buk_imagePickerControllerDidCancel:self];
+            return;
+        }
+        
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else if (self.sourceType == BUKImagePickerControllerSourceTypeLibraryAndCamera) {
+        [self.childNavigationController popViewControllerAnimated:YES];
+    }
+}
+
+
+- (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images {
+    
 }
 
 

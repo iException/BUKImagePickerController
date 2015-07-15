@@ -52,13 +52,13 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
     BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
     imagePickerController.mediaType = BUKImagePickerControllerMediaTypeImage;
     if (indexPath.row == 0) {
-        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
     } else if (indexPath.row == 1) {
         imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
     } else if (indexPath.row == 2) {
         imagePickerController.sourceType = BUKImagePickerControllerSourceTypeCamera;
     } else {
-        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
     }
     
     [self presentViewController:imagePickerController animated:YES completion:NULL];

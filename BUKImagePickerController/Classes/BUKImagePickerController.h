@@ -18,7 +18,7 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerMediaType) {
 typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
     BUKImagePickerControllerSourceTypeLibrary,
     BUKImagePickerControllerSourceTypeCamera,
-    BUKImagePickerControllerSourceTypeSavedPhotosAlbum,
+    BUKImagePickerControllerSourceTypeLibraryAndCamera,
 };
 
 
@@ -53,5 +53,7 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 
 - (void)buk_imagePickerControllerDidCancel:(BUKImagePickerController *)imagePickerController;
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets;
+
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingImages:(NSArray *)images;
 
 @end

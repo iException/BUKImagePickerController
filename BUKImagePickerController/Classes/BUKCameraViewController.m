@@ -13,7 +13,7 @@
 
 static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
-@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BUKImageCollectionViewCellDelegate>
 
 @property (nonatomic) FastttCamera *fastCamera;
 @property (nonatomic) UIButton *takePictureButton;
@@ -25,7 +25,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 @property (nonatomic) UIView *bottomToolbarView;
 @property (nonatomic) UIView *flashView;
 @property (nonatomic) UICollectionView *collectionView;
-@property (nonatomic) NSMutableOrderedSet *selectedImages;
+@property (nonatomic) NSMutableArray *selectedImages;
 @property (nonatomic) FastttCameraFlashMode flashMode;
 @property (nonatomic) FastttCameraDevice cameraDevice;
 
@@ -140,7 +140,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         flowLayout.itemSize = self.thumbnailSize;
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
         _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4f];
+        _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.showsHorizontalScrollIndicator = NO;
         _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.alwaysBounceHorizontal = YES;
@@ -194,7 +194,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 - (instancetype)init {
     if ((self = [super init])) {
         _thumbnailSize = CGSizeMake(72.0, 72.0);
-        _selectedImages = [NSMutableOrderedSet orderedSet];
+        _selectedImages = [NSMutableArray array];
+        _savesToPhotoLibrary = NO;
     }
     return self;
 }
@@ -242,14 +243,20 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 - (void)cancel:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewControllerDidCancel:)]) {
         [self.delegate cameraViewControllerDidCancel:self];
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        return;
     }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 - (void)done:(id)sender {
-    NSLog(@"DONE");
+    if ([self.delegate respondsToSelector:@selector(cameraViewController:didFinishCapturingImages:)]) {
+        [self.delegate cameraViewController:self didFinishCapturingImages:self.selectedImages];
+        return;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -289,6 +296,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     self.cameraDevice = cameraDevice;
 }
+
 
 #pragma mark - UICollectionViewDataSource
 
@@ -351,6 +359,16 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 - (void)userDeniedCameraPermissionsForCameraController:(id<FastttCameraInterface>)cameraController {
     NSLog(@"userDeniedCameraPermissionsForCameraController");
+}
+
+
+#pragma mark - BUKImageCollectionViewCellDelegate
+
+- (void)imageCollectionViewCell:(BUKImageCollectionViewCell *)cell didClickDeleteButton:(UIButton *)button {
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    
+    [self removeImageAtIndex:indexPath.item];
+    [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
 
@@ -426,6 +444,16 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+- (void)removeImageAtIndex:(NSUInteger)index {
+    NSUInteger count = self.selectedImages.count;
+    if (index >= count) {
+        return;
+    }
+    
+    [self.selectedImages removeObjectAtIndex:index];
+}
+
+
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath {
     return [self.selectedImages objectAtIndex:indexPath.item];
 }
@@ -433,6 +461,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 - (void)configureCell:(BUKImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     cell.imageView.image = [[self objectAtIndexPath:indexPath] scaledImage];
+    cell.delegate = self;
 }
 
 

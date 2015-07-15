@@ -21,5 +21,5 @@
 @protocol BUKCameraViewControllerDelegate <NSObject>
 @optional
 - (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController;
-- (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images;
+- (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images;
 @end

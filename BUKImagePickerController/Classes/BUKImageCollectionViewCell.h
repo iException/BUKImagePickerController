@@ -8,9 +8,18 @@
 
 @import UIKit;
 
+@protocol BUKImageCollectionViewCellDelegate;
+
 @interface BUKImageCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, readonly) UIImageView *imageView;
 @property (nonatomic, readonly) UIButton *deleteButton;
+@property (nonatomic, weak) id<BUKImageCollectionViewCellDelegate> delegate;
 
+@end
+
+
+@protocol BUKImageCollectionViewCellDelegate <NSObject>
+@optional
+- (void)imageCollectionViewCell:(BUKImageCollectionViewCell *)cell didClickDeleteButton:(UIButton *)button;
 @end
