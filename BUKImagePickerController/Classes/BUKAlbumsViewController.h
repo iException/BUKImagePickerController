@@ -8,12 +8,13 @@
 
 @import UIKit;
 
-@class ALAssetsLibrary;
+@class BUKAssetsManager;
 @protocol BUKAlbumsViewControllerDelegate;
 
 @interface BUKAlbumsViewController : UITableViewController
 
-@property (nonatomic) ALAssetsLibrary *assetsLibrary;
+@property (nonatomic) BUKAssetsManager *assetsManager;
+@property (nonatomic, readonly) NSArray *assetsGroups;
 @property (nonatomic, weak) id<BUKAlbumsViewControllerDelegate> delegate;
 
 @end
@@ -25,6 +26,8 @@
 
 @optional
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
+- (BOOL)albumsViewController:(BUKAlbumsViewController *)viewController shouldSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
+- (void)albumsViewController:(BUKAlbumsViewController *)viewController didFinishPickingAssets:(NSArray *)assets;
 - (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController;
 
 @end

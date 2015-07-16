@@ -26,6 +26,9 @@
     if (!_frontImageView) {
         _frontImageView = [[UIImageView alloc] init];
         _frontImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _frontImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _frontImageView.layer.borderColor = [[UIColor whiteColor] CGColor];
+        _frontImageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
     }
     return _frontImageView;
 }
@@ -35,6 +38,9 @@
     if (!_middleImageView) {
         _middleImageView = [[UIImageView alloc] init];
         _middleImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _middleImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _middleImageView.layer.borderColor = [[UIColor whiteColor] CGColor];
+        _middleImageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
     }
     return _middleImageView;
 }
@@ -44,6 +50,9 @@
     if (!_backImageView) {
         _backImageView = [[UIImageView alloc] init];
         _backImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _backImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _backImageView.layer.borderColor = [[UIColor whiteColor] CGColor];
+        _backImageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
     }
     return _backImageView;
 }
@@ -96,18 +105,33 @@
         @"titleLabel": self.titleLabel,
     };
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16.0-[imageContainerView(68.0)]-18.0-[titleLabel]|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageContainerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0]];
+    CGFloat padding = 2.0;
+    NSDictionary *metrics = @{
+        @"padding": @(padding),
+        @"horizontalMargin": @16.0,
+    };
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(horizontalMargin)-[imageContainerView(68.0)]-(horizontalMargin)-[titleLabel]|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageContainerView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     
-    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[backImageView(60.0)]" options:kNilOptions metrics:nil views:views]];
+    // Image container view
+    [self.imageContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageContainerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.imageContainerView attribute:NSLayoutAttributeWidth multiplier:1 constant:(padding * 2)]];
+    
+    // Front image view
+    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[frontImageView]|" options:kNilOptions metrics:nil views:views]];
+    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontImageView]|" options:kNilOptions metrics:nil views:views]];
+    [self.frontImageView addConstraint:[NSLayoutConstraint constraintWithItem:self.frontImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.frontImageView attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
+    
+    // Middle image view
+    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(padding)-[middleImageView]-(padding)-|" options:kNilOptions metrics:metrics views:views]];
+    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(padding)-[middleImageView]" options:kNilOptions metrics:metrics views:views]];
+    [self.middleImageView addConstraint:[NSLayoutConstraint constraintWithItem:self.middleImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.middleImageView attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+    
+    // Back image view
+    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[backImageView]" options:kNilOptions metrics:nil views:views]];
+    [self.backImageView addConstraint:[NSLayoutConstraint constraintWithItem:self.backImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.backImageView attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
     [self.imageContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.backImageView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.imageContainerView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    
-    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2.0-[middleImageView(64.0)]" options:kNilOptions metrics:nil views:views]];
-    [self.imageContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.middleImageView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.imageContainerView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    
-    [self.imageContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[frontImageView(68.0)]|" options:kNilOptions metrics:nil views:views]];
-    [self.imageContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.frontImageView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.imageContainerView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self.imageContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.backImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.imageContainerView attribute:NSLayoutAttributeWidth multiplier:1 constant:(- 2 * 2 * padding)]];
 }
 
 @end

@@ -6,16 +6,18 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
+@import AssetsLibrary;
 #import <FastttCamera/UIViewController+FastttCamera.h>
 #import "BUKImagePickerController.h"
 #import "BUKAssetsViewController.h"
 #import "BUKAlbumsViewController.h"
 #import "BUKCameraViewController.h"
+#import "BUKAssetsManager.h"
 
 @interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate, BUKCameraViewControllerDelegate>
 
 @property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
-@property (nonatomic) ALAssetsLibrary *assetsLibrary;
+@property (nonatomic) BUKAssetsManager *assetManager;
 @property (nonatomic) BUKAlbumsViewController *albumsViewController;
 @property (nonatomic) BUKAssetsViewController *assetsViewController;
 @property (nonatomic) BUKCameraViewController *cameraViewController;
@@ -31,7 +33,7 @@
     if (!_albumsViewController) {
         _albumsViewController = [[BUKAlbumsViewController alloc] init];
         _albumsViewController.delegate = self;
-        _albumsViewController.assetsLibrary = self.assetsLibrary;
+        _albumsViewController.assetsManager = self.assetManager;
     }
     return _albumsViewController;
 }
@@ -60,11 +62,20 @@
 }
 
 
+- (BUKAssetsManager *)assetManager {
+    if (!_assetManager) {
+        _assetManager = [[BUKAssetsManager alloc] initWithAssetsLibrary:[[ALAssetsLibrary alloc] init]
+                                                              mediaTyle:self.mediaType
+                                                             groupTypes:(ALAssetsGroupSavedPhotos | ALAssetsGroupPhotoStream | ALAssetsGroupAlbum)];
+    }
+    return _assetManager;
+}
+
+
 #pragma mark - NSObject
 
 - (instancetype)init {
     if ((self = [super init])) {
-        _assetsLibrary = [[ALAssetsLibrary alloc] init];
         _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
         _mediaType = BUKImagePickerControllerMediaTypeImage;
         _sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
@@ -119,6 +130,7 @@
 
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup {
     self.assetsViewController.assetsGroup = assetsGroup;
+    [self.childNavigationController pushViewController:self.assetsViewController animated:YES];
 }
 
 

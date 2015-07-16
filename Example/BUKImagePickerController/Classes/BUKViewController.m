@@ -111,7 +111,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 
 - (void)buk_imagePickerControllerDidCancel:(BUKImagePickerController *)imagePickerController {
-    
+    [imagePickerController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
