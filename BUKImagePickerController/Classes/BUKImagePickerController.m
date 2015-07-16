@@ -16,7 +16,7 @@
 
 @interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate, BUKCameraViewControllerDelegate>
 
-@property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
+@property (nonatomic) NSMutableArray *mutableSelectedAssets;
 @property (nonatomic) BUKAssetsManager *assetsManager;
 @property (nonatomic) BUKAlbumsViewController *albumsViewController;
 @property (nonatomic) BUKAssetsViewController *assetsViewController;
@@ -28,6 +28,11 @@
 @implementation BUKImagePickerController
 
 #pragma mark - Accessors
+
+- (NSArray *)selectedAssets {
+    return [self.mutableSelectedAssets copy];
+}
+
 
 - (BUKAlbumsViewController *)albumsViewController {
     if (!_albumsViewController) {
@@ -77,7 +82,7 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
+        _mutableSelectedAssets = [NSMutableArray array];
         _mediaType = BUKImagePickerControllerMediaTypeImage;
         _sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
         _allowsMultipleSelection = YES;
@@ -142,7 +147,12 @@
 
 
 - (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController {
-    [viewController dismissViewControllerAnimated:YES completion:nil];
+    [self cancelPicking];
+}
+
+
+- (void)albumsViewControllerDidFinishPicking:(BUKAlbumsViewController *)viewController {
+    [self finishPickingAssets];
 }
 
 
@@ -150,30 +160,24 @@
 
 - (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController shouldSelectAsset:(ALAsset *)asset {
     return YES;
+    // TODO: Check number of selected assets
 }
 
 
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didSelectAsset:(ALAsset *)asset {
-    
+    [self.mutableSelectedAssets addObject:asset];
+    NSLog(@"didSelectAsset, selectedAssets: %@", self.mutableSelectedAssets);
 }
 
 
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didDeselectAsset:(ALAsset *)asset {
-    
+    [self.mutableSelectedAssets removeObject:asset];
+    NSLog(@"didDeselectAsset, selectedAssets: %@", self.mutableSelectedAssets);
 }
 
 
-- (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didFinishPickingAssets:(NSArray *)assets {
-    
-}
-
-
-- (void)assetsViewControllerDidCancel:(BUKAssetsViewController *)assetsViewController {
-    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerDidCancel:)]) {
-        [self.delegate buk_imagePickerControllerDidCancel:self];
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+- (void)assetsViewControllerDidFinishPicking:(BUKAssetsViewController *)assetsViewController {
+    [self finishPickingAssets];
 }
 
 
@@ -181,12 +185,7 @@
 
 - (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController {
     if (self.sourceType == BUKImagePickerControllerSourceTypeCamera) {
-        if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerDidCancel:)]) {
-            [self.delegate buk_imagePickerControllerDidCancel:self];
-            return;
-        }
-        
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self cancelPicking];
     } else if (self.sourceType == BUKImagePickerControllerSourceTypeLibraryAndCamera) {
         [self.childNavigationController popViewControllerAnimated:YES];
     }
@@ -205,5 +204,21 @@
 
 #pragma mark - Private
 
+- (void)cancelPicking {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerDidCancel:)]) {
+        [self.delegate buk_imagePickerControllerDidCancel:self];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+
+- (void)finishPickingAssets {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
+        [self.delegate buk_imagePickerController:self didFinishPickingAssets:self.selectedAssets];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
 
 @end

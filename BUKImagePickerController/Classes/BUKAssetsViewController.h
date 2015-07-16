@@ -35,7 +35,7 @@
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didSelectAsset:(ALAsset *)asset;
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didDeselectAsset:(ALAsset *)asset;
 
-- (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didFinishPickingAssets:(NSArray *)assets;
+- (void)assetsViewControllerDidFinishPicking:(BUKAssetsViewController *)assetsViewController;
 - (void)assetsViewControllerDidCancel:(BUKAssetsViewController *)assetsViewController;
 
 @end

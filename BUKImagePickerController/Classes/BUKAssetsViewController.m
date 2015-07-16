@@ -122,15 +122,20 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    // Take photos
-    if (indexPath.item == 0) {
-        
+    if ([self.delegate respondsToSelector:@selector(assetsViewController:didSelectAsset:)]) {
+        ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+        [self.delegate assetsViewController:self didSelectAsset:asset];
+        return;
     }
 }
 
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+    if ([self.delegate respondsToSelector:@selector(assetsViewController:didDeselectAsset:)]) {
+        ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+        [self.delegate assetsViewController:self didDeselectAsset:asset];
+        return;
+    }
 }
 
 

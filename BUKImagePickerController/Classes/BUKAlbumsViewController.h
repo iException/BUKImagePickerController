@@ -28,6 +28,5 @@
 - (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController;
 - (void)albumsViewControllerDidFinishPicking:(BUKAlbumsViewController *)viewController;
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
-- (BOOL)albumsViewController:(BUKAlbumsViewController *)viewController shouldSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
 
 @end
