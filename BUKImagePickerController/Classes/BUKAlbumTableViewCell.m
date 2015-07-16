@@ -24,11 +24,7 @@
 
 - (UIImageView *)frontImageView {
     if (!_frontImageView) {
-        _frontImageView = [[UIImageView alloc] init];
-        _frontImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _frontImageView.contentMode = UIViewContentModeScaleAspectFit;
-        _frontImageView.layer.borderColor = [[UIColor whiteColor] CGColor];
-        _frontImageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
+        _frontImageView = [self borderedImageView];
     }
     return _frontImageView;
 }
@@ -36,11 +32,7 @@
 
 - (UIImageView *)middleImageView {
     if (!_middleImageView) {
-        _middleImageView = [[UIImageView alloc] init];
-        _middleImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _middleImageView.contentMode = UIViewContentModeScaleAspectFit;
-        _middleImageView.layer.borderColor = [[UIColor whiteColor] CGColor];
-        _middleImageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
+        _middleImageView = [self borderedImageView];
     }
     return _middleImageView;
 }
@@ -48,11 +40,7 @@
 
 - (UIImageView *)backImageView {
     if (!_backImageView) {
-        _backImageView = [[UIImageView alloc] init];
-        _backImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _backImageView.contentMode = UIViewContentModeScaleAspectFit;
-        _backImageView.layer.borderColor = [[UIColor whiteColor] CGColor];
-        _backImageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
+        _backImageView = [self borderedImageView];
     }
     return _backImageView;
 }
@@ -95,6 +83,16 @@
 
 
 #pragma mark - Private
+
+- (UIImageView *)borderedImageView {
+    UIImageView *imageView = [[UIImageView alloc] init];
+    imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.layer.borderColor = [[UIColor whiteColor] CGColor];
+    imageView.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
+    return imageView;
+}
+
 
 - (void)setupViewConstraints {
     NSDictionary *views = @{
