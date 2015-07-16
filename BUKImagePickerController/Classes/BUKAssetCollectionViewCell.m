@@ -64,14 +64,13 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        self.showsOverlayViewWhenSelected = YES;
-        
         [self.contentView addSubview:self.imageView];
         [self.contentView addSubview:self.videoIndicatorView];
         [self.contentView addSubview:self.overlayView];
         [self.contentView addSubview:self.checkmarkView];
-
         [self setupViewConstraints];
+        
+        self.showsOverlayViewWhenSelected = YES;
     }
     return self;
 }

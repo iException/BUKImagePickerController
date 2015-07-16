@@ -36,7 +36,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     [super viewDidLoad];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
     self.title = NSLocalizedString(@"Photos", nil);
     
     self.tableView.rowHeight = 90.0;
@@ -165,43 +165,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 - (void)updateAssetsGroupsWithCompletion:(void (^)(void))completion {
     [self.assetsManager fetchAssetsGroupsWithCompletion:^(NSArray *assetsGroups) {
-        // Map assets group to dictionary
-        NSMutableDictionary *mappedAssetsGroups = [NSMutableDictionary dictionaryWithCapacity:assetsGroups.count];
-        
-        for (ALAssetsGroup *assetsGroup in assetsGroups) {
-            NSNumber *groupType = [assetsGroup valueForProperty:ALAssetsGroupPropertyType];
-            
-            NSMutableArray *array = mappedAssetsGroups[groupType];
-            if (!array) {
-                array = [NSMutableArray array];
-                mappedAssetsGroups[groupType] = array;
-            }
-            [array addObject:assetsGroup];
-        }
-        
-        // Sort groups
-        // Saved photos, photo stream, album
-        NSMutableArray *sortedAssetsGroups = [NSMutableArray array];
-        NSArray *groupTypes = @[@(ALAssetsGroupSavedPhotos), @(ALAssetsGroupPhotoStream), @(ALAssetsGroupAlbum)];
-        for (NSNumber *groupType in groupTypes) {
-            NSArray *array = [mappedAssetsGroups objectForKey:groupType];
-            if (array) {
-                [sortedAssetsGroups addObjectsFromArray:array];
-            }
-        }
-        
-        [mappedAssetsGroups enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, id array, BOOL *stop) {
-            if (!array) {
-                return;
-            }
-            
-            if (![groupTypes containsObject:key]) {
-                [sortedAssetsGroups addObjectsFromArray:array];
-            }
-        }];
-        
-        self.assetsGroups = sortedAssetsGroups;
-        
+        self.assetsGroups = assetsGroups;
         if (completion) {
             completion();
         }

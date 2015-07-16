@@ -62,12 +62,53 @@
         // When the enumeration is done, enumerationBlock is invoked with group set to nil.
         else {
             if (completion) {
-                completion(assetsGroups);
+                completion([self sortAssetsGroups:assetsGroups]);
             }
         }
     } failureBlock:^(NSError *error) {
         NSLog(@"[BUKImagePickerController] An error occurs while fetching assets gourps: %@", [error localizedDescription]);
     }];
+}
+
+
++ (NSArray *)sortAssetsGroups:(NSArray *)assetsGroups {
+    NSMutableDictionary *mappedAssetsGroups = [NSMutableDictionary dictionary];
+    for (ALAssetsGroup *assetsGroup in assetsGroups) {
+        NSNumber *groupType = [assetsGroup valueForProperty:ALAssetsGroupPropertyType];
+        NSMutableArray *array = mappedAssetsGroups[groupType];
+        if (!array) {
+            array = [NSMutableArray array];
+            mappedAssetsGroups[groupType] = array;
+        }
+        [array addObject:assetsGroup];
+    }
+    
+    // Sort groups
+    NSArray *groupTypesOrder = @[
+        @(ALAssetsGroupSavedPhotos),
+        @(ALAssetsGroupPhotoStream),
+        @(ALAssetsGroupAlbum)
+    ];
+    
+    NSMutableArray *sortedAssetsGroups = [NSMutableArray arrayWithCapacity:assetsGroups.count];
+    for (NSNumber *groupType in groupTypesOrder) {
+        NSArray *array = [mappedAssetsGroups objectForKey:groupType];
+        if (array) {
+            [sortedAssetsGroups addObjectsFromArray:array];
+        }
+    }
+    
+    // Add other groups
+    [mappedAssetsGroups enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, id array, BOOL *stop) {
+        if (!array) {
+            return;
+        }
+        if (![groupTypesOrder containsObject:key]) {
+            [sortedAssetsGroups addObjectsFromArray:array];
+        }
+    }];
+    
+    return sortedAssetsGroups;
 }
 
 
