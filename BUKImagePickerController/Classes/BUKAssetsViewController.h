@@ -18,6 +18,7 @@
 @property (nonatomic, weak) id<BUKAssetsViewControllerDelegate> delegate;
 @property (nonatomic) BOOL allowsMultipleSelection;
 @property (nonatomic) BOOL reversesAssets;
+@property (nonatomic) BOOL showsCameraCell;
 @property (nonatomic) CGFloat minimumInteritemSpacing;
 @property (nonatomic) CGFloat minimumLineSpacing;
 @property (nonatomic) NSUInteger numberOfColumnsInPortrait;
@@ -37,6 +38,7 @@
 
 - (void)assetsViewControllerDidFinishPicking:(BUKAssetsViewController *)assetsViewController;
 - (void)assetsViewControllerDidCancel:(BUKAssetsViewController *)assetsViewController;
+- (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController;
 
 @end
 

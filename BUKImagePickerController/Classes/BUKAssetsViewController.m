@@ -96,7 +96,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.assets.count;
+    return self.showsCameraCell ? self.assets.count + 1 : self.assets.count;
 }
 
 
@@ -111,6 +111,13 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 #pragma mark - UICollectionViewDelegate
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.showsCameraCell && indexPath.item == 0) {
+        if ([self.delegate respondsToSelector:@selector(assetsViewControllerDidSelectCamera:)]) {
+            [self.delegate assetsViewControllerDidSelectCamera:self];
+        }
+        return NO;
+    }
+    
     if ([self.delegate respondsToSelector:@selector(assetsViewController:shouldSelectAsset:)]) {
         ALAsset *asset = [self assetItemAtIndexPath:indexPath];
         return [self.delegate assetsViewController:self shouldSelectAsset:asset];
@@ -154,12 +161,28 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 #pragma mark - Private
 
+- (NSUInteger)assetIndexForViewIndexPath:(NSIndexPath *)indexPath {
+    return self.showsCameraCell ? indexPath.item - 1 : indexPath.item;
+}
+
+
+- (NSIndexPath *)viewIndexPathForAssetsIndex:(NSUInteger)index {
+    return self.showsCameraCell ? [NSIndexPath indexPathForItem:(index + 1) inSection:0] : [NSIndexPath indexPathForItem:index inSection:0];
+}
+
+
 - (ALAsset *)assetItemAtIndexPath:(NSIndexPath *)indexPath {
-    return self.assets[indexPath.item];
+    return self.assets[[self assetIndexForViewIndexPath:indexPath]];
 }
 
 
 - (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.showsCameraCell && indexPath.item == 0) {
+        cell.imageView.image = [UIImage buk_albumPlaceholderImageWithSize:CGSizeMake(60.0, 60.0)];
+        return;
+    }
+    
+    
     ALAsset *asset = [self assetItemAtIndexPath:indexPath];
     
     cell.showsOverlayViewWhenSelected = self.allowsMultipleSelection;
