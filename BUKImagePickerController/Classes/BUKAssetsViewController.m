@@ -80,12 +80,11 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 #pragma mark - Actions
 
 - (void)finishPicking:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(assetsViewController:didFinishPickingAssets:)]) {
-        [self.delegate assetsViewController:self didFinishPickingAssets:nil];
-        return;
+    if ([self.delegate respondsToSelector:@selector(assetsViewControllerDidFinishPicking:)]) {
+        [self.delegate assetsViewControllerDidFinishPicking:self];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
-    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 
@@ -125,7 +124,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     if ([self.delegate respondsToSelector:@selector(assetsViewController:didSelectAsset:)]) {
         ALAsset *asset = [self assetItemAtIndexPath:indexPath];
         [self.delegate assetsViewController:self didSelectAsset:asset];
-        return;
     }
 }
 
@@ -134,7 +132,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     if ([self.delegate respondsToSelector:@selector(assetsViewController:didDeselectAsset:)]) {
         ALAsset *asset = [self assetItemAtIndexPath:indexPath];
         [self.delegate assetsViewController:self didDeselectAsset:asset];
-        return;
     }
 }
 

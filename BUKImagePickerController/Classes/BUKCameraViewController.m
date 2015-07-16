@@ -245,20 +245,18 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 - (void)cancel:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewControllerDidCancel:)]) {
         [self.delegate cameraViewControllerDidCancel:self];
-        return;
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 - (void)done:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewController:didFinishCapturingImages:)]) {
         [self.delegate cameraViewController:self didFinishCapturingImages:self.selectedImages];
-        return;
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

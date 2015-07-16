@@ -57,20 +57,18 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 - (void)cancel:(id)sender {
     if ([self.delegate respondsToSelector:@selector(albumsViewControllerDidCancel:)]) {
         [self.delegate albumsViewControllerDidCancel:self];
-        return;
+    } else {
+         [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 - (void)done:(id)sender {
     if ([self.delegate respondsToSelector:@selector(albumsViewControllerDidFinishPicking:)]) {
         [self.delegate albumsViewControllerDidFinishPicking:self];
-        return;
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -124,7 +122,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
         cell.middleImageView.hidden = NO;
         
         UIImage *placeholderImage = [UIImage buk_albumPlaceholderImageWithSize:CGSizeMake(68.0, 68.0)];
-        
         cell.frontImageView.image = placeholderImage;
         cell.middleImageView.image = placeholderImage;
         cell.backImageView.image = placeholderImage;
@@ -172,7 +169,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
         NSMutableDictionary *mappedAssetsGroups = [NSMutableDictionary dictionaryWithCapacity:assetsGroups.count];
         
         for (ALAssetsGroup *assetsGroup in assetsGroups) {
-            id groupType = [assetsGroup valueForProperty:ALAssetsGroupPropertyType];
+            NSNumber *groupType = [assetsGroup valueForProperty:ALAssetsGroupPropertyType];
             
             NSMutableArray *array = mappedAssetsGroups[groupType];
             if (!array) {
@@ -182,10 +179,23 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
             [array addObject:assetsGroup];
         }
         
-        // Pick the groups to be shown
+        // Sort groups
+        // Saved photos, photo stream, album
         NSMutableArray *sortedAssetsGroups = [NSMutableArray array];
-        [mappedAssetsGroups enumerateKeysAndObjectsUsingBlock:^(id key, id array, BOOL *stop) {
+        NSArray *groupTypes = @[@(ALAssetsGroupSavedPhotos), @(ALAssetsGroupPhotoStream), @(ALAssetsGroupAlbum)];
+        for (NSNumber *groupType in groupTypes) {
+            NSArray *array = [mappedAssetsGroups objectForKey:groupType];
             if (array) {
+                [sortedAssetsGroups addObjectsFromArray:array];
+            }
+        }
+        
+        [mappedAssetsGroups enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, id array, BOOL *stop) {
+            if (!array) {
+                return;
+            }
+            
+            if (![groupTypes containsObject:key]) {
                 [sortedAssetsGroups addObjectsFromArray:array];
             }
         }];

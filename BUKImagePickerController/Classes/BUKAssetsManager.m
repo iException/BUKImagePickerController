@@ -81,7 +81,7 @@
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary {
     if ((self = [super init])) {
         _assetsLibrary = assetsLibrary;
-        _groupTypes = ALAssetsGroupSavedPhotos | ALAssetsGroupAlbum | ALAssetsGroupPhotoStream;
+        _groupTypes = ALAssetsGroupSavedPhotos | ALAssetsGroupPhotoStream | ALAssetsGroupAlbum;
         _mediaType = BUKImagePickerControllerMediaTypeAny;
     }
     return self;
