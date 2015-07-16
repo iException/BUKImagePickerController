@@ -12,15 +12,15 @@
 #import "BUKImagePickerController.h"
 #import "BUKAssetCollectionViewCell.h"
 #import "BUKVideoIndicatorView.h"
+#import "BUKAssetsManager.h"
 #import "UIImage+BUKImagePickerController.h"
 
 static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 @interface BUKAssetsViewController ()
-
 @property (nonatomic, readwrite) NSArray *assets;
-
 @end
+
 
 @implementation BUKAssetsViewController
 
@@ -80,8 +80,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 #pragma mark - Actions
 
 - (void)finishPicking:(id)sender {
-    NSLog(@"Did Finish Picking");
-    
     if ([self.delegate respondsToSelector:@selector(assetsViewController:didFinishPickingAssets:)]) {
         [self.delegate assetsViewController:self didFinishPickingAssets:nil];
         return;
@@ -182,15 +180,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 - (void)updateAssets {
-    NSMutableArray *mutableAssets = [NSMutableArray array];
-    NSEnumerationOptions options = self.reversesAssets ? NSEnumerationReverse : kNilOptions;
-    [self.assetsGroup enumerateAssetsWithOptions:options usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-        if (result) {
-            [mutableAssets addObject:result];
-        }
-    }];
-    
-    self.assets = mutableAssets;
+    self.assets = [BUKAssetsManager assetsInAssetsGroup:self.assetsGroup reverse:self.reversesAssets];
 }
 
 
@@ -198,11 +188,10 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 - (void)assetsLibraryChanged:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSSet *updatedAssetsGroups = notification.userInfo[ALAssetLibraryUpdatedAssetGroupsKey];
         NSURL *assetsGroupURL = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
-        
-        for (NSURL *updatedAssetsGroupURL in updatedAssetsGroups) {
-            if ([updatedAssetsGroupURL isEqual:assetsGroupURL]) {
+        NSSet *updatedAssetsGroupsURLs = notification.userInfo[ALAssetLibraryUpdatedAssetGroupsKey];
+        for (NSURL *groupURL in updatedAssetsGroupsURLs) {
+            if ([groupURL isEqual:assetsGroupURL]) {
                 [self updateAssets];
                 [self.collectionView reloadData];
             }

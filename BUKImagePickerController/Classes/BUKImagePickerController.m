@@ -17,7 +17,7 @@
 @interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate, BUKCameraViewControllerDelegate>
 
 @property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
-@property (nonatomic) BUKAssetsManager *assetManager;
+@property (nonatomic) BUKAssetsManager *assetsManager;
 @property (nonatomic) BUKAlbumsViewController *albumsViewController;
 @property (nonatomic) BUKAssetsViewController *assetsViewController;
 @property (nonatomic) BUKCameraViewController *cameraViewController;
@@ -33,7 +33,7 @@
     if (!_albumsViewController) {
         _albumsViewController = [[BUKAlbumsViewController alloc] init];
         _albumsViewController.delegate = self;
-        _albumsViewController.assetsManager = self.assetManager;
+        _albumsViewController.assetsManager = self.assetsManager;
     }
     return _albumsViewController;
 }
@@ -42,13 +42,13 @@
 - (BUKAssetsViewController *)assetsViewController {
     if (!_assetsViewController) {
         _assetsViewController = [[BUKAssetsViewController alloc] init];
+        _assetsViewController.delegate = self;
         _assetsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
         _assetsViewController.minimumInteritemSpacing = 2.0;
         _assetsViewController.minimumLineSpacing = 2.0;
         _assetsViewController.numberOfColumnsInPortrait = self.numberOfColumnsInPortrait;
         _assetsViewController.numberOfColumnsInLandscape = self.numberOfColumnsInLandscape;
         _assetsViewController.reversesAssets = YES;
-        _assetsViewController.delegate = self;
     }
     return _assetsViewController;
 }
@@ -63,13 +63,13 @@
 }
 
 
-- (BUKAssetsManager *)assetManager {
-    if (!_assetManager) {
-        _assetManager = [[BUKAssetsManager alloc] initWithAssetsLibrary:[[ALAssetsLibrary alloc] init]
+- (BUKAssetsManager *)assetsManager {
+    if (!_assetsManager) {
+        _assetsManager = [[BUKAssetsManager alloc] initWithAssetsLibrary:[[ALAssetsLibrary alloc] init]
                                                               mediaTyle:self.mediaType
                                                              groupTypes:(ALAssetsGroupSavedPhotos | ALAssetsGroupPhotoStream | ALAssetsGroupAlbum)];
     }
-    return _assetManager;
+    return _assetsManager;
 }
 
 
@@ -102,6 +102,12 @@
             [navigationController setViewControllers:@[self.albumsViewController, self.assetsViewController]];
             self.childNavigationController = navigationController;
             viewController = navigationController;
+            __weak typeof(self)weakSelf = self;
+            [self.assetsManager fetchAssetsGroupsWithCompletion:^(NSArray *assetsGroups) {
+                if (assetsGroups.count > 0) {
+                    weakSelf.assetsViewController.assetsGroup = [assetsGroups firstObject];
+                }
+            }];
             break;
         }
         case BUKImagePickerControllerSourceTypeLibrary: {

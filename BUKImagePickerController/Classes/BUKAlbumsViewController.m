@@ -39,13 +39,15 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
     self.title = NSLocalizedString(@"Photos", nil);
     
-    [self.tableView registerClass:[BUKAlbumTableViewCell class] forCellReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
     self.tableView.rowHeight = 90.0;
+    [self.tableView registerClass:[BUKAlbumTableViewCell class] forCellReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
     
+    // Load assets groups
+    __weak typeof(self)weakSelf = self;
     [self updateAssetsGroupsWithCompletion:^{
-        [self.tableView reloadData];
+        [weakSelf.tableView reloadData];
     }];
 }
 
@@ -63,8 +65,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 
 - (void)done:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(albumsViewController:didFinishPickingAssets:)]) {
-        [self.delegate albumsViewController:self didFinishPickingAssets:nil];
+    if ([self.delegate respondsToSelector:@selector(albumsViewControllerDidFinishPicking:)]) {
+        [self.delegate albumsViewControllerDidFinishPicking:self];
         return;
     }
     
@@ -154,8 +156,9 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 - (void)assetsLibraryChanged:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
+        __weak typeof(self)weakSelf = self;
         [self updateAssetsGroupsWithCompletion:^{
-            [self.tableView reloadData];
+            [weakSelf.tableView reloadData];
         }];
     });
 }

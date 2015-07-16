@@ -17,15 +17,16 @@
 @property (nonatomic) ALAssetsGroupType groupTypes;
 
 + (instancetype)managerWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary;
++ (NSArray *)assetsInAssetsGroup:(ALAssetsGroup *)assetsGroup reverse:(BOOL)reverse;
++ (void)fetchAssetsGroupsFromAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
+                            withGroupTypes:(ALAssetsGroupType)groupTypes
+                                 mediaType:(BUKImagePickerControllerMediaType)mediaType
+                                completion:(void (^)(NSArray *assetsGroups))completion;
 
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary;
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
                             mediaTyle:(BUKImagePickerControllerMediaType)mediaType
                            groupTypes:(ALAssetsGroupType)groupTypes;
-
-- (NSArray *)assetsInAssetsGroup:(ALAssetsGroup *)assetsGroup;
 - (void)fetchAssetsGroupsWithCompletion:(void (^)(NSArray *assetsGroups))completion;
-- (void)fetchAssetsGroupsWithGroupTypes:(ALAssetsGroupType)groupTypes
-                              mediaType:(BUKImagePickerControllerMediaType)mediaType
-                             completion:(void (^)(NSArray *assetsGroups))completion;
+
 @end

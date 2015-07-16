@@ -19,6 +19,58 @@
 }
 
 
++ (NSArray *)assetsInAssetsGroup:(ALAssetsGroup *)assetsGroup reverse:(BOOL)reverse {
+    NSMutableArray *mutableAssets = [NSMutableArray array];
+    NSEnumerationOptions options = reverse ? NSEnumerationReverse : kNilOptions;
+    [assetsGroup enumerateAssetsWithOptions:options usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+        if (result) {
+            [mutableAssets addObject:result];
+        }
+    }];
+    return mutableAssets;
+}
+
+
++ (ALAssetsFilter *)assetsFilterForMediaType:(BUKImagePickerControllerMediaType)mediaType {
+    switch (mediaType) {
+        case BUKImagePickerControllerMediaTypeAny: {
+            return [ALAssetsFilter allAssets];
+        }
+        case BUKImagePickerControllerMediaTypeImage: {
+            return [ALAssetsFilter allPhotos];
+        }
+        case BUKImagePickerControllerMediaTypeVideo: {
+            return [ALAssetsFilter allVideos];
+        }
+    }
+}
+
+
++ (void)fetchAssetsGroupsFromAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
+                            withGroupTypes:(ALAssetsGroupType)groupTypes
+                                 mediaType:(BUKImagePickerControllerMediaType)mediaType
+                                completion:(void (^)(NSArray *assetsGroups))completion
+{
+    NSMutableArray *assetsGroups = [NSMutableArray array];
+    ALAssetsFilter *assetsFilter = [self assetsFilterForMediaType:mediaType];
+    
+    [assetsLibrary enumerateGroupsWithTypes:groupTypes usingBlock:^(ALAssetsGroup *assetsGroup, BOOL *stop) {
+        if (assetsGroup) {
+            [assetsGroup setAssetsFilter:assetsFilter];
+            [assetsGroups addObject:assetsGroup];
+        }
+        // When the enumeration is done, enumerationBlock is invoked with group set to nil.
+        else {
+            if (completion) {
+                completion(assetsGroups);
+            }
+        }
+    } failureBlock:^(NSError *error) {
+        NSLog(@"[BUKImagePickerController] An error occurs while fetching assets gourps: %@", [error localizedDescription]);
+    }];
+}
+
+
 #pragma mark - NSObject
 
 - (instancetype)init {
@@ -48,61 +100,7 @@
 #pragma mark - Public
 
 - (void)fetchAssetsGroupsWithCompletion:(void (^)(NSArray *))completion {
-    return [self fetchAssetsGroupsWithGroupTypes:self.groupTypes mediaType:self.mediaType completion:completion];
-}
-
-
-- (void)fetchAssetsGroupsWithGroupTypes:(ALAssetsGroupType)groupTypes mediaType:(BUKImagePickerControllerMediaType)mediaType completion:(void (^)(NSArray *assetsGroups))completion {
-    NSMutableArray *assetsGroups = [NSMutableArray array];
-    ALAssetsFilter *assetsFilter = [self assetsFilterForMediaType:mediaType];
-    
-    [self.assetsLibrary enumerateGroupsWithTypes:groupTypes usingBlock:^(ALAssetsGroup *assetsGroup, BOOL *stop) {
-        if (assetsGroup) {
-            [assetsGroup setAssetsFilter:assetsFilter];
-            [assetsGroups addObject:assetsGroup];
-        }
-        // When the enumeration is done, enumerationBlock is invoked with group set to nil.
-        else {
-            if (completion) {
-                completion(assetsGroups);
-            }
-        }
-    } failureBlock:^(NSError *error) {
-        NSLog(@"[BUKImagePickerController] An error occurs while fetching assets gourps: %@", [error localizedDescription]);
-    }];
-}
-
-
-- (NSArray *)assetsInAssetsGroup:(ALAssetsGroup *)assetsGroup {
-    NSMutableArray *mutableAssets = [NSMutableArray array];
-    [assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-        if (result) {
-            [mutableAssets addObject:result];
-        }
-    }];
-    return mutableAssets;
-}
-
-
-#pragma mark - Private
-
-- (ALAssetsFilter *)assetsFilter {
-    return [self assetsFilterForMediaType:self.mediaType];
-}
-
-
-- (ALAssetsFilter *)assetsFilterForMediaType:(BUKImagePickerControllerMediaType)mediaType {
-    switch (mediaType) {
-        case BUKImagePickerControllerMediaTypeAny: {
-            return [ALAssetsFilter allAssets];
-        }
-        case BUKImagePickerControllerMediaTypeImage: {
-            return [ALAssetsFilter allPhotos];
-        }
-        case BUKImagePickerControllerMediaTypeVideo: {
-            return [ALAssetsFilter allVideos];
-        }
-    }
+    return [[self class] fetchAssetsGroupsFromAssetsLibrary:self.assetsLibrary withGroupTypes:self.groupTypes mediaType:self.mediaType completion:completion];
 }
 
 @end

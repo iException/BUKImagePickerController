@@ -25,9 +25,9 @@
 @protocol BUKAlbumsViewControllerDelegate <NSObject>
 
 @optional
+- (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController;
+- (void)albumsViewControllerDidFinishPicking:(BUKAlbumsViewController *)viewController;
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
 - (BOOL)albumsViewController:(BUKAlbumsViewController *)viewController shouldSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
-- (void)albumsViewController:(BUKAlbumsViewController *)viewController didFinishPickingAssets:(NSArray *)assets;
-- (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController;
 
 @end
