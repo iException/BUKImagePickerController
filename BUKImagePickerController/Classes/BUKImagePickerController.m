@@ -47,6 +47,7 @@
         _assetsViewController.minimumLineSpacing = 2.0;
         _assetsViewController.numberOfColumnsInPortrait = self.numberOfColumnsInPortrait;
         _assetsViewController.numberOfColumnsInLandscape = self.numberOfColumnsInLandscape;
+        _assetsViewController.reversesAssets = YES;
         _assetsViewController.delegate = self;
     }
     return _assetsViewController;

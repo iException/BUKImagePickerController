@@ -38,10 +38,11 @@
 }
 
 
-- (UIView *)videoIndicatorView {
+- (BUKVideoIndicatorView *)videoIndicatorView {
     if (!_videoIndicatorView) {
         _videoIndicatorView = [[BUKVideoIndicatorView alloc] init];
         _videoIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
+        _videoIndicatorView.hidden = YES;
     }
     return _videoIndicatorView;
 }

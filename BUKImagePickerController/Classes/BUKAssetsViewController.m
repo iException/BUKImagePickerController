@@ -11,14 +11,14 @@
 #import "BUKAssetsViewController.h"
 #import "BUKImagePickerController.h"
 #import "BUKAssetCollectionViewCell.h"
+#import "BUKVideoIndicatorView.h"
 #import "UIImage+BUKImagePickerController.h"
 
-static NSString *const kCellReuseIdentifier = @"AssetCell";
+static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 @interface BUKAssetsViewController ()
 
 @property (nonatomic, readwrite) NSArray *assets;
-@property (nonatomic, readwrite) NSMutableOrderedSet *selectedAssetURLs;
 
 @end
 
@@ -33,7 +33,9 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
     
     _assetsGroup = assetsGroup;
     
-    // TODO: Update assets and reload data
+    self.title = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
+    [self updateAssets];
+    [self.collectionView reloadData];
 }
 
 
@@ -50,7 +52,6 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
     if ((self = [super initWithCollectionViewLayout:layout])) {
         _minimumInteritemSpacing = 2.0;
         _minimumLineSpacing = 2.0;
-        _selectedAssetURLs = [NSMutableOrderedSet orderedSet];
         
         layout.minimumInteritemSpacing = _minimumInteritemSpacing;
         layout.minimumLineSpacing = _minimumLineSpacing;
@@ -65,31 +66,18 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     self.collectionView.allowsMultipleSelection = YES;
-    [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kCellReuseIdentifier];
+    [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
     
-    // Register observer
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
 }
 
 
 #pragma mark - Actions
-
-- (void)cancel:(id)sender {
-    NSLog(@"Cancel");
-    
-    if ([self.delegate respondsToSelector:@selector(assetsViewControllerDidCancel:)]) {
-        [self.delegate assetsViewControllerDidCancel:self];
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-
 
 - (void)finishPicking:(id)sender {
     NSLog(@"Did Finish Picking");
@@ -111,12 +99,12 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 10;
+    return self.assets.count;
 }
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    BUKAssetCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseIdentifier forIndexPath:indexPath];
+    BUKAssetCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier forIndexPath:indexPath];
     [self configureCell:cell forItemAtIndexPath:indexPath];
     
     return cell;
@@ -172,16 +160,54 @@ static NSString *const kCellReuseIdentifier = @"AssetCell";
 
 
 - (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-//    ALAsset *asset = [self assetItemAtIndexPath:indexPath];
-    cell.imageView.image = [UIImage buk_albumPlaceholderImageWithSize:CGSizeMake(60.0, 60.0)];
-    // TODO:
+    ALAsset *asset = [self assetItemAtIndexPath:indexPath];
+    
+    cell.showsOverlayViewWhenSelected = self.allowsMultipleSelection;
+    cell.imageView.image = [UIImage imageWithCGImage:[asset thumbnail]];
+    
+    // Video indicator
+    NSString *assetType = [asset valueForProperty:ALAssetPropertyType];
+    
+    if ([assetType isEqualToString:ALAssetTypeVideo]) {
+        cell.videoIndicatorView.hidden = NO;
+        
+        NSTimeInterval duration = [[asset valueForProperty:ALAssetPropertyDuration] doubleValue];
+        NSInteger minutes = (NSInteger)(duration / 60.0);
+        NSInteger seconds = (NSInteger)ceil(duration - 60.0 * (double)minutes);
+        cell.videoIndicatorView.timeLabel.text = [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
+    } else {
+        cell.videoIndicatorView.hidden = YES;
+    }
+}
+
+
+- (void)updateAssets {
+    NSMutableArray *mutableAssets = [NSMutableArray array];
+    NSEnumerationOptions options = self.reversesAssets ? NSEnumerationReverse : kNilOptions;
+    [self.assetsGroup enumerateAssetsWithOptions:options usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+        if (result) {
+            [mutableAssets addObject:result];
+        }
+    }];
+    
+    self.assets = mutableAssets;
 }
 
 
 #pragma mark - Handle Assets Library Changes
 
 - (void)assetsLibraryChanged:(NSNotification *)notification {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSSet *updatedAssetsGroups = notification.userInfo[ALAssetLibraryUpdatedAssetGroupsKey];
+        NSURL *assetsGroupURL = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
+        
+        for (NSURL *updatedAssetsGroupURL in updatedAssetsGroups) {
+            if ([updatedAssetsGroupURL isEqual:assetsGroupURL]) {
+                [self updateAssets];
+                [self.collectionView reloadData];
+            }
+        }
+    });
 }
 
 @end

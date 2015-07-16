@@ -8,12 +8,14 @@
 
 @import UIKit;
 
+@class BUKVideoIndicatorView;
+
 @interface BUKAssetCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, readonly) UIImageView *imageView;
 @property (nonatomic, readonly) UIView *checkmarkView;
-@property (nonatomic, readonly) UIView *videoIndicatorView;
 @property (nonatomic, readonly) UIView *overlayView;
+@property (nonatomic, readonly) BUKVideoIndicatorView *videoIndicatorView;
 @property (nonatomic) BOOL showsOverlayViewWhenSelected;
 
 @end
