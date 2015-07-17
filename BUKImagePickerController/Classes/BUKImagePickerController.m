@@ -49,11 +49,12 @@
         _assetsViewController = [[BUKAssetsViewController alloc] init];
         _assetsViewController.delegate = self;
         _assetsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
+        _assetsViewController.reversesAssets = self.reversesAssets;
+        _assetsViewController.showsCameraCell = self.showsCameraCell;
         _assetsViewController.minimumInteritemSpacing = 2.0;
         _assetsViewController.minimumLineSpacing = 2.0;
         _assetsViewController.numberOfColumnsInPortrait = self.numberOfColumnsInPortrait;
         _assetsViewController.numberOfColumnsInLandscape = self.numberOfColumnsInLandscape;
-        _assetsViewController.reversesAssets = YES;
     }
     return _assetsViewController;
 }
@@ -63,6 +64,8 @@
     if (!_cameraViewController) {
         _cameraViewController = [[BUKCameraViewController alloc] init];
         _cameraViewController.delegate = self;
+        _cameraViewController.allowsMultipleSelection = self.allowsMultipleSelection;
+        _cameraViewController.savesToPhotoLibrary = self.savesToPhotoLibrary;
     }
     return _cameraViewController;
 }
@@ -84,8 +87,10 @@
     if ((self = [super init])) {
         _mutableSelectedAssets = [NSMutableArray array];
         _mediaType = BUKImagePickerControllerMediaTypeImage;
-        _sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
+        _sourceType = BUKImagePickerControllerSourceTypeLibrary;
         _allowsMultipleSelection = YES;
+        _showsCameraCell = NO;
+        _savesToPhotoLibrary = NO;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
         _minimumNumberOfSelection = 0;
@@ -102,11 +107,10 @@
     
     UIViewController *viewController;
     switch (self.sourceType) {
-        case BUKImagePickerControllerSourceTypeLibraryAndCamera: {
-            UINavigationController *navigationController = [[UINavigationController alloc] init];
-            [navigationController setViewControllers:@[self.albumsViewController, self.assetsViewController]];
-            self.childNavigationController = navigationController;
-            viewController = navigationController;
+        case BUKImagePickerControllerSourceTypeSavedPhotosAlbum: {
+            self.childNavigationController = [[UINavigationController alloc] init];
+            [self.childNavigationController setViewControllers:@[self.albumsViewController, self.assetsViewController]];
+            viewController = self.childNavigationController;
             __weak typeof(self)weakSelf = self;
             [self.assetsManager fetchAssetsGroupsWithCompletion:^(NSArray *assetsGroups) {
                 if (assetsGroups.count > 0) {
@@ -116,9 +120,8 @@
             break;
         }
         case BUKImagePickerControllerSourceTypeLibrary: {
-            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self.albumsViewController];
-            self.childNavigationController = navigationController;
-            viewController = navigationController;
+            self.childNavigationController = [[UINavigationController alloc] initWithRootViewController:self.albumsViewController];
+            viewController = self.childNavigationController;
             break;
         }
         case BUKImagePickerControllerSourceTypeCamera: {
@@ -166,7 +169,10 @@
 
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didSelectAsset:(ALAsset *)asset {
     [self.mutableSelectedAssets addObject:asset];
-    NSLog(@"didSelectAsset, selectedAssets: %@", self.mutableSelectedAssets);
+    
+    if (!self.allowsMultipleSelection) {
+        [self finishPickingAssets];
+    }
 }
 
 
@@ -181,13 +187,18 @@
 }
 
 
+- (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController {
+    [self.childNavigationController pushViewController:self.cameraViewController animated:YES];
+}
+
+
 #pragma mark - BUKCameraViewControllerDelegate
 
 - (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController {
     if (self.sourceType == BUKImagePickerControllerSourceTypeCamera) {
         [self cancelPicking];
-    } else if (self.sourceType == BUKImagePickerControllerSourceTypeLibraryAndCamera) {
-        [self.childNavigationController popViewControllerAnimated:YES];
+    } else {
+        [self childNavigationController];
     }
 }
 

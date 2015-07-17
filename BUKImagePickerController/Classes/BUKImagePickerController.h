@@ -17,7 +17,7 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerMediaType) {
 typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
     BUKImagePickerControllerSourceTypeLibrary,
     BUKImagePickerControllerSourceTypeCamera,
-    BUKImagePickerControllerSourceTypeLibraryAndCamera,
+    BUKImagePickerControllerSourceTypeSavedPhotosAlbum,
 };
 
 @protocol BUKImagePickerControllerDelegate;
@@ -30,6 +30,9 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 @property (nonatomic, weak) id<BUKImagePickerControllerDelegate> delegate;
 
 @property (nonatomic) BOOL allowsMultipleSelection;
+@property (nonatomic) BOOL showsCameraCell;
+@property (nonatomic) BOOL reversesAssets;
+@property (nonatomic) BOOL savesToPhotoLibrary;
 @property (nonatomic) NSUInteger minimumNumberOfSelection;
 @property (nonatomic) NSUInteger maximumNumberOfSelection;
 

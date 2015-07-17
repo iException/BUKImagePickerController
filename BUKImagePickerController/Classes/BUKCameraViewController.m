@@ -351,6 +351,10 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         return;
     }
     
+    if (!self.allowsMultipleSelection) {
+        [self done:nil];
+    }
+    
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(newCount - 1) inSection:0];
     [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
     [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];

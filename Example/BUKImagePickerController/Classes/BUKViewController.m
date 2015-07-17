@@ -8,11 +8,57 @@
 
 #import "BUKViewController.h"
 #import <BUKImagePickerController/BUKImagePickerController.h>
-#import <BUKImagePickerController/BUKCameraViewController.h>
 
 static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
+@interface BUKViewController () <BUKImagePickerControllerDelegate>
+
+@property (nonatomic) NSArray *optionInfos;
+
+@end
+
+
 @implementation BUKViewController
+
+#pragma mark - Accessors
+
+@synthesize optionInfos = _optionInfos;
+
+- (NSArray *)optionInfos {
+    if (!_optionInfos) {
+        _optionInfos = @[
+            @{@"text": @"Camera - single selection",
+              @"selectorName": NSStringFromSelector(@selector(showSingleSelectionCamera:)),
+            },
+            @{@"text": @"Camera - multiple selection",
+              @"selectorName": NSStringFromSelector(@selector(showMultipleSelectionCamera:)),
+            },
+            @{@"text": @"Library - single selection",
+              @"selectorName": NSStringFromSelector(@selector(showSingleSelectionLibrary:)),
+            },
+            @{@"text": @"Library - multiple selection",
+              @"selectorName": NSStringFromSelector(@selector(showMultipleSelectionLibrary:)),
+            },
+            @{@"text": @"Library - 6 photos at most ",
+              @"selectorName": NSStringFromSelector(@selector(showMaximumSelectionLibrary:)),
+            },
+            @{@"text": @"Saved Photos Album - single selection",
+              @"selectorName": NSStringFromSelector(@selector(showSingleSelectionAlbum:)),
+            },
+            @{@"text": @"Saved Photos Album - multiple Selection",
+              @"selectorName": NSStringFromSelector(@selector(showMultipleSelectionAlbum:)),
+            },
+            @{@"text": @"Saved Photos Album - 3 photos at least",
+              @"selectorName": NSStringFromSelector(@selector(showMinimumSelectionAlbum:)),
+            },
+            @{@"text": @"Saved Photos Album - with camera cell",
+              @"selectorName": NSStringFromSelector(@selector(showAlbumWithCameraCell:)),
+            },
+        ];
+    }
+    return _optionInfos;
+}
+
 
 #pragma mark - UIViewController
 
@@ -22,7 +68,84 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kBUKViewControllerCellIdentifier];
     self.tableView.rowHeight = 40.0;
     
-    self.title = @"BUKImagePicker";
+    self.title = @"BUKImagePickerController";
+}
+
+
+#pragma mark - Actions
+
+- (void)showSingleSelectionCamera:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeCamera;
+    imagePickerController.allowsMultipleSelection = NO;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showMultipleSelectionCamera:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeCamera;
+    imagePickerController.allowsMultipleSelection = YES;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showSingleSelectionLibrary:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
+    imagePickerController.allowsMultipleSelection = NO;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showMultipleSelectionLibrary:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
+    imagePickerController.allowsMultipleSelection = YES;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showMaximumSelectionLibrary:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 6;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showSingleSelectionAlbum:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+    imagePickerController.allowsMultipleSelection = NO;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showMultipleSelectionAlbum:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+    imagePickerController.allowsMultipleSelection = YES;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showMinimumSelectionAlbum:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.minimumNumberOfSelection = 3;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+
+- (void)showAlbumWithCameraCell:(id)sender {
+    BUKImagePickerController *imagePickerController = [self imagePickerController];
+    imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.showsCameraCell = YES;
+    [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
 }
 
 
@@ -34,7 +157,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return self.optionInfos.count;
 }
 
 
@@ -49,37 +172,26 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
-    imagePickerController.mediaType = BUKImagePickerControllerMediaTypeImage;
-    imagePickerController.delegate = self;
-    if (indexPath.row == 0) {
-        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
-    } else if (indexPath.row == 1) {
-        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
-    } else if (indexPath.row == 2) {
-        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeCamera;
-    } else {
-        imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibraryAndCamera;
+    NSString *selectorName = self.optionInfos[indexPath.row][@"selectorName"];
+    SEL selector = NSSelectorFromString(selectorName);
+    if ([self respondsToSelector:selector]) {
+         [self performSelector:selector withObject:nil];
     }
-    
-    [self presentViewController:imagePickerController animated:YES completion:NULL];
 }
 
 
 #pragma mark - Private
 
+- (BUKImagePickerController *)imagePickerController {
+    BUKImagePickerController *imagePickerController = [[BUKImagePickerController alloc] init];
+    imagePickerController.mediaType = BUKImagePickerControllerMediaTypeImage;
+    imagePickerController.delegate = self;
+    return imagePickerController;
+}
+
+
 - (void)configureCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Library and camera
-    if (indexPath.row == 0) {
-        cell.textLabel.text = @"Library and Camera";
-    } else if (indexPath.row == 1) {
-        cell.textLabel.text = @"Library";
-    } else if (indexPath.row == 2) {
-        cell.textLabel.text = @"Camera";
-    } else {
-        // Should never reach here
-        cell.textLabel.text = nil;
-    }
+    cell.textLabel.text = self.optionInfos[indexPath.row][@"text"];
 }
 
 
@@ -91,12 +203,12 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset {
-    NSLog(@"%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    
 }
 
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didDeselectAsset:(ALAsset *)asset {
-    NSLog(@"%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    
 }
 
 
@@ -116,7 +228,8 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
-    
+    NSLog(@"didFinishPickingAssets: %@", assets);
+    [imagePickerController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
