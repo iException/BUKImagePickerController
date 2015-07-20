@@ -19,6 +19,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 @interface BUKAssetsViewController ()
 @property (nonatomic, readwrite) NSArray *assets;
+@property (nonatomic) UIBarButtonItem *doneBarButtonItem;
 @end
 
 
@@ -66,18 +67,39 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
+    if (self.allowsMultipleSelection) {
+        self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
+        self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
+    } else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+    }
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
-    self.collectionView.allowsMultipleSelection = YES;
+    self.collectionView.allowsMultipleSelection = self.allowsMultipleSelection;
     [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
 }
 
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self updateDoneButton];
+}
+
+
 #pragma mark - Actions
+
+- (void)cancel:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(assetsViewControllerDidCancel:)]) {
+        [self.delegate assetsViewControllerDidCancel:self];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
 
 - (void)finishPicking:(id)sender {
     if ([self.delegate respondsToSelector:@selector(assetsViewControllerDidFinishPicking:)]) {
@@ -132,6 +154,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
         ALAsset *asset = [self assetItemAtIndexPath:indexPath];
         [self.delegate assetsViewController:self didSelectAsset:asset];
     }
+    
+    [self updateDoneButton];
 }
 
 
@@ -140,6 +164,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
         ALAsset *asset = [self assetItemAtIndexPath:indexPath];
         [self.delegate assetsViewController:self didDeselectAsset:asset];
     }
+    
+    [self updateDoneButton];
 }
 
 
@@ -160,6 +186,15 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 #pragma mark - Private
+
+- (void)updateDoneButton {
+    if ([self.delegate respondsToSelector:@selector(assetsViewControllerShouldEnableDoneButton:)]) {
+        self.doneBarButtonItem.enabled = [self.delegate assetsViewControllerShouldEnableDoneButton:self];
+    } else {
+        self.doneBarButtonItem.enabled = YES;
+    }
+}
+
 
 - (NSUInteger)assetIndexForViewIndexPath:(NSIndexPath *)indexPath {
     return self.showsCameraCell ? indexPath.item - 1 : indexPath.item;

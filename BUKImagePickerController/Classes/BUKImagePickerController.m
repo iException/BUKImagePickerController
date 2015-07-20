@@ -29,6 +29,11 @@
 
 #pragma mark - Accessors
 
+- (void)setMinimumNumberOfSelection:(NSUInteger)minimumNumberOfSelection {
+    _minimumNumberOfSelection = MAX(minimumNumberOfSelection, 1);
+}
+
+
 - (NSArray *)selectedAssets {
     return [self.mutableSelectedAssets copy];
 }
@@ -39,6 +44,7 @@
         _albumsViewController = [[BUKAlbumsViewController alloc] init];
         _albumsViewController.delegate = self;
         _albumsViewController.assetsManager = self.assetsManager;
+        _albumsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
     }
     return _albumsViewController;
 }
@@ -52,7 +58,7 @@
         _assetsViewController.reversesAssets = self.reversesAssets;
         _assetsViewController.showsCameraCell = self.showsCameraCell;
         _assetsViewController.minimumInteritemSpacing = 2.0;
-        _assetsViewController.minimumLineSpacing = 2.0;
+        _assetsViewController.minimumLineSpacing = 4.0;
         _assetsViewController.numberOfColumnsInPortrait = self.numberOfColumnsInPortrait;
         _assetsViewController.numberOfColumnsInLandscape = self.numberOfColumnsInLandscape;
     }
@@ -93,7 +99,7 @@
         _savesToPhotoLibrary = NO;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
-        _minimumNumberOfSelection = 0;
+        _minimumNumberOfSelection = 1;
         _maximumNumberOfSelection = 0;
     }
     return self;
@@ -159,11 +165,19 @@
 }
 
 
+- (BOOL)albumsViewControllerShouldEnableDoneButton:(BUKAlbumsViewController *)viewController {
+    return [self isNumberOfSelectionValid];
+}
+
+
 #pragma mark - BUKAssetsViewControllerDelegate
 
 - (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController shouldSelectAsset:(ALAsset *)asset {
-    return YES;
-    // TODO: Check number of selected assets
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:shouldSelectAsset:)]) {
+        return [self.delegate buk_imagePickerController:self shouldSelectAsset:asset];
+    }
+    
+    return !(self.minimumNumberOfSelection <= self.maximumNumberOfSelection && self.selectedAssets.count >= self.maximumNumberOfSelection);
 }
 
 
@@ -178,7 +192,6 @@
 
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didDeselectAsset:(ALAsset *)asset {
     [self.mutableSelectedAssets removeObject:asset];
-    NSLog(@"didDeselectAsset, selectedAssets: %@", self.mutableSelectedAssets);
 }
 
 
@@ -189,6 +202,11 @@
 
 - (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController {
     [self.childNavigationController pushViewController:self.cameraViewController animated:YES];
+}
+
+
+- (BOOL)assetsViewControllerShouldEnableDoneButton:(BUKAssetsViewController *)assetsViewController {
+    return [self isNumberOfSelectionValid];
 }
 
 
@@ -214,6 +232,18 @@
 
 
 #pragma mark - Private
+
+- (BOOL)isNumberOfSelectionValid {
+    NSUInteger count = self.selectedAssets.count;
+    BOOL result = (count >= self.minimumNumberOfSelection);
+    
+    if (self.minimumNumberOfSelection <= self.maximumNumberOfSelection) {
+        result = result && count <= self.maximumNumberOfSelection;
+    }
+    
+    return result;
+}
+
 
 - (void)cancelPicking {
     if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerDidCancel:)]) {

@@ -197,11 +197,6 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 #pragma mark - BUKImagePickerControllerDelegate
 
-- (BOOL)buk_imagePickerController:(BUKImagePickerController *)imagePickerController shouldSelectAsset:(ALAsset *)asset {
-    return YES;
-}
-
-
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset {
     
 }
@@ -213,12 +208,12 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFulfillMinimumSelection:(NSUInteger)minimumNumberOfSelection {
-    
+    NSLog(@"didFulfillMinimumSelection");
 }
 
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didReachMaximumSelection:(NSUInteger)maximumNumberOfSelection {
-    
+    NSLog(@"didReachMaximumSelection");
 }
 
 

@@ -18,6 +18,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 @interface BUKAlbumsViewController ()
 @property (nonatomic, readwrite) NSArray *assetsGroups;
+@property (nonatomic) UIBarButtonItem *doneBarButtonItem;
 @end
 
 
@@ -35,8 +36,14 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
+    if (self.allowsMultipleSelection) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+        self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
+        self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
+    } else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+    }
+    
     self.title = NSLocalizedString(@"Photos", nil);
     
     self.tableView.rowHeight = 90.0;
@@ -49,6 +56,13 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     [self updateAssetsGroupsWithCompletion:^{
         [weakSelf.tableView reloadData];
     }];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self updateDoneButton];
 }
 
 
@@ -97,6 +111,15 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 
 #pragma mark - Private
+
+- (void)updateDoneButton {
+    if ([self.delegate respondsToSelector:@selector(albumsViewControllerShouldEnableDoneButton:)]) {
+        self.doneBarButtonItem.enabled = [self.delegate albumsViewControllerShouldEnableDoneButton:self];
+    } else {
+        self.doneBarButtonItem.enabled = YES;
+    }
+}
+
 
 - (BOOL)hasContent {
     return self.assetsGroups.count > 0;

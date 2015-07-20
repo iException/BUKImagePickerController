@@ -38,7 +38,10 @@
 
 - (void)assetsViewControllerDidFinishPicking:(BUKAssetsViewController *)assetsViewController;
 - (void)assetsViewControllerDidCancel:(BUKAssetsViewController *)assetsViewController;
+
 - (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController;
+
+- (BOOL)assetsViewControllerShouldEnableDoneButton:(BUKAssetsViewController *)assetsViewController;
 
 @end
 

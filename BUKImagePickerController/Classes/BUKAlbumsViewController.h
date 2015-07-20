@@ -16,6 +16,7 @@
 @property (nonatomic) BUKAssetsManager *assetsManager;
 @property (nonatomic, readonly) NSArray *assetsGroups;
 @property (nonatomic, weak) id<BUKAlbumsViewControllerDelegate> delegate;
+@property (nonatomic) BOOL allowsMultipleSelection;
 
 @end
 
@@ -28,5 +29,5 @@
 - (void)albumsViewControllerDidCancel:(BUKAlbumsViewController *)viewController;
 - (void)albumsViewControllerDidFinishPicking:(BUKAlbumsViewController *)viewController;
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
-
+- (BOOL)albumsViewControllerShouldEnableDoneButton:(BUKAlbumsViewController *)viewController;
 @end
