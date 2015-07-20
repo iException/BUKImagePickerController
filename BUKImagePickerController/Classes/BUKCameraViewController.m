@@ -383,6 +383,15 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 #pragma mark - Private
 
+- (void)updateDoneButton {
+    if ([self.delegate respondsToSelector:@selector(cameraViewControllerShouldEnableDoneButton:)]) {
+        self.doneButton.enabled = [self.delegate cameraViewControllerShouldEnableDoneButton:self];
+    } else {
+        self.doneButton.enabled = YES;
+    }
+}
+
+
 - (void)saveImageToCameraRoll:(FastttCapturedImage *)capturedImage {
     ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
     UIImage *fullImage = capturedImage.fullImage;

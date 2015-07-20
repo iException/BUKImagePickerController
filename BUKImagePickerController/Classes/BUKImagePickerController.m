@@ -232,6 +232,11 @@
 }
 
 
+- (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController {
+    return YES;
+}
+
+
 #pragma mark - Private
 
 - (BOOL)isNumberOfSelectionValid {
