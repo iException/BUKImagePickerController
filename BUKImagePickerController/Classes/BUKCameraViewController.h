@@ -16,6 +16,7 @@
 @property (nonatomic) CGSize thumbnailSize;
 @property (nonatomic) BOOL savesToPhotoLibrary;
 @property (nonatomic) BOOL allowsMultipleSelection;
+@property (nonatomic) BOOL needsConfirmation;
 
 @end
 

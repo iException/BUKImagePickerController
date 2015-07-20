@@ -9,11 +9,12 @@
 @import AssetsLibrary;
 #import <FastttCamera/FastttCamera.h>
 #import "BUKCameraViewController.h"
+#import "BUKCameraConfirmViewController.h"
 #import "BUKImageCollectionViewCell.h"
 
 static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
-@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BUKImageCollectionViewCellDelegate>
+@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BUKImageCollectionViewCellDelegate, BUKCameraConfirmViewControllerDelegate>
 
 @property (nonatomic) FastttCamera *fastCamera;
 @property (nonatomic) UIButton *takePictureButton;
@@ -334,35 +335,37 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 #pragma mark - FastttCameraDelegate
 
 - (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishCapturingImage:(FastttCapturedImage *)capturedImage {
-    [self flash:YES];
-    
-    if (self.savesToPhotoLibrary) {
-        [self saveImageToCameraRoll:capturedImage];
+    if (!self.needsConfirmation) {
+        [self flashAnimated:YES completion:nil];
+        if (self.savesToPhotoLibrary) {
+            [self saveImageToCameraRoll:capturedImage];
+        }
+        return;
     }
+    
+    // Confirm
+    BUKCameraConfirmViewController *confirmViewController = [[BUKCameraConfirmViewController alloc] init];
+    confirmViewController.delegate = self;
+    confirmViewController.capturedImage = capturedImage;
+    
+    __weak typeof(self)weakSelf = self;
+    [self flashAnimated:YES completion:^{
+        NSDictionary *views = @{
+            @"confirmView": confirmViewController.view,
+        };
+        [weakSelf fastttAddChildViewController:confirmViewController belowSubview:weakSelf.flashView];
+        [weakSelf.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[confirmView]|" options:kNilOptions metrics:nil views:views]];
+        [weakSelf.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[confirmView]|" options:kNilOptions metrics:nil views:views]];
+    }];
 }
 
 
 - (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishScalingCapturedImage:(FastttCapturedImage *)capturedImage {
-    if (!capturedImage || !capturedImage.fullImage || !capturedImage.scaledImage) {
+    if (self.needsConfirmation) {
         return;
     }
     
-    // Since we don't need preview image, release it to save memory.
-    capturedImage.rotatedPreviewImage = nil;
-    NSUInteger count = self.selectedImages.count;
-    [self.selectedImages addObject:capturedImage];
-    NSUInteger newCount = self.selectedImages.count;
-    if (newCount <= count) {
-        return;
-    }
-    
-    if (!self.allowsMultipleSelection) {
-        [self done:nil];
-    }
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(newCount - 1) inSection:0];
-    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
-    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+    [self addCapturedImage:capturedImage];
 }
 
 
@@ -381,7 +384,39 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+#pragma mark - BUKCameraConfirmViewControllerDelegate
+
+- (void)cameraConfirmViewControllerDidCancel:(BUKCameraConfirmViewController *)viewController {
+    [self fastttRemoveChildViewController:viewController];
+}
+
+
+- (void)cameraConfirmViewControllerDidConfirm:(BUKCameraConfirmViewController *)viewController capturedImage:(FastttCapturedImage *)capturedImage {
+    [self addCapturedImage:capturedImage];
+    [self fastttRemoveChildViewController:viewController];
+}
+
+
 #pragma mark - Private
+
+- (void)addCapturedImage:(FastttCapturedImage *)capturedImage {
+    if (!capturedImage || !capturedImage.fullImage || !capturedImage.scaledImage) {
+        return;
+    }
+    
+    // Since we don't need preview image, release it to save memory.
+    capturedImage.rotatedPreviewImage = nil;
+    [self.selectedImages addObject:capturedImage];
+    
+    if (!self.allowsMultipleSelection) {
+        [self done:nil];
+    }
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(self.selectedImages.count - 1) inSection:0];
+    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+}
+
 
 - (void)updateDoneButton {
     if ([self.delegate respondsToSelector:@selector(cameraViewControllerShouldEnableDoneButton:)]) {
@@ -406,7 +441,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
-- (void)flash:(BOOL)animated {
+- (void)flashAnimated:(BOOL)animated completion:(void (^)(void))completion {
     if (self.flashView.superview) {
         return;
     }
@@ -427,15 +462,18 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         weakSelf.flashView.alpha = 1.0;
     };
     
-    void (^completion)(BOOL finished) = ^(BOOL finished) {
+    void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
+        if (completion) {
+            completion();
+        }
         [weakSelf hideFlashView:animated];
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.15f delay:0 options:UIViewAnimationOptionCurveEaseIn animations:change completion:completion];
+        [UIView animateWithDuration:0.15f delay:0 options:UIViewAnimationOptionCurveEaseIn animations:change completion:animationCompletionBlock];
     } else {
         change();
-        completion(YES);
+        animationCompletionBlock(YES);
     }
 }
 

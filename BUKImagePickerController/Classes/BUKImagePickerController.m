@@ -72,6 +72,7 @@
         _cameraViewController.delegate = self;
         _cameraViewController.allowsMultipleSelection = self.allowsMultipleSelection;
         _cameraViewController.savesToPhotoLibrary = self.savesToPhotoLibrary;
+        _cameraViewController.needsConfirmation = self.needsConfirmation;
     }
     return _cameraViewController;
 }
@@ -97,6 +98,7 @@
         _allowsMultipleSelection = YES;
         _showsCameraCell = NO;
         _savesToPhotoLibrary = NO;
+        _needsConfirmation = NO;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
         _minimumNumberOfSelection = 1;

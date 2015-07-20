@@ -33,6 +33,7 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 @property (nonatomic) BOOL showsCameraCell;
 @property (nonatomic) BOOL reversesAssets;
 @property (nonatomic) BOOL savesToPhotoLibrary;
+@property (nonatomic) BOOL needsConfirmation;
 @property (nonatomic) NSUInteger minimumNumberOfSelection;
 @property (nonatomic) NSUInteger maximumNumberOfSelection;
 

@@ -78,6 +78,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
     BUKImagePickerController *imagePickerController = [self imagePickerController];
     imagePickerController.sourceType = BUKImagePickerControllerSourceTypeCamera;
     imagePickerController.allowsMultipleSelection = NO;
+    imagePickerController.needsConfirmation = YES;
     [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
 }
 
@@ -205,16 +206,6 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didDeselectAsset:(ALAsset *)asset {
     
-}
-
-
-- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFulfillMinimumSelection:(NSUInteger)minimumNumberOfSelection {
-    NSLog(@"didFulfillMinimumSelection");
-}
-
-
-- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didReachMaximumSelection:(NSUInteger)maximumNumberOfSelection {
-    NSLog(@"didReachMaximumSelection");
 }
 
 
