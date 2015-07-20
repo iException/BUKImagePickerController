@@ -201,6 +201,7 @@
 
 
 - (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController {
+    self.cameraViewController.savesToPhotoLibrary = YES;
     [self.childNavigationController pushViewController:self.cameraViewController animated:YES];
 }
 

@@ -242,6 +242,11 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 #pragma mark - Actions
 
+- (void)goBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 - (void)cancel:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewControllerDidCancel:)]) {
         [self.delegate cameraViewControllerDidCancel:self];
@@ -332,7 +337,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self flash:YES];
     
     if (self.savesToPhotoLibrary) {
-        [self savesToPhotoLibrary];
+        [self saveImageToCameraRoll:capturedImage];
     }
 }
 

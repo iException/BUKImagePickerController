@@ -145,6 +145,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
     imagePickerController.sourceType = BUKImagePickerControllerSourceTypeSavedPhotosAlbum;
     imagePickerController.allowsMultipleSelection = YES;
     imagePickerController.showsCameraCell = YES;
+    imagePickerController.reversesAssets = YES;
     [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
 }
 

@@ -46,6 +46,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     
     self.title = NSLocalizedString(@"Photos", nil);
     
+    self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.rowHeight = 90.0;
     [self.tableView registerClass:[BUKAlbumTableViewCell class] forCellReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
     

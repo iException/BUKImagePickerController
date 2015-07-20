@@ -74,6 +74,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
     
+    self.clearsSelectionOnViewWillAppear = YES;
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     self.collectionView.allowsMultipleSelection = self.allowsMultipleSelection;
@@ -87,6 +88,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     [super viewWillAppear:animated];
     
     [self updateDoneButton];
+    [self scrollToLatestPhotos];
 }
 
 
@@ -186,6 +188,17 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 #pragma mark - Private
+
+- (void)scrollToLatestPhotos {
+    if (self.reversesAssets) {
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+    } else {
+        NSInteger section = [self numberOfSectionsInCollectionView:self.collectionView] - 1;
+        NSInteger item = [self collectionView:self.collectionView numberOfItemsInSection:section] - 1;
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+    }
+}
+
 
 - (void)updateDoneButton {
     if ([self.delegate respondsToSelector:@selector(assetsViewControllerShouldEnableDoneButton:)]) {
