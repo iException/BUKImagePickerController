@@ -233,6 +233,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     self.flashMode = FastttCameraFlashModeOff;
     self.cameraDevice = FastttCameraDeviceRear;
+    
+    self.doneButton.hidden = !self.allowsMultipleSelection;
 }
 
 
