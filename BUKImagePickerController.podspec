@@ -2,9 +2,6 @@ Pod::Spec.new do |s|
   s.name             = "BUKImagePickerController"
   s.version          = "0.1.0"
   s.summary          = "A controller helps you select images from a camera or a photo library."
-  s.description      = <<-DESC
-                       Select multiple images from a camera or a photo library.
-                       DESC
   s.homepage         = "https://github.com/iException/BUKImagePickerController"
   s.license          = 'MIT'
   s.author           = { "Yiming Tang" => "yimingnju@gmail.com" }
