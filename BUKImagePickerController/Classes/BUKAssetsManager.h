@@ -22,6 +22,10 @@
                             withGroupTypes:(ALAssetsGroupType)groupTypes
                                  mediaType:(BUKImagePickerControllerMediaType)mediaType
                                 completion:(void (^)(NSArray *assetsGroups))completion;
++ (void)fetchAssetsFromAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
+                       withAssetURLs:(NSArray *)assetURLs
+                            progress:(void (^)(ALAsset *asset, NSUInteger currentCout, NSUInteger totalCount))progressBlock
+                          completion:(void (^)(NSArray *assets, NSError *error))completionBlock;
 
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary;
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
@@ -32,5 +36,9 @@
                              progress:(void (^)(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount))progressBlock
                            completion:(void (^)(NSArray *assetsURLs, NSError *error))completionBlock;
 - (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(void (^)(NSURL *assetURL, NSError *error))completion;
+- (void)fetchAssetsWithAssetURLs:(NSArray *)assetURLs
+                        progress:(void (^)(ALAsset *asset, NSUInteger currentCout, NSUInteger totalCount))progressBlock
+                      completion:(void (^)(NSArray *assets, NSError *error))completionBlock;
+
 
 @end

@@ -71,6 +71,52 @@
 }
 
 
++ (void)fetchAssetsFromAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
+                       withAssetURLs:(NSArray *)assetURLs
+                            progress:(void (^)(ALAsset *asset, NSUInteger currentCout, NSUInteger totalCount))progressBlock
+                          completion:(void (^)(NSArray *assets, NSError *error))completionBlock
+{
+    NSUInteger totalCount = assetURLs.count;
+    NSMutableArray *mutableAssets = [NSMutableArray arrayWithCapacity:totalCount];
+    __block NSUInteger count = 0;
+    __block NSError *lastError = nil;
+    
+    void (^checkNumberOfAssets)(void) = ^{
+        if (count == totalCount) {
+            if (completionBlock) {
+                completionBlock([mutableAssets copy], lastError);
+            }
+        }
+    };
+    
+    // NOTE: This is a quick and dirty solution
+    for (NSURL *assetURL in assetURLs) {
+        [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+            count ++;
+            if (progressBlock) {
+                progressBlock(asset, count, totalCount);
+            }
+            
+            if (!asset) {
+                return;
+            }
+            
+            [mutableAssets addObject:asset];
+            checkNumberOfAssets();
+        } failureBlock:^(NSError *error) {
+            NSLog(@"[BUKImagePickerController] An error occurs while fetching asset: %@", [error localizedDescription]);
+            count ++;
+            if (progressBlock) {
+                progressBlock(nil, count, totalCount);
+            }
+            
+            lastError = error;
+            checkNumberOfAssets();
+        }];
+    }
+}
+
+
 + (NSArray *)sortAssetsGroups:(NSArray *)assetsGroups {
     NSMutableDictionary *mappedAssetsGroups = [NSMutableDictionary dictionary];
     for (ALAssetsGroup *assetsGroup in assetsGroups) {
@@ -178,6 +224,11 @@
 
 - (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(void (^)(NSURL *, NSError *))completion {
     [self.assetsLibrary writeImageToSavedPhotosAlbum:[image CGImage] orientation:(ALAssetOrientation)image.imageOrientation completionBlock:completion];
+}
+
+
+- (void)fetchAssetsWithAssetURLs:(NSArray *)assetURLs progress:(void (^)(ALAsset *, NSUInteger, NSUInteger))progressBlock completion:(void (^)(NSArray *, NSError *))completionBlock {
+    [[self class] fetchAssetsFromAssetsLibrary:self.assetsLibrary withAssetURLs:assetURLs progress:progressBlock completion:completionBlock];
 }
 
 @end

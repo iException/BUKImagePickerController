@@ -203,9 +203,12 @@
             if (self.sourceType != BUKImagePickerControllerSourceTypeCamera) {
                 return;
             }
-            if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
-                [self.delegate buk_imagePickerController:self didFinishPickingAssets:assetsURLs];
-            }
+            
+            [self.assetsManager fetchAssetsWithAssetURLs:assetsURLs progress:nil completion:^(NSArray *assets, NSError *error) {
+                if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
+                    [self.delegate buk_imagePickerController:self didFinishPickingAssets:assets];
+                }
+            }];
         }];
     }
     
@@ -291,11 +294,13 @@
 
 
 - (void)finishPickingAssets {
-    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
-        [self.delegate buk_imagePickerController:self didFinishPickingAssets:self.selectedAssetURLs];
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self.assetsManager fetchAssetsWithAssetURLs:self.selectedAssetURLs progress:nil completion:^(NSArray *assets, NSError *error) {
+        if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
+            [self.delegate buk_imagePickerController:self didFinishPickingAssets:assets];
+        } else {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
 }
 
 @end
