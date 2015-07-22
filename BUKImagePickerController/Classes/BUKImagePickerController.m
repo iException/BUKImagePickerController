@@ -16,7 +16,7 @@
 
 @interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate, BUKCameraViewControllerDelegate>
 
-@property (nonatomic) NSMutableArray *mutableSelectedAssets;
+@property (nonatomic) NSMutableOrderedSet *mutableSelectedAssetURLs;
 @property (nonatomic) BUKAssetsManager *assetsManager;
 @property (nonatomic) BUKAlbumsViewController *albumsViewController;
 @property (nonatomic) BUKAssetsViewController *assetsViewController;
@@ -34,8 +34,8 @@
 }
 
 
-- (NSArray *)selectedAssets {
-    return [self.mutableSelectedAssets copy];
+- (NSArray *)selectedAssetURLs {
+    return [self.mutableSelectedAssetURLs array];
 }
 
 
@@ -92,7 +92,7 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        _mutableSelectedAssets = [NSMutableArray array];
+        _mutableSelectedAssetURLs = [NSMutableOrderedSet orderedSet];
         _mediaType = BUKImagePickerControllerMediaTypeImage;
         _sourceType = BUKImagePickerControllerSourceTypeLibrary;
         _allowsMultipleSelection = YES;
@@ -179,12 +179,13 @@
         return [self.delegate buk_imagePickerController:self shouldSelectAsset:asset];
     }
     
-    return !(self.minimumNumberOfSelection <= self.maximumNumberOfSelection && self.selectedAssets.count >= self.maximumNumberOfSelection);
+    return !(self.minimumNumberOfSelection <= self.maximumNumberOfSelection && self.selectedAssetURLs.count >= self.maximumNumberOfSelection);
 }
 
 
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didSelectAsset:(ALAsset *)asset {
-    [self.mutableSelectedAssets addObject:asset];
+    NSURL *assetURL = [asset valueForProperty:ALAssetPropertyAssetURL];
+    [self.mutableSelectedAssetURLs addObject:assetURL];
     
     if (!self.allowsMultipleSelection) {
         [self finishPickingAssets];
@@ -193,7 +194,14 @@
 
 
 - (void)assetsViewController:(BUKAssetsViewController *)assetsViewController didDeselectAsset:(ALAsset *)asset {
-    [self.mutableSelectedAssets removeObject:asset];
+    NSURL *assetURL = [asset valueForProperty:ALAssetPropertyAssetURL];
+    [self.mutableSelectedAssetURLs removeObject:assetURL];
+}
+
+
+- (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController isAssetSelected:(ALAsset *)asset {
+    NSURL *assetURL = [asset valueForProperty:ALAssetPropertyAssetURL];
+    return [self.selectedAssetURLs containsObject:assetURL];
 }
 
 
@@ -242,7 +250,7 @@
 #pragma mark - Private
 
 - (BOOL)isNumberOfSelectionValid {
-    NSUInteger count = self.selectedAssets.count;
+    NSUInteger count = self.selectedAssetURLs.count;
     BOOL result = (count >= self.minimumNumberOfSelection);
     
     if (self.minimumNumberOfSelection <= self.maximumNumberOfSelection) {
@@ -264,7 +272,7 @@
 
 - (void)finishPickingAssets {
     if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
-        [self.delegate buk_imagePickerController:self didFinishPickingAssets:self.selectedAssets];
+        [self.delegate buk_imagePickerController:self didFinishPickingAssets:self.selectedAssetURLs];
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }

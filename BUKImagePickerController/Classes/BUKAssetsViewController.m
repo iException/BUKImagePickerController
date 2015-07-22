@@ -74,7 +74,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
     
-    self.clearsSelectionOnViewWillAppear = YES;
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     self.collectionView.allowsMultipleSelection = self.allowsMultipleSelection;
@@ -248,6 +247,15 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
         cell.videoIndicatorView.timeLabel.text = [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
     } else {
         cell.videoIndicatorView.hidden = YES;
+    }
+    
+    // Select
+    if ([self.delegate respondsToSelector:@selector(assetsViewController:isAssetSelected:)]) {
+        BOOL selected = [self.delegate assetsViewController:self isAssetSelected:asset];
+        cell.selected = selected;
+        if (selected) {
+            [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        }
     }
 }
 

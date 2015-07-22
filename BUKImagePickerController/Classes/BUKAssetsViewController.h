@@ -42,6 +42,7 @@
 - (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController;
 
 - (BOOL)assetsViewControllerShouldEnableDoneButton:(BUKAssetsViewController *)assetsViewController;
+- (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController isAssetSelected:(ALAsset *)asset;
 
 @end
 

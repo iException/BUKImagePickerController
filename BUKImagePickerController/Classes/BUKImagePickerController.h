@@ -26,7 +26,7 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 
 @property (nonatomic) BUKImagePickerControllerMediaType mediaType;
 @property (nonatomic) BUKImagePickerControllerSourceType sourceType;
-@property (nonatomic, readonly) NSArray *selectedAssets;
+@property (nonatomic, readonly) NSArray *selectedAssetURLs;
 @property (nonatomic, weak) id<BUKImagePickerControllerDelegate> delegate;
 
 @property (nonatomic) BOOL allowsMultipleSelection;
