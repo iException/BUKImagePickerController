@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
   s.name             = "BUKImagePickerController"
   s.version          = "0.1.0"
-  s.summary          = "Pick images from iPhone camera or photo albums."
+  s.summary          = "A controller helps you select images from a camera or a photo library."
   s.description      = <<-DESC
-                       BUKImagePickerController makes image picking easy.
+                       Select multiple images from a camera or a photo library.
                        DESC
   s.homepage         = "https://github.com/iException/BUKImagePickerController"
   s.license          = 'MIT'
@@ -19,7 +19,6 @@ Pod::Spec.new do |s|
     'BUKImagePickerController' => ['BUKImagePickerController/Assets/*.png']
   }
 
-  # s.public_header_files = 'BUKImagePickerController/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+  s.frameworks = 'ALAssetsLibrary'
   s.dependency 'FastttCamera', '~> 0.3'
 end
