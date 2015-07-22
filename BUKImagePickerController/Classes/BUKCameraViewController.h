@@ -13,6 +13,7 @@
 @interface BUKCameraViewController : UIViewController
 
 @property (nonatomic, weak) id<BUKCameraViewControllerDelegate> delegate;
+@property (nonatomic, readonly) NSArray *capturedImages;
 @property (nonatomic) CGSize thumbnailSize;
 @property (nonatomic) BOOL savesToPhotoLibrary;
 @property (nonatomic) BOOL allowsMultipleSelection;
@@ -24,5 +25,6 @@
 @optional
 - (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController;
 - (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images;
+- (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishSavingAssets:(NSArray *)assetURLs;
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController;
 @end

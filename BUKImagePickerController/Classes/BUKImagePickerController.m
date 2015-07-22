@@ -168,7 +168,7 @@
 
 
 - (BOOL)albumsViewControllerShouldEnableDoneButton:(BUKAlbumsViewController *)viewController {
-    return [self isNumberOfSelectionValid];
+    return [self isTotalNumberOfSelectedAssetsValid];
 }
 
 
@@ -217,7 +217,7 @@
 
 
 - (BOOL)assetsViewControllerShouldEnableDoneButton:(BUKAssetsViewController *)assetsViewController {
-    return [self isNumberOfSelectionValid];
+    return [self isTotalNumberOfSelectedAssetsValid];
 }
 
 
@@ -243,21 +243,29 @@
 
 
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController {
-    return YES;
+    NSUInteger numberOfCapturedImages = cameraViewController.capturedImages.count;
+    NSUInteger numberOfSelection = self.selectedAssetURLs.count;
+    
+    return [self isNumberOfSelectionValid:(numberOfSelection + numberOfCapturedImages)];
 }
 
 
 #pragma mark - Private
 
-- (BOOL)isNumberOfSelectionValid {
-    NSUInteger count = self.selectedAssetURLs.count;
-    BOOL result = (count >= self.minimumNumberOfSelection);
+- (BOOL)isNumberOfSelectionValid:(NSUInteger)numberOfSelection {
+    BOOL result = (numberOfSelection >= self.minimumNumberOfSelection);
     
     if (self.minimumNumberOfSelection <= self.maximumNumberOfSelection) {
-        result = result && count <= self.maximumNumberOfSelection;
+        result = result && numberOfSelection <= self.maximumNumberOfSelection;
     }
     
     return result;
+}
+
+
+- (BOOL)isTotalNumberOfSelectedAssetsValid {
+    NSUInteger numberOfSelection = self.selectedAssetURLs.count;
+    return [self isNumberOfSelectionValid:numberOfSelection];
 }
 
 

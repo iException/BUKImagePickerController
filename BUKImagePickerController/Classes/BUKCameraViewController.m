@@ -26,9 +26,10 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 @property (nonatomic) UIView *bottomToolbarView;
 @property (nonatomic) UIView *flashView;
 @property (nonatomic) UICollectionView *collectionView;
-@property (nonatomic) NSMutableArray *selectedImages;
+@property (nonatomic) NSMutableArray *mutableCapturedImages;
 @property (nonatomic) FastttCameraFlashMode flashMode;
 @property (nonatomic) FastttCameraDevice cameraDevice;
+@property (nonatomic) ALAssetsLibrary *assetsLibrary;
 
 @end
 
@@ -98,6 +99,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         _doneButton = [[UIButton alloc] init];
         _doneButton.translatesAutoresizingMaskIntoConstraints = NO;
         [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+        [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_doneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateDisabled];
         [_doneButton addTarget:self action:@selector(done:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _doneButton;
@@ -155,6 +158,14 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+- (ALAssetsLibrary *)assetsLibrary {
+    if (!_assetsLibrary) {
+        _assetsLibrary = [[ALAssetsLibrary alloc] init];
+    }
+    return _assetsLibrary;
+}
+
+
 - (FastttCameraFlashMode)flashMode {
     return self.fastCamera.cameraFlashMode;
 }
@@ -192,12 +203,17 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+- (NSArray *)capturedImages {
+    return [self.mutableCapturedImages copy];
+}
+
+
 #pragma mark - NSObject
 
 - (instancetype)init {
     if ((self = [super init])) {
         _thumbnailSize = CGSizeMake(72.0, 72.0);
-        _selectedImages = [NSMutableArray array];
+        _mutableCapturedImages = [NSMutableArray array];
         _savesToPhotoLibrary = NO;
     }
     return self;
@@ -243,6 +259,13 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self updateDoneButton];
+}
+
+
 #pragma mark - Actions
 
 - (void)goBack:(id)sender {
@@ -261,7 +284,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 - (void)done:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewController:didFinishCapturingImages:)]) {
-        [self.delegate cameraViewController:self didFinishCapturingImages:self.selectedImages];
+        [self.delegate cameraViewController:self didFinishCapturingImages:self.mutableCapturedImages];
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
@@ -314,7 +337,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.selectedImages.count;
+    return self.mutableCapturedImages.count;
 }
 
 
@@ -339,9 +362,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 - (void)cameraController:(id<FastttCameraInterface>)cameraController didFinishCapturingImage:(FastttCapturedImage *)capturedImage {
     if (!self.needsConfirmation) {
         [self flashAnimated:YES completion:nil];
-        if (self.savesToPhotoLibrary) {
-            [self saveImageToCameraRoll:capturedImage];
-        }
         return;
     }
     
@@ -383,6 +403,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     [self removeImageAtIndex:indexPath.item];
     [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+    
+    [self updateDoneButton];
 }
 
 
@@ -408,15 +430,17 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     // Since we don't need preview image, release it to save memory.
     capturedImage.rotatedPreviewImage = nil;
-    [self.selectedImages addObject:capturedImage];
+    [self.mutableCapturedImages addObject:capturedImage];
     
     if (!self.allowsMultipleSelection) {
         [self done:nil];
     }
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(self.selectedImages.count - 1) inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(self.mutableCapturedImages.count - 1) inSection:0];
     [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
     [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+    
+    [self updateDoneButton];
 }
 
 
@@ -429,17 +453,33 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
-- (void)saveImageToCameraRoll:(FastttCapturedImage *)capturedImage {
-    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
-    UIImage *fullImage = capturedImage.fullImage;
+- (void)saveImagesToCameraRollCompletionBlock:(void (^)(NSArray *assetURLs, NSError *error))completion {
+    NSUInteger count = self.mutableCapturedImages.count;
+    NSMutableArray *mutableAssetURLs = [NSMutableArray arrayWithCapacity:count];
     
-    [assetsLibrary writeImageToSavedPhotosAlbum:[fullImage CGImage] orientation:(ALAssetOrientation)fullImage.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error) {
-        if (assetURL) {
+    for (FastttCapturedImage *capturedImage in self.mutableCapturedImages) {
+        [self saveImageToCameraRoll:capturedImage.fullImage completionBlock:^(NSURL *assetURL, NSError *error) {
+            if (!assetURL) {
+                NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
+                if (completion) {
+                    completion(nil, error);
+                }
+            }
+            
             NSLog(@"[BUKImagePicker] Saved image to photos album.");
-        } else {
-            NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
-        }
-    }];
+            [mutableAssetURLs addObject:assetURL];
+            if (mutableAssetURLs.count == count) {
+                if (completion) {
+                    completion(mutableAssetURLs, nil);
+                }
+            }
+        }];
+    }
+}
+
+
+- (void)saveImageToCameraRoll:(UIImage *)fullImage completionBlock:(ALAssetsLibraryWriteImageCompletionBlock)completion {
+    [self.assetsLibrary writeImageToSavedPhotosAlbum:[fullImage CGImage] orientation:(ALAssetOrientation)fullImage.imageOrientation completionBlock:completion];
 }
 
 
@@ -503,17 +543,17 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (void)removeImageAtIndex:(NSUInteger)index {
-    NSUInteger count = self.selectedImages.count;
+    NSUInteger count = self.mutableCapturedImages.count;
     if (index >= count) {
         return;
     }
     
-    [self.selectedImages removeObjectAtIndex:index];
+    [self.mutableCapturedImages removeObjectAtIndex:index];
 }
 
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.selectedImages objectAtIndex:indexPath.item];
+    return [self.mutableCapturedImages objectAtIndex:indexPath.item];
 }
 
 
