@@ -18,9 +18,6 @@
 
 @property (nonatomic) NSMutableOrderedSet *mutableSelectedAssetURLs;
 @property (nonatomic) BUKAssetsManager *assetsManager;
-@property (nonatomic) BUKAlbumsViewController *albumsViewController;
-@property (nonatomic) BUKAssetsViewController *assetsViewController;
-@property (nonatomic) BUKCameraViewController *cameraViewController;
 @property (nonatomic) UINavigationController *childNavigationController;
 
 @end
@@ -36,44 +33,6 @@
 
 - (NSArray *)selectedAssetURLs {
     return [self.mutableSelectedAssetURLs array];
-}
-
-
-- (BUKAlbumsViewController *)albumsViewController {
-    if (!_albumsViewController) {
-        _albumsViewController = [[BUKAlbumsViewController alloc] init];
-        _albumsViewController.delegate = self;
-        _albumsViewController.assetsManager = self.assetsManager;
-        _albumsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
-    }
-    return _albumsViewController;
-}
-
-
-- (BUKAssetsViewController *)assetsViewController {
-    if (!_assetsViewController) {
-        _assetsViewController = [[BUKAssetsViewController alloc] init];
-        _assetsViewController.delegate = self;
-        _assetsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
-        _assetsViewController.reversesAssets = self.reversesAssets;
-        _assetsViewController.showsCameraCell = self.showsCameraCell;
-        _assetsViewController.minimumInteritemSpacing = 2.0;
-        _assetsViewController.minimumLineSpacing = 4.0;
-        _assetsViewController.numberOfColumnsInPortrait = self.numberOfColumnsInPortrait;
-        _assetsViewController.numberOfColumnsInLandscape = self.numberOfColumnsInLandscape;
-    }
-    return _assetsViewController;
-}
-
-
-- (BUKCameraViewController *)cameraViewController {
-    if (!_cameraViewController) {
-        _cameraViewController = [[BUKCameraViewController alloc] init];
-        _cameraViewController.delegate = self;
-        _cameraViewController.allowsMultipleSelection = self.allowsMultipleSelection;
-        _cameraViewController.needsConfirmation = self.needsConfirmation;
-    }
-    return _cameraViewController;
 }
 
 
@@ -116,23 +75,25 @@
     switch (self.sourceType) {
         case BUKImagePickerControllerSourceTypeSavedPhotosAlbum: {
             self.childNavigationController = [[UINavigationController alloc] init];
-            [self.childNavigationController setViewControllers:@[self.albumsViewController, self.assetsViewController]];
+            BUKAlbumsViewController *albumsViewController = [self createAlbumsViewController];
+            BUKAssetsViewController *assetsViewController = [self createAssetsViewController];
+            [self.childNavigationController setViewControllers:@[albumsViewController, assetsViewController]];
             viewController = self.childNavigationController;
-            __weak typeof(self)weakSelf = self;
             [self.assetsManager fetchAssetsGroupsWithCompletion:^(NSArray *assetsGroups) {
                 if (assetsGroups.count > 0) {
-                    weakSelf.assetsViewController.assetsGroup = [assetsGroups firstObject];
+                    assetsViewController.assetsGroup = [assetsGroups firstObject];
                 }
             }];
             break;
         }
         case BUKImagePickerControllerSourceTypeLibrary: {
-            self.childNavigationController = [[UINavigationController alloc] initWithRootViewController:self.albumsViewController];
+            BUKAlbumsViewController *albumsViewController = [self createAlbumsViewController];
+            self.childNavigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
             viewController = self.childNavigationController;
             break;
         }
         case BUKImagePickerControllerSourceTypeCamera: {
-            viewController = self.cameraViewController;
+            viewController = [self createCameraViewController];
             break;
         }
     }
@@ -151,8 +112,9 @@
 #pragma mark - BUKAlbumsViewControllerDelegate
 
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup {
-    self.assetsViewController.assetsGroup = assetsGroup;
-    [self.childNavigationController pushViewController:self.assetsViewController animated:YES];
+    BUKAssetsViewController *assetsViewController = [self createAssetsViewController];
+    assetsViewController.assetsGroup = assetsGroup;
+    [self.childNavigationController pushViewController:assetsViewController animated:YES];
 }
 
 
@@ -211,7 +173,8 @@
 
 - (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController {
     self.savesToPhotoLibrary = YES;
-    [self.childNavigationController presentViewController:self.cameraViewController animated:YES completion:nil];
+    BUKCameraViewController *cameraViewController = [self createCameraViewController];
+    [self.childNavigationController presentViewController:cameraViewController animated:YES completion:nil];
 }
 
 
@@ -268,6 +231,38 @@
 
 
 #pragma mark - Private
+
+- (BUKAlbumsViewController *)createAlbumsViewController {
+    BUKAlbumsViewController *albumsViewController = [[BUKAlbumsViewController alloc] init];
+    albumsViewController.delegate = self;
+    albumsViewController.assetsManager = self.assetsManager;
+    albumsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
+    return albumsViewController;
+}
+
+
+- (BUKAssetsViewController *)createAssetsViewController {
+    BUKAssetsViewController *assetsViewController = [[BUKAssetsViewController alloc] init];
+    assetsViewController.delegate = self;
+    assetsViewController.allowsMultipleSelection = self.allowsMultipleSelection;
+    assetsViewController.reversesAssets = self.reversesAssets;
+    assetsViewController.showsCameraCell = self.showsCameraCell;
+    assetsViewController.minimumInteritemSpacing = 2.0;
+    assetsViewController.minimumLineSpacing = 4.0;
+    assetsViewController.numberOfColumnsInPortrait = self.numberOfColumnsInPortrait;
+    assetsViewController.numberOfColumnsInLandscape = self.numberOfColumnsInLandscape;
+    return assetsViewController;
+}
+
+
+- (BUKCameraViewController *)createCameraViewController {
+    BUKCameraViewController *cameraViewController = [[BUKCameraViewController alloc] init];
+    cameraViewController.delegate = self;
+    cameraViewController.allowsMultipleSelection = self.allowsMultipleSelection;
+    cameraViewController.needsConfirmation = self.needsConfirmation;
+    return cameraViewController;
+}
+
 
 - (BOOL)isNumberOfSelectionValid:(NSUInteger)numberOfSelection {
     BOOL result = (numberOfSelection >= self.minimumNumberOfSelection);
