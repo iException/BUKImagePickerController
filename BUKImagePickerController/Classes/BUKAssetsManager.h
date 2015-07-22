@@ -28,5 +28,9 @@
                             mediaTyle:(BUKImagePickerControllerMediaType)mediaType
                            groupTypes:(ALAssetsGroupType)groupTypes;
 - (void)fetchAssetsGroupsWithCompletion:(void (^)(NSArray *assetsGroups))completion;
+- (void)writeImagesToSavedPhotosAlbum:(NSArray *)images
+                             progress:(void (^)(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount))progressBlock
+                           completion:(void (^)(NSArray *assetsURLs, NSError *error))completionBlock;
+- (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(void (^)(NSURL *assetURL, NSError *error))completion;
 
 @end

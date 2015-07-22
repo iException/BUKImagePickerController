@@ -203,8 +203,12 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
-- (NSArray *)capturedImages {
-    return [self.mutableCapturedImages copy];
+- (NSArray *)capturedFullImages {
+    NSMutableArray *mutableFullImages = [NSMutableArray arrayWithCapacity:self.mutableCapturedImages.count];
+    for (FastttCapturedImage *capturedImage in self.mutableCapturedImages) {
+        [mutableFullImages addObject:capturedImage.fullImage];
+    }
+    return mutableFullImages;
 }
 
 
@@ -214,7 +218,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if ((self = [super init])) {
         _thumbnailSize = CGSizeMake(72.0, 72.0);
         _mutableCapturedImages = [NSMutableArray array];
-        _savesToPhotoLibrary = NO;
     }
     return self;
 }
@@ -261,17 +264,18 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
     [self updateDoneButton];
 }
 
 
-#pragma mark - Actions
-
-- (void)goBack:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
+
+#pragma mark - Actions
 
 - (void)cancel:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewControllerDidCancel:)]) {
@@ -284,7 +288,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 - (void)done:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewController:didFinishCapturingImages:)]) {
-        [self.delegate cameraViewController:self didFinishCapturingImages:self.mutableCapturedImages];
+        [self.delegate cameraViewController:self didFinishCapturingImages:self.capturedFullImages];
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
@@ -450,36 +454,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     } else {
         self.doneButton.enabled = YES;
     }
-}
-
-
-- (void)saveImagesToCameraRollCompletionBlock:(void (^)(NSArray *assetURLs, NSError *error))completion {
-    NSUInteger count = self.mutableCapturedImages.count;
-    NSMutableArray *mutableAssetURLs = [NSMutableArray arrayWithCapacity:count];
-    
-    for (FastttCapturedImage *capturedImage in self.mutableCapturedImages) {
-        [self saveImageToCameraRoll:capturedImage.fullImage completionBlock:^(NSURL *assetURL, NSError *error) {
-            if (!assetURL) {
-                NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
-                if (completion) {
-                    completion(nil, error);
-                }
-            }
-            
-            NSLog(@"[BUKImagePicker] Saved image to photos album.");
-            [mutableAssetURLs addObject:assetURL];
-            if (mutableAssetURLs.count == count) {
-                if (completion) {
-                    completion(mutableAssetURLs, nil);
-                }
-            }
-        }];
-    }
-}
-
-
-- (void)saveImageToCameraRoll:(UIImage *)fullImage completionBlock:(ALAssetsLibraryWriteImageCompletionBlock)completion {
-    [self.assetsLibrary writeImageToSavedPhotosAlbum:[fullImage CGImage] orientation:(ALAssetOrientation)fullImage.imageOrientation completionBlock:completion];
 }
 
 

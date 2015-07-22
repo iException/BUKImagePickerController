@@ -144,4 +144,40 @@
     return [[self class] fetchAssetsGroupsFromAssetsLibrary:self.assetsLibrary withGroupTypes:self.groupTypes mediaType:self.mediaType completion:completion];
 }
 
+
+- (void)writeImagesToSavedPhotosAlbum:(NSArray *)images
+                             progress:(void (^)(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount))progressBlock
+                           completion:(void (^)(NSArray *assetsURLs, NSError *error))completionBlock {
+    NSUInteger totalCount = images.count;
+    NSMutableArray *mutableAssetURLs = [NSMutableArray arrayWithCapacity:totalCount];
+    
+    for (UIImage *image in images) {
+        [self writeImageToSavedPhotosAlbum:image completion:^(NSURL *assetURL, NSError *error) {
+            if (!assetURL) {
+                NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
+                if (completionBlock) {
+                    completionBlock(nil, error);
+                }
+            }
+            
+            NSLog(@"[BUKImagePicker] Saved image to photos album.");
+            [mutableAssetURLs addObject:assetURL];
+            if (progressBlock) {
+                progressBlock(assetURL, mutableAssetURLs.count, totalCount);
+            }
+            
+            if (mutableAssetURLs.count == totalCount) {
+                if (completionBlock) {
+                    completionBlock(mutableAssetURLs, nil);
+                }
+            }
+        }];
+    }
+}
+
+
+- (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(void (^)(NSURL *, NSError *))completion {
+    [self.assetsLibrary writeImageToSavedPhotosAlbum:[image CGImage] orientation:(ALAssetOrientation)image.imageOrientation completionBlock:completion];
+}
+
 @end

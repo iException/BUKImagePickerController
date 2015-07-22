@@ -71,7 +71,6 @@
         _cameraViewController = [[BUKCameraViewController alloc] init];
         _cameraViewController.delegate = self;
         _cameraViewController.allowsMultipleSelection = self.allowsMultipleSelection;
-        _cameraViewController.savesToPhotoLibrary = self.savesToPhotoLibrary;
         _cameraViewController.needsConfirmation = self.needsConfirmation;
     }
     return _cameraViewController;
@@ -211,8 +210,8 @@
 
 
 - (void)assetsViewControllerDidSelectCamera:(BUKAssetsViewController *)assetsViewController {
-    self.cameraViewController.savesToPhotoLibrary = YES;
-    [self.childNavigationController pushViewController:self.cameraViewController animated:YES];
+    self.savesToPhotoLibrary = YES;
+    [self.childNavigationController presentViewController:self.cameraViewController animated:YES completion:nil];
 }
 
 
@@ -227,23 +226,41 @@
     if (self.sourceType == BUKImagePickerControllerSourceTypeCamera) {
         [self cancelPicking];
     } else {
-        [self childNavigationController];
+        [cameraViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
 
 - (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images {
-    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingImages:)]) {
-        [self.delegate buk_imagePickerController:self didFinishPickingImages:images];
+    if (self.savesToPhotoLibrary) {
+        [self.assetsManager writeImagesToSavedPhotosAlbum:images progress:^(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount) {
+            [self.mutableSelectedAssetURLs addObject:assetURL];
+        } completion:^(NSArray *assetsURLs, NSError *error) {
+            NSLog(@"[BUKImagePickerController] Saved All Assets");
+            if (self.sourceType != BUKImagePickerControllerSourceTypeCamera) {
+                return;
+            }
+            if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingAssets:)]) {
+                [self.delegate buk_imagePickerController:self didFinishPickingAssets:assetsURLs];
+            }
+        }];
+    }
+    
+    if (self.sourceType != BUKImagePickerControllerSourceTypeCamera) {
+        [cameraViewController dismissViewControllerAnimated:YES completion:nil];
         return;
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishPickingImages:)]) {
+        [self.delegate buk_imagePickerController:self didFinishPickingImages:images];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController {
-    NSUInteger numberOfCapturedImages = cameraViewController.capturedImages.count;
+    NSUInteger numberOfCapturedImages = cameraViewController.capturedFullImages.count;
     NSUInteger numberOfSelection = self.selectedAssetURLs.count;
     
     return [self isNumberOfSelectionValid:(numberOfSelection + numberOfCapturedImages)];
