@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BUKImagePickerController: ce2bbb40e35fd312bdc2964b99cc73965aad9e75
+  BUKImagePickerController: b54beded80ae4ce41de5612c30e5e7af28a20092
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
   Expecta+Snapshots: ca15bfb57e7a0f78f86c7699c2c54ffacfa4ad2a
   FastttCamera: dfcec6e490be93130123309fdecc7cf444081470
