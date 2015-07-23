@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
-@import AssetsLibrary;
 #import <FastttCamera/FastttCamera.h>
 #import "BUKCameraViewController.h"
 #import "BUKCameraConfirmViewController.h"
@@ -29,7 +28,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 @property (nonatomic) NSMutableArray *mutableCapturedImages;
 @property (nonatomic) FastttCameraFlashMode flashMode;
 @property (nonatomic) FastttCameraDevice cameraDevice;
-@property (nonatomic) ALAssetsLibrary *assetsLibrary;
 
 @end
 
@@ -155,14 +153,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         [_collectionView registerClass:[BUKImageCollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
     }
     return _collectionView;
-}
-
-
-- (ALAssetsLibrary *)assetsLibrary {
-    if (!_assetsLibrary) {
-        _assetsLibrary = [[ALAssetsLibrary alloc] init];
-    }
-    return _assetsLibrary;
 }
 
 
