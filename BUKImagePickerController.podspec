@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
     'BUKImagePickerController' => ['BUKImagePickerController/Assets/*.png']
   }
 
-  s.frameworks = 'ALAssetsLibrary'
+  s.frameworks = 'AssetsLibrary'
   s.dependency 'FastttCamera', '~> 0.3'
 end
