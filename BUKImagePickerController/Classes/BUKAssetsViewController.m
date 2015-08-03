@@ -194,6 +194,9 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     } else {
         NSInteger section = [self numberOfSectionsInCollectionView:self.collectionView] - 1;
         NSInteger item = [self collectionView:self.collectionView numberOfItemsInSection:section] - 1;
+        if (item < 0) {
+            return;
+        }
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
     }
 }

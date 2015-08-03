@@ -102,6 +102,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 - (void)showMultipleSelectionLibrary:(id)sender {
     BUKImagePickerController *imagePickerController = [self imagePickerController];
     imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
+    imagePickerController.mediaType = BUKImagePickerControllerMediaTypeAny;
     imagePickerController.allowsMultipleSelection = YES;
     [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
 }

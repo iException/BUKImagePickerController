@@ -57,6 +57,7 @@
         _showsCameraCell = NO;
         _savesToPhotoLibrary = NO;
         _needsConfirmation = NO;
+        _reversesAssets = NO;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
         _minimumNumberOfSelection = 1;
