@@ -228,7 +228,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 - (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.showsCameraCell && indexPath.item == 0) {
-        cell.imageView.image = [UIImage buk_albumPlaceholderImageWithSize:CGSizeMake(60.0, 60.0)];
+        cell.imageView.image = [UIImage buk_bundleImageNamed:@"camera-icon"];
         return;
     }
     
