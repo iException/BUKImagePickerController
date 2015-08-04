@@ -7,6 +7,7 @@
 //
 
 #import "BUKImageCollectionViewCell.h"
+#import "UIImage+BUKImagePickerController.h"
 
 @implementation BUKImageCollectionViewCell
 
@@ -30,7 +31,7 @@
     if (!_deleteButton) {
         _deleteButton = [[UIButton alloc] init];
         _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [_deleteButton setTitle:@"X" forState:UIControlStateNormal];
+        [_deleteButton setImage:[UIImage buk_bundleImageNamed:@"delete-button"] forState:UIControlStateNormal];
         [_deleteButton addTarget:self action:@selector(deleteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _deleteButton;
@@ -69,8 +70,8 @@
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]-12.0-|" options:kNilOptions metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12.0-[imageView]|" options:kNilOptions metrics:nil views:views]];
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton]|" options:kNilOptions metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[deleteButton]" options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton]-(5.0)-|" options:kNilOptions metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(5.0)-[deleteButton]" options:kNilOptions metrics:nil views:views]];
 }
 
 @end

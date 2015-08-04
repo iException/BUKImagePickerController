@@ -7,6 +7,7 @@
 //
 
 #import "UIImage+BUKImagePickerController.h"
+#import "BUKImagePickerController.h"
 
 @implementation UIImage (BUKImagePickerController)
 
@@ -52,6 +53,21 @@
     UIGraphicsEndImageContext();
     
     return image;
+}
+
+
++ (UIImage *)buk_bundleImageNamed:(NSString *)name {
+    NSBundle *bundle = [NSBundle bundleForClass:[BUKImagePickerController class]];
+    return [self buk_imageNamed:name inBundle:bundle];
+}
+
+
++ (UIImage *)buk_imageNamed:(NSString *)name inBundle:(NSBundle *)bundle {
+    if ([self respondsToSelector:@selector(imageNamed:inBundle:compatibleWithTraitCollection:)]) {
+        return [self imageNamed:name inBundle:bundle compatibleWithTraitCollection:nil];
+    } else {
+        return [self imageNamed:name];
+    }
 }
 
 @end

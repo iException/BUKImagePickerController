@@ -10,6 +10,7 @@
 #import "BUKCameraViewController.h"
 #import "BUKCameraConfirmViewController.h"
 #import "BUKImageCollectionViewCell.h"
+#import "UIImage+BUKImagePickerController.h"
 
 static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
@@ -52,10 +53,9 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_takePictureButton) {
         _takePictureButton = [[UIButton alloc] init];
         _takePictureButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [_takePictureButton setImage:[UIImage buk_bundleImageNamed:@"take-picture-button"] forState:UIControlStateNormal];
         [_takePictureButton addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchUpInside];
-        [_takePictureButton setTitle:@"Boom!" forState:UIControlStateNormal];
     }
-    
     return _takePictureButton;
 }
 
@@ -64,6 +64,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_flashModeButton) {
         _flashModeButton = [[UIButton alloc] init];
         _flashModeButton.translatesAutoresizingMaskIntoConstraints = NO;
+        _flashModeButton.titleLabel.font = [UIFont systemFontOfSize:12.0];
+        [_flashModeButton setImage:[UIImage buk_bundleImageNamed:@"flash-button"] forState:UIControlStateNormal];
         [_flashModeButton addTarget:self action:@selector(toggleFlashMode:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _flashModeButton;
@@ -74,8 +76,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_cameraDeviceButton) {
         _cameraDeviceButton = [[UIButton alloc] init];
         _cameraDeviceButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [_cameraDeviceButton setImage:[UIImage buk_bundleImageNamed:@"device-button"] forState:UIControlStateNormal];
         [_cameraDeviceButton addTarget:self action:@selector(toggleCameraDevice:) forControlEvents:UIControlEventTouchUpInside];
-        [_cameraDeviceButton setTitle:@"Toggle Camera" forState:UIControlStateNormal];
     }
     return _cameraDeviceButton;
 }
@@ -347,7 +349,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"didSelectItemAtIndexPath");
+    NSLog(@"[BUKImagePickerController] didSelectItemAtIndexPath");
 }
 
 
@@ -542,7 +544,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     NSDictionary *metrics = @{
         @"thumbnailHeight": @(self.thumbnailSize.height + 4.0),
-        @"margin": @5.0,
+        @"margin": @10.0,
     };
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView(40.0)][cameraView][bottomToolbarView(100.0)]|" options:kNilOptions metrics:nil views:views]];

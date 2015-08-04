@@ -1,21 +1,15 @@
 PODS:
   - BUKImagePickerController (0.1.0):
     - FastttCamera (~> 0.3)
-  - Expecta (1.0.0)
-  - Expecta+Snapshots (1.3.4):
-    - Expecta (~> 1.0)
-    - FBSnapshotTestCase (~> 1.8)
+  - Expecta (1.0.2)
   - FastttCamera (0.3.1):
     - FastttCamera/Default (= 0.3.1)
   - FastttCamera/Default (0.3.1)
-  - FBSnapshotTestCase (1.8.1)
-  - Specta (1.0.2)
+  - Specta (1.0.3)
 
 DEPENDENCIES:
   - BUKImagePickerController (from `../`)
   - Expecta
-  - Expecta+Snapshots
-  - FBSnapshotTestCase
   - Specta
 
 EXTERNAL SOURCES:
@@ -23,11 +17,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BUKImagePickerController: b54beded80ae4ce41de5612c30e5e7af28a20092
-  Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
-  Expecta+Snapshots: ca15bfb57e7a0f78f86c7699c2c54ffacfa4ad2a
+  BUKImagePickerController: da37acf05a01d8ff5808fd3ad2fec5230f80b0c0
+  Expecta: 54e8a3530add08f4f0208c111355eda7cde74a53
   FastttCamera: dfcec6e490be93130123309fdecc7cf444081470
-  FBSnapshotTestCase: 3dc3899168747a0319c5278f5b3445c13a6532dd
-  Specta: 9cec98310dca411f7c7ffd6943552b501622abfe
+  Specta: cf3e4188cf35375c3ee2cd03f8db8f1f4ef98234
 
 COCOAPODS: 0.37.2
