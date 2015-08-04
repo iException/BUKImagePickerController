@@ -13,6 +13,7 @@
 #import "BUKAlbumTableViewCell.h"
 #import "BUKAssetsManager.h"
 #import "UIImage+BUKImagePickerController.h"
+#import "NSBundle+BUKImagePickerController.h"
 
 static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
@@ -37,14 +38,14 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     [super viewDidLoad];
     
     if (self.allowsMultipleSelection) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
-        self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+        self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(done:)];
         self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
     } else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
     
-    self.title = NSLocalizedString(@"Photos", nil);
+    self.title = BUKImagePickerLocalizedString(@"Photos", nil);
     
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.rowHeight = 90.0;

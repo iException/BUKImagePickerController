@@ -62,6 +62,8 @@
 		B041037E0A48B26B03CF7190 /* Pods-BUKImagePickerController-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BUKImagePickerController-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		BC5F8EE040D0446AF94BF8F1 /* BUKImagePickerController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BUKImagePickerController.podspec; path = ../BUKImagePickerController.podspec; sourceTree = "<group>"; };
 		D0680E3D25FE9B85841D270D /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
+		F1202B011B708DCD00C35591 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F1202B021B708DCD00C35591 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F1511B651B4D240300534752 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -270,6 +272,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 6003F581195388D10070C39A;
 			productRefGroup = 6003F58B195388D20070C39A /* Products */;
@@ -399,6 +402,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				6003F5B9195388D20070C39A /* en */,
+				F1202B021B708DCD00C35591 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -407,6 +411,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				F1511B651B4D240300534752 /* en */,
+				F1202B011B708DCD00C35591 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

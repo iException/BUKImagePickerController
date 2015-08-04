@@ -14,6 +14,7 @@
 #import "BUKVideoIndicatorView.h"
 #import "BUKAssetsManager.h"
 #import "UIImage+BUKImagePickerController.h"
+#import "NSBundle+BUKImagePickerController.h"
 
 static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
@@ -68,10 +69,10 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     [super viewDidLoad];
     
     if (self.allowsMultipleSelection) {
-        self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
+        self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(finishPicking:)];
         self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
     } else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
     
     self.collectionView.backgroundColor = [UIColor whiteColor];

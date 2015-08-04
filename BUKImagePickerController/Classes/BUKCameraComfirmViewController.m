@@ -8,6 +8,7 @@
 
 #import "BUKCameraConfirmViewController.h"
 #import "FastttCapturedImage.h"
+#import "NSBundle+BUKImagePickerController.h"
 
 @interface BUKCameraConfirmViewController ()
 
@@ -37,7 +38,7 @@
         _confirmButton = [[UIButton alloc] init];
         _confirmButton.translatesAutoresizingMaskIntoConstraints = NO;
         [_confirmButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_confirmButton setTitle:NSLocalizedString(@"Confirm", nil) forState:UIControlStateNormal];
+        [_confirmButton setTitle:BUKImagePickerLocalizedString(@"Confirm", nil) forState:UIControlStateNormal];
         [_confirmButton addTarget:self action:@selector(confirmImage:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _confirmButton;
@@ -49,7 +50,7 @@
         _cancelButton = [[UIButton alloc] init];
         _cancelButton.translatesAutoresizingMaskIntoConstraints = NO;
         [_cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_cancelButton setTitle:NSLocalizedString(@"Retake", nil) forState:UIControlStateNormal];
+        [_cancelButton setTitle:BUKImagePickerLocalizedString(@"Retake", nil) forState:UIControlStateNormal];
         [_cancelButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cancelButton;
@@ -118,7 +119,7 @@
     
     // Bottom toolbar view
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bottomToolbarView]|" options:kNilOptions metrics:nil views:views]];
-    [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(5.0)-[cancelButton]-(>=100)-[confirmButton]-(5.0)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+    [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(10.0)-[cancelButton]-(>=100)-[confirmButton]-(10.0)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
     [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.cancelButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
 }
 

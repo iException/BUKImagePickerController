@@ -12,7 +12,9 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'BUKImagePickerController/Classes/**/*'
-  s.resources = ["BUKImagePickerController/Assets/*.{png,xcassets}"]
+  s.resource_bundles = {
+    "BUKImagePickerController" => ["BUKImagePickerController/Assets/*.{lproj,png}"]
+  }
 
   s.frameworks = 'AssetsLibrary'
   s.dependency 'FastttCamera', '~> 0.3'

@@ -11,6 +11,7 @@
 #import "BUKCameraConfirmViewController.h"
 #import "BUKImageCollectionViewCell.h"
 #import "UIImage+BUKImagePickerController.h"
+#import "NSBundle+BUKImagePickerController.h"
 
 static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
@@ -87,7 +88,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_cancelButton) {
         _cancelButton = [[UIButton alloc] init];
         _cancelButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [_cancelButton setTitle:NSLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
+        [_cancelButton setTitle:BUKImagePickerLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
         [_cancelButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cancelButton;
@@ -98,7 +99,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_doneButton) {
         _doneButton = [[UIButton alloc] init];
         _doneButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+        [_doneButton setTitle:BUKImagePickerLocalizedString(@"Done", nil) forState:UIControlStateNormal];
         [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_doneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateDisabled];
         [_doneButton addTarget:self action:@selector(done:) forControlEvents:UIControlEventTouchUpInside];
@@ -167,13 +168,13 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     NSString *title;
     switch (flashMode) {
         case FastttCameraFlashModeAuto:
-            title = NSLocalizedString(@"Flash Auto", nil);
+            title = BUKImagePickerLocalizedString(@"Flash Auto", nil);
             break;
         case FastttCameraFlashModeOn:
-            title = NSLocalizedString(@"Flash On", nil);
+            title = BUKImagePickerLocalizedString(@"Flash On", nil);
             break;
         case FastttCameraFlashModeOff:
-            title = NSLocalizedString(@"Flash Off", nil);
+            title = BUKImagePickerLocalizedString(@"Flash Off", nil);
             break;
     }
     
