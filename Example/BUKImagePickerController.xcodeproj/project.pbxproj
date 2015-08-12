@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30417C44CA1385379541B3C1 /* Pods_BUKImagePickerController_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6A43E7ADCDEECADFC4AB48B /* Pods_BUKImagePickerController_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -19,8 +20,7 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
-		CF1881AEBCB6750209A8E693 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF6595B49A1AA6B01298E79 /* libPods-Tests.a */; };
-		DC2859FCC723F96144E25DFC /* libPods-BUKImagePickerController-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28E9913881FD97EFC3838874 /* libPods-BUKImagePickerController-Example.a */; };
+		EA061FCDA89968652DDC0D67 /* Pods_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F6CE777D7D115AFCC4E29BB /* Pods_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F1511B661B4D240300534752 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F1511B641B4D240300534752 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +35,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		28E9913881FD97EFC3838874 /* libPods-BUKImagePickerController-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BUKImagePickerController-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* BUKImagePickerController-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BUKImagePickerController-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -54,14 +53,15 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		6AF6595B49A1AA6B01298E79 /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D2FDE972119CCC18A32DD39 /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		8EAD2A42E684CFA552DFC7A6 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		8F6CE777D7D115AFCC4E29BB /* Pods_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		940693F096931DF80248232E /* Pods-BUKImagePickerController-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BUKImagePickerController-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example.release.xcconfig"; sourceTree = "<group>"; };
 		AA6153914C3B1D67FBAC90E3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B041037E0A48B26B03CF7190 /* Pods-BUKImagePickerController-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BUKImagePickerController-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		BC5F8EE040D0446AF94BF8F1 /* BUKImagePickerController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BUKImagePickerController.podspec; path = ../BUKImagePickerController.podspec; sourceTree = "<group>"; };
 		D0680E3D25FE9B85841D270D /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
+		E6A43E7ADCDEECADFC4AB48B /* Pods_BUKImagePickerController_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BUKImagePickerController_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1202B011B708DCD00C35591 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F1202B021B708DCD00C35591 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F1511B651B4D240300534752 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				DC2859FCC723F96144E25DFC /* libPods-BUKImagePickerController-Example.a in Frameworks */,
+				30417C44CA1385379541B3C1 /* Pods_BUKImagePickerController_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +86,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				CF1881AEBCB6750209A8E693 /* libPods-Tests.a in Frameworks */,
+				EA061FCDA89968652DDC0D67 /* Pods_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,8 +132,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				28E9913881FD97EFC3838874 /* libPods-BUKImagePickerController-Example.a */,
-				6AF6595B49A1AA6B01298E79 /* libPods-Tests.a */,
+				E6A43E7ADCDEECADFC4AB48B /* Pods_BUKImagePickerController_Example.framework */,
+				8F6CE777D7D115AFCC4E29BB /* Pods_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -220,6 +220,7 @@
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
 				7F838299EF997A3D6D856F46 /* Copy Pods Resources */,
+				856E607DF63D814812262295 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -239,6 +240,7 @@
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
 				B4A310EBE238ECD294FC0F37 /* Copy Pods Resources */,
+				0733FEBD5B86C8343EC4896A /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -306,6 +308,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0733FEBD5B86C8343EC4896A /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Tests/Pods-Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1F93399CFD8DFB9CCCB34A8A /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -349,6 +366,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		856E607DF63D814812262295 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BUKImagePickerController-Example/Pods-BUKImagePickerController-Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B4A310EBE238ECD294FC0F37 /* Copy Pods Resources */ = {

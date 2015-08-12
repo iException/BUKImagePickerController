@@ -6,9 +6,7 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
-@import AssetsLibrary;
 #import "BUKAssetsManager.h"
-
 
 @implementation BUKAssetsManager
 

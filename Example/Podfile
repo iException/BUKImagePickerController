@@ -1,4 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
 
 target 'BUKImagePickerController-Example', :exclusive => true do
   pod "BUKImagePickerController", :path => "../"

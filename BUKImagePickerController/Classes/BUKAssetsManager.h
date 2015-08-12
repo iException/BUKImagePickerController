@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
+@import AssetsLibrary;
 #import "BUKImagePickerController.h"
-
-@class ALAssetsLibrary;
 
 @interface BUKAssetsManager : NSObject
 
