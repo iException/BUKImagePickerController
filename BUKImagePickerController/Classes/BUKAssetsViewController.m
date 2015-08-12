@@ -12,6 +12,7 @@
 #import "BUKImagePickerController.h"
 #import "BUKAssetCollectionViewCell.h"
 #import "BUKVideoIndicatorView.h"
+#import "BUKNoAssetsPlaceholderView.h"
 #import "BUKAssetsManager.h"
 #import "UIImage+BUKImagePickerController.h"
 #import "NSBundle+BUKImagePickerController.h"
@@ -21,6 +22,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 @interface BUKAssetsViewController ()
 @property (nonatomic, readwrite) NSArray *assets;
 @property (nonatomic) UIBarButtonItem *doneBarButtonItem;
+@property (nonatomic) UIView *placeholderView;
 @end
 
 
@@ -79,6 +81,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     self.collectionView.alwaysBounceVertical = YES;
     self.collectionView.allowsMultipleSelection = self.allowsMultipleSelection;
     [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
+    
+    self.placeholderView = [[BUKNoAssetsPlaceholderView alloc] init];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
 }
@@ -188,6 +192,68 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 #pragma mark - Private
+
+- (BOOL)hasContent {
+    return self.assets.count > 0;
+}
+
+
+- (void)updatePlaceholderView:(BOOL)animated {
+    if (![self hasContent]) {
+        [self showPlacehoderView:animated];
+    } else {
+        [self hidePlaceholderView:animated];
+    }
+}
+
+
+- (void)showPlacehoderView:(BOOL)animated {
+    if (!self.placeholderView || self.placeholderView.superview) {
+        return;
+    }
+    
+    self.placeholderView.alpha = 0;
+    [self.view addSubview:self.placeholderView];
+    
+    // Add constraints
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.placeholderView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.placeholderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.placeholderView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.placeholderView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    
+    void (^change)(void) = ^{
+        self.placeholderView.alpha = 1.0f;
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:change completion:nil];
+    } else {
+        change();
+    }
+}
+
+
+- (void)hidePlaceholderView:(BOOL)animated {
+    if (!self.placeholderView || !self.placeholderView.superview) {
+        return;
+    }
+    
+    void (^change)(void) = ^{
+        self.placeholderView.alpha = 0.0f;
+    };
+    
+    void (^completion)(BOOL finished) = ^(BOOL finished) {
+        [self.placeholderView removeFromSuperview];
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:change completion:completion];
+    } else {
+        change();
+        completion(YES);
+    }
+}
+
 
 - (void)scrollToLatestPhotos {
     if (self.reversesAssets) {

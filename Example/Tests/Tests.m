@@ -10,6 +10,7 @@
 
 #import <Specta/Specta.h>
 #import <Expecta/Expecta.h>
+#import <BUKImagePickerController/BUKImagePickerController.h>
 
 SpecBegin(InitialSpecs)
 
@@ -31,4 +32,3 @@ describe(@"these will pass", ^{
 });
 
 SpecEnd
-
