@@ -8,6 +8,9 @@
 
 // https://github.com/Specta/Specta
 
+#import <Specta/Specta.h>
+#import <Expecta/Expecta.h>
+
 SpecBegin(InitialSpecs)
 
 describe(@"these will pass", ^{

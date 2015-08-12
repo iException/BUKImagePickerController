@@ -56,5 +56,6 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets;
 
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingImages:(NSArray *)images;
+- (BOOL)buk_imagePickerController:(BUKImagePickerController *)imagePickerController shouldTakePictureWithCapturedImages:(NSArray *)capturedImages;
 
 @end

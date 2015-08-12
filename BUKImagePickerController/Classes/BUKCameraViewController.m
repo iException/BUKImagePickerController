@@ -289,7 +289,14 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (void)takePicture:(id)sender {
-    [self.fastCamera takePicture];
+    BOOL shouldTakePicture = YES;
+    if ([self.delegate respondsToSelector:@selector(cameraViewControllerShouldTakePicture:)]) {
+        shouldTakePicture = [self.delegate cameraViewControllerShouldTakePicture:self];
+    }
+    
+    if (shouldTakePicture) {
+        [self.fastCamera takePicture];
+    }
 }
 
 

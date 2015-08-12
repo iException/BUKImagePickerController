@@ -24,5 +24,7 @@
 @optional
 - (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController;
 - (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images;
+- (BOOL)cameraViewControllerShouldTakePicture:(BUKCameraViewController *)cameraViewController;
+
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController;
 @end

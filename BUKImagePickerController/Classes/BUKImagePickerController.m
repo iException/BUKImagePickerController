@@ -226,6 +226,18 @@
 }
 
 
+- (BOOL)cameraViewControllerShouldTakePicture:(BUKCameraViewController *)cameraViewController {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:shouldTakePictureWithCapturedImages:)]) {
+        return [self.delegate buk_imagePickerController:self shouldTakePictureWithCapturedImages:cameraViewController.capturedFullImages];
+    }
+    
+    NSUInteger numberOfCapturedImages = cameraViewController.capturedFullImages.count;
+    BOOL result = self.minimumNumberOfSelection > self.maximumNumberOfSelection;
+    
+    return result || (self.selectedAssetURLs.count + numberOfCapturedImages) < self.maximumNumberOfSelection;
+}
+
+
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController {
     NSUInteger numberOfCapturedImages = cameraViewController.capturedFullImages.count;
     NSUInteger numberOfSelection = self.selectedAssetURLs.count;
