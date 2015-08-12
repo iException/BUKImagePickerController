@@ -130,6 +130,10 @@
 
 
 - (BOOL)albumsViewControllerShouldEnableDoneButton:(BUKAlbumsViewController *)viewController {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerShouldEnableDoneButton:)]) {
+        return [self.delegate buk_imagePickerControllerShouldEnableDoneButton:self];
+    }
+    
     return [self isTotalNumberOfSelectedAssetsValid];
 }
 
@@ -180,6 +184,10 @@
 
 
 - (BOOL)assetsViewControllerShouldEnableDoneButton:(BUKAssetsViewController *)assetsViewController {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerShouldEnableDoneButton:)]) {
+        return [self.delegate buk_imagePickerControllerShouldEnableDoneButton:self];
+    }
+    
     return [self isTotalNumberOfSelectedAssetsValid];
 }
 
@@ -239,6 +247,10 @@
 
 
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerShouldEnableDoneButton:)]) {
+        return [self.delegate buk_imagePickerControllerShouldEnableDoneButton:self];
+    }
+    
     NSUInteger numberOfCapturedImages = cameraViewController.capturedFullImages.count;
     NSUInteger numberOfSelection = self.selectedAssetURLs.count;
     

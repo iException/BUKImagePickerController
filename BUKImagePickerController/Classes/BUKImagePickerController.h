@@ -52,6 +52,8 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset;
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didDeselectAsset:(ALAsset *)asset;
 
+- (BOOL)buk_imagePickerControllerShouldEnableDoneButton:(BUKImagePickerController *)imagePickerController;
+
 - (void)buk_imagePickerControllerDidCancel:(BUKImagePickerController *)imagePickerController;
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets;
 
