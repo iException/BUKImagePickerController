@@ -10,8 +10,8 @@
 
 @interface UIImage (BUKImagePickerController)
 
-+ (UIImage *)buk_albumPlaceholderImageWithSize:(CGSize)size;
-+ (UIImage *)buk_imageNamed:(NSString *)name inBundle:(NSBundle *)bundle;
 + (UIImage *)buk_bundleImageNamed:(NSString *)name;
++ (UIImage *)buk_imageNamed:(NSString *)name inBundle:(NSBundle *)bundle;
++ (UIImage *)buk_albumPlaceholderImageWithSize:(CGSize)size;
 
 @end
