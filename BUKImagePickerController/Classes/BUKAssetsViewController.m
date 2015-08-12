@@ -91,6 +91,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [self updatePlaceholderView:animated];
     [self updateDoneButton];
     [self scrollToLatestPhotos];
 }
@@ -213,6 +214,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     }
     
     self.placeholderView.alpha = 0;
+    self.placeholderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.placeholderView];
     
     // Add constraints

@@ -23,7 +23,8 @@
         _titleLabel.numberOfLines = 2;
         _titleLabel.textColor = [UIColor buk_lightTextColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
-        _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+        UIFontDescriptor *fontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
+        _titleLabel.font = [UIFont fontWithDescriptor:fontDescriptor size:(fontDescriptor.pointSize * 1.6f)];
     }
     return _titleLabel;
 }
@@ -76,12 +77,12 @@
     };
     
     // Title label
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:(-5.0)]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[titleLabel]-|" options:kNilOptions metrics:nil views:views]];
     
     // Message label
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.messageLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[messageLabel]-|" options:kNilOptions metrics:nil views:views]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.messageLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:5.0]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(15.0)-[messageLabel]-15.0)-|" options:kNilOptions metrics:nil views:views]];
 }
 
 @end
