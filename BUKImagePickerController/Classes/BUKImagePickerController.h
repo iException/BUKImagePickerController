@@ -34,6 +34,7 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 @property (nonatomic) BOOL reversesAssets;
 @property (nonatomic) BOOL savesToPhotoLibrary;
 @property (nonatomic) BOOL needsConfirmation;
+@property (nonatomic) BOOL excludesEmptyAlbums;
 @property (nonatomic) NSUInteger minimumNumberOfSelection;
 @property (nonatomic) NSUInteger maximumNumberOfSelection;
 

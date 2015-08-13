@@ -103,6 +103,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
     BUKImagePickerController *imagePickerController = [self imagePickerController];
     imagePickerController.sourceType = BUKImagePickerControllerSourceTypeLibrary;
     imagePickerController.mediaType = BUKImagePickerControllerMediaTypeAny;
+    imagePickerController.excludesEmptyAlbums = YES;
     imagePickerController.allowsMultipleSelection = YES;
     [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
 }

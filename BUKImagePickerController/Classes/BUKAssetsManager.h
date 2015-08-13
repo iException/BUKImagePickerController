@@ -11,38 +11,52 @@
 
 extern NSString *const kBUKImagePickerAccessDeniedNotificationName;
 
+typedef void (^BUKAssetsManagerFetchAssetsGroupsCompletionBlock)(NSArray *groups);
+typedef void (^BUKAssetsManagerFetchAssetsGroupsFailureBlock)(NSError *error);
+typedef void (^BUKAssetsManagerWriteImagesProgressBlock)(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount);
+typedef void (^BUKAssetsManagerFetchAssetsProgressBlock)(ALAsset *asset, NSUInteger currentCout, NSUInteger totalCount);
+typedef void (^BUKAssetsManagerFetchAssetsCompletionBlock)(NSArray *assets, NSError *error);
+
+
 @interface BUKAssetsManager : NSObject
 
 @property (nonatomic) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic) BUKImagePickerControllerMediaType mediaType;
 @property (nonatomic) ALAssetsGroupType groupTypes;
+@property (nonatomic) BOOL excludesEmptyGroups;
 
++ (BOOL)isAccessDenied;
 + (instancetype)managerWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary;
 + (NSArray *)assetsInAssetsGroup:(ALAssetsGroup *)assetsGroup reverse:(BOOL)reverse;
 + (void)fetchAssetsGroupsFromAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
                             withGroupTypes:(ALAssetsGroupType)groupTypes
                                  mediaType:(BUKImagePickerControllerMediaType)mediaType
-                                completion:(void (^)(NSArray *assetsGroups))completion
-                              failureBlock:(void (^)(NSError *error))failureBlock;
+                       excludesEmptyGroups:(BOOL)excludesEmptyGroups
+                                completion:(BUKAssetsManagerFetchAssetsGroupsCompletionBlock)completion
+                              failureBlock:(BUKAssetsManagerFetchAssetsGroupsFailureBlock)failureBlock;
 + (void)fetchAssetsFromAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
                        withAssetURLs:(NSArray *)assetURLs
-                            progress:(void (^)(ALAsset *asset, NSUInteger currentCout, NSUInteger totalCount))progressBlock
-                          completion:(void (^)(NSArray *assets, NSError *error))completionBlock;
-+ (BOOL)isAccessDenied;
-
+                            progress:(BUKAssetsManagerFetchAssetsProgressBlock)progressBlock
+                          completion:(BUKAssetsManagerFetchAssetsCompletionBlock)completionBlock;
 
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary;
 - (instancetype)initWithAssetsLibrary:(ALAssetsLibrary *)assetsLibrary
                             mediaTyle:(BUKImagePickerControllerMediaType)mediaType
                            groupTypes:(ALAssetsGroupType)groupTypes;
-- (void)fetchAssetsGroupsWithCompletion:(void (^)(NSArray *assetsGroups))completion
-                           failureBlock:(void (^)(NSError *error))failureBlock;
+
+// Fetch assets groups
+- (void)fetchAssetsGroupsWithCompletion:(BUKAssetsManagerFetchAssetsGroupsCompletionBlock)completion
+                           failureBlock:(BUKAssetsManagerFetchAssetsGroupsFailureBlock)failureBlock;
+
+// Write images
 - (void)writeImagesToSavedPhotosAlbum:(NSArray *)images
-                             progress:(void (^)(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount))progressBlock
+                             progress:(BUKAssetsManagerWriteImagesProgressBlock)progressBlock
                            completion:(void (^)(NSArray *assetsURLs, NSError *error))completionBlock;
-- (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(void (^)(NSURL *assetURL, NSError *error))completion;
+- (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(ALAssetsLibraryWriteImageCompletionBlock)completion;
+
+// Fetch assets
 - (void)fetchAssetsWithAssetURLs:(NSArray *)assetURLs
-                        progress:(void (^)(ALAsset *asset, NSUInteger currentCout, NSUInteger totalCount))progressBlock
-                      completion:(void (^)(NSArray *assets, NSError *error))completionBlock;
+                        progress:(BUKAssetsManagerFetchAssetsProgressBlock)progressBlock
+                      completion:(BUKAssetsManagerFetchAssetsCompletionBlock)completionBlock;
 
 @end

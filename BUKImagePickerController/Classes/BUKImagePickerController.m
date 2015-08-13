@@ -44,6 +44,7 @@
         _assetsManager = [[BUKAssetsManager alloc] initWithAssetsLibrary:[[ALAssetsLibrary alloc] init]
                                                               mediaTyle:self.mediaType
                                                              groupTypes:(ALAssetsGroupSavedPhotos | ALAssetsGroupPhotoStream | ALAssetsGroupAlbum)];
+        _assetsManager.excludesEmptyGroups = self.excludesEmptyAlbums;
     }
     return _assetsManager;
 }
@@ -71,6 +72,7 @@
         _mediaType = BUKImagePickerControllerMediaTypeImage;
         _sourceType = BUKImagePickerControllerSourceTypeLibrary;
         _allowsMultipleSelection = YES;
+        _excludesEmptyAlbums = NO;
         _showsCameraCell = NO;
         _savesToPhotoLibrary = NO;
         _needsConfirmation = NO;
