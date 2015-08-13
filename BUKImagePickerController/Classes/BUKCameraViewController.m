@@ -396,7 +396,16 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (void)userDeniedCameraPermissionsForCameraController:(id<FastttCameraInterface>)cameraController {
-    NSLog(@"userDeniedCameraPermissionsForCameraController");
+    if ([self.delegate respondsToSelector:@selector(userDeniedCameraPermissionsForCameraViewController:)]) {
+        [self.delegate userDeniedCameraPermissionsForCameraViewController:self];
+    }
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:BUKImagePickerLocalizedString(@"Access Denied", nil)
+                                                        message:BUKImagePickerLocalizedString(@"You can enable access in \"Settings\" -> \"Privacy\" -> \"Camera\".", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:BUKImagePickerLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+    [alertView show];
 }
 
 

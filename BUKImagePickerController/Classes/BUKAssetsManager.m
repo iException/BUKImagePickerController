@@ -8,6 +8,8 @@
 
 #import "BUKAssetsManager.h"
 
+NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAccessDenied";
+
 @implementation BUKAssetsManager
 
 #pragma mark - Class Methods
@@ -26,6 +28,25 @@
         }
     }];
     return mutableAssets;
+}
+
+
++ (BOOL)isAccessDenied {
+    ALAuthorizationStatus authorizationStatus = [ALAssetsLibrary authorizationStatus];
+    BOOL result;
+    
+    switch (authorizationStatus) {
+        case ALAuthorizationStatusAuthorized:
+        case ALAuthorizationStatusNotDetermined:
+            result = NO;
+            break;
+        case ALAuthorizationStatusRestricted:
+        case ALAuthorizationStatusDenied:
+            result = YES;
+            break;
+    }
+    
+    return result;
 }
 
 
@@ -48,6 +69,7 @@
                             withGroupTypes:(ALAssetsGroupType)groupTypes
                                  mediaType:(BUKImagePickerControllerMediaType)mediaType
                                 completion:(void (^)(NSArray *assetsGroups))completion
+                              failureBlock:(void (^)(NSError *error))failureBlock
 {
     NSMutableArray *assetsGroups = [NSMutableArray array];
     ALAssetsFilter *assetsFilter = [self assetsFilterForMediaType:mediaType];
@@ -65,6 +87,11 @@
         }
     } failureBlock:^(NSError *error) {
         NSLog(@"[BUKImagePickerController] An error occurs while fetching assets gourps: %@", [error localizedDescription]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:kBUKImagePickerAccessDeniedNotificationName object:nil];
+        
+        if (failureBlock) {
+            failureBlock(error);
+        }
     }];
 }
 
@@ -103,6 +130,8 @@
             checkNumberOfAssets();
         } failureBlock:^(NSError *error) {
             NSLog(@"[BUKImagePickerController] An error occurs while fetching asset: %@", [error localizedDescription]);
+            [[NSNotificationCenter defaultCenter] postNotificationName:kBUKImagePickerAccessDeniedNotificationName object:nil];
+            
             count ++;
             if (progressBlock) {
                 progressBlock(nil, count, totalCount);
@@ -184,8 +213,9 @@
 
 #pragma mark - Public
 
-- (void)fetchAssetsGroupsWithCompletion:(void (^)(NSArray *))completion {
-    return [[self class] fetchAssetsGroupsFromAssetsLibrary:self.assetsLibrary withGroupTypes:self.groupTypes mediaType:self.mediaType completion:completion];
+- (void)fetchAssetsGroupsWithCompletion:(void (^)(NSArray *))completion
+                           failureBlock:(void (^)(NSError *))failureBlock{
+    return [[self class] fetchAssetsGroupsFromAssetsLibrary:self.assetsLibrary withGroupTypes:self.groupTypes mediaType:self.mediaType completion:completion failureBlock:failureBlock];
 }
 
 

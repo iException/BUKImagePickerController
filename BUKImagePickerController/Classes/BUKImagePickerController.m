@@ -12,13 +12,16 @@
 #import "BUKAssetsViewController.h"
 #import "BUKAlbumsViewController.h"
 #import "BUKCameraViewController.h"
+#import "BUKAccessDeniedPlaceholderView.h"
 #import "BUKAssetsManager.h"
+#import "NSBundle+BUKImagePickerController.h"
 
 @interface BUKImagePickerController () <BUKAssetsViewControllerDelegate, BUKAlbumsViewControllerDelegate, BUKCameraViewControllerDelegate>
 
 @property (nonatomic) NSMutableOrderedSet *mutableSelectedAssetURLs;
 @property (nonatomic) BUKAssetsManager *assetsManager;
 @property (nonatomic) UINavigationController *childNavigationController;
+@property (nonatomic) UIView *accessDeniedPlaceholderView;
 
 @end
 
@@ -46,7 +49,21 @@
 }
 
 
+- (UIView *)accessDeniedPlaceholderView {
+    if (!_accessDeniedPlaceholderView) {
+        _accessDeniedPlaceholderView = [[BUKAccessDeniedPlaceholderView alloc] init];
+        _accessDeniedPlaceholderView.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _accessDeniedPlaceholderView;
+}
+
+
 #pragma mark - NSObject
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 - (instancetype)init {
     if ((self = [super init])) {
@@ -72,6 +89,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Check authorization status
+    if ((self.sourceType == BUKImagePickerControllerSourceTypeSavedPhotosAlbum || self.sourceType == BUKImagePickerControllerSourceTypeLibrary) && [BUKAssetsManager isAccessDenied]) {
+        [self showAccessDeniedView];
+        return;
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsAccessDenied:) name:kBUKImagePickerAccessDeniedNotificationName object:nil];
+    
+    // Setup view controllers
     UIViewController *viewController;
     switch (self.sourceType) {
         case BUKImagePickerControllerSourceTypeSavedPhotosAlbum: {
@@ -80,11 +106,12 @@
             BUKAssetsViewController *assetsViewController = [self createAssetsViewController];
             [self.childNavigationController setViewControllers:@[albumsViewController, assetsViewController]];
             viewController = self.childNavigationController;
+            
             [self.assetsManager fetchAssetsGroupsWithCompletion:^(NSArray *assetsGroups) {
                 if (assetsGroups.count > 0) {
                     assetsViewController.assetsGroup = [assetsGroups firstObject];
                 }
-            }];
+            } failureBlock:nil];
             break;
         }
         case BUKImagePickerControllerSourceTypeLibrary: {
@@ -194,6 +221,13 @@
 
 #pragma mark - BUKCameraViewControllerDelegate
 
+- (void)userDeniedCameraPermissionsForCameraViewController:(BUKCameraViewController *)cameraViewController {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerAccessDenied:)]) {
+        [self.delegate buk_imagePickerControllerAccessDenied:self];
+    }
+}
+
+
 - (void)cameraViewControllerDidCancel:(BUKCameraViewController *)cameraViewController {
     if (self.sourceType == BUKImagePickerControllerSourceTypeCamera) {
         [self cancelPicking];
@@ -259,6 +293,37 @@
 
 
 #pragma mark - Private
+
+- (void)assetsAccessDenied:(NSNotification *)notification {
+    if ([self.delegate respondsToSelector:@selector(buk_imagePickerControllerAccessDenied:)]) {
+        [self.delegate buk_imagePickerControllerAccessDenied:self];
+    }
+    
+    [self showAccessDeniedView];
+}
+
+
+- (void)showAccessDeniedView {
+    if (self.accessDeniedPlaceholderView.superview) {
+        return;
+    }
+    
+    UIViewController *viewController = [[UIViewController alloc] init];
+    viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelPicking)];
+    
+    UIView *view = viewController.view;
+    [view addSubview:self.accessDeniedPlaceholderView];
+    
+    // Add constraints
+    [view addConstraint:[NSLayoutConstraint constraintWithItem:self.accessDeniedPlaceholderView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+    [view addConstraint:[NSLayoutConstraint constraintWithItem:self.accessDeniedPlaceholderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [view addConstraint:[NSLayoutConstraint constraintWithItem:self.accessDeniedPlaceholderView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [view addConstraint:[NSLayoutConstraint constraintWithItem:self.accessDeniedPlaceholderView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    [self fastttAddChildViewController:navigationController];
+}
+
 
 - (BUKAlbumsViewController *)createAlbumsViewController {
     BUKAlbumsViewController *albumsViewController = [[BUKAlbumsViewController alloc] init];

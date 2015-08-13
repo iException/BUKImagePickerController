@@ -27,4 +27,5 @@
 - (BOOL)cameraViewControllerShouldTakePicture:(BUKCameraViewController *)cameraViewController;
 
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController;
+- (void)userDeniedCameraPermissionsForCameraViewController:(BUKCameraViewController *)cameraViewController;
 @end

@@ -20,7 +20,7 @@
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        _titleLabel.numberOfLines = 2;
+        _titleLabel.numberOfLines = 5;
         _titleLabel.textColor = [UIColor buk_lightTextColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         UIFontDescriptor *fontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
@@ -64,6 +64,7 @@
 #pragma mark - Private
 
 - (void)initialize {
+    self.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.titleLabel];
     [self addSubview:self.messageLabel];
     [self setupViewConstraints];
@@ -82,7 +83,7 @@
     
     // Message label
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.messageLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:5.0]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(15.0)-[messageLabel]-15.0)-|" options:kNilOptions metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(15.0)-[messageLabel]-(15.0)-|" options:kNilOptions metrics:nil views:views]];
 }
 
 @end

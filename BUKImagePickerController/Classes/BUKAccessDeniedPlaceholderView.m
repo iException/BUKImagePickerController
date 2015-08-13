@@ -14,7 +14,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         self.titleLabel.text = BUKImagePickerLocalizedString(@"This app does not have access to your photos or videos.", nil);
-        self.messageLabel.text = BUKImagePickerLocalizedString(@"You can enable access in Privacy Settings.", nil);
+        self.messageLabel.text = BUKImagePickerLocalizedString(@"You can enable access in \"Settings\" -> \"Privacy\" -> \"Photos\".", nil);
     }
     return self;
 }

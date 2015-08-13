@@ -1,3 +1,5 @@
+"Access Denied" = "访问被阻止";
+
 "Cancel" = "取消";
 
 "Confirm" = "使用";
@@ -10,6 +12,20 @@
 
 "Flash On" = "打开";
 
+"No Photos or Videos" = "无照片或视频";
+
+"OK" = "确定";
+
 "Photos" = "相片";
 
 "Retake" = "重拍";
+
+"This app does not have access to your photos or videos." = "此应用无法访问您的照片库。";
+
+"You can enable access in \"Settings\" -> \"Privacy\" -> \"Camera\"." = "您可以在\"设置\" -> \"隐私\" -> \"照相机\"开启权限。";
+
+"You can enable access in \"Settings\" -> \"Privacy\" -> \"Photos\"." = "您可以在\"设置\" -> \"隐私\" -> \"照片\"开启权限。";
+
+"You can sync photos and videos onto your %@ using iTunes." = "您可以使用iTunes将照片和视频同步到%@。";
+
+"You can take photos and videos using the camera, or sync photos and videos onto your %@\nusing iTunes." = "您可以使用相机拍摄照片和视频，或使用iTunes将照片和视频同步到%@。";

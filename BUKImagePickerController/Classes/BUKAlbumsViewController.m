@@ -27,6 +27,14 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 #pragma mark - NSObject
 
+- (instancetype)init {
+    if ((self = [super init])) {
+        self.title = BUKImagePickerLocalizedString(@"Photos", nil);
+    }
+    return self;
+}
+
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ALAssetsLibraryChangedNotification object:nil];
 }
@@ -44,8 +52,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     } else {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
-    
-    self.title = BUKImagePickerLocalizedString(@"Photos", nil);
     
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.rowHeight = 90.0;
@@ -194,7 +200,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
         if (completion) {
             completion();
         }
-    }];
+    } failureBlock:nil];
 }
 
 @end
