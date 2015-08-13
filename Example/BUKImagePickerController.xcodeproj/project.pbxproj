@@ -539,7 +539,7 @@
 				);
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BUKImagePickerController_Example.app/BUKImagePickerController_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BUKImagePickerController-Example.app/BUKImagePickerController-Example";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -558,7 +558,7 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BUKImagePickerController_Example.app/BUKImagePickerController_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BUKImagePickerController-Example.app/BUKImagePickerController-Example";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
