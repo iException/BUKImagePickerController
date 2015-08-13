@@ -38,6 +38,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     _assetsGroup = assetsGroup;
     
     self.title = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
+    
+    [self updateAssets];
 }
 
 
@@ -333,8 +335,11 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 - (void)updateAssets {
     self.assets = [BUKAssetsManager assetsInAssetsGroup:self.assetsGroup reverse:self.reversesAssets];
-    [self updatePlaceholderView:NO];
-    [self.collectionView reloadData];
+    
+    if (self.isViewLoaded) {
+        [self updatePlaceholderView:NO];
+        [self.collectionView reloadData];
+    }
 }
 
 
