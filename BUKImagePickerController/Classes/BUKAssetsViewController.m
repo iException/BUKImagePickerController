@@ -91,7 +91,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self updatePlaceholderView:animated];
     [self updateDoneButton];
     [self scrollToLatestPhotos];
 }
@@ -334,6 +333,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 - (void)updateAssets {
     self.assets = [BUKAssetsManager assetsInAssetsGroup:self.assetsGroup reverse:self.reversesAssets];
+    [self updatePlaceholderView:NO];
 }
 
 
