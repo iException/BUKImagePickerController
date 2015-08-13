@@ -77,13 +77,17 @@
         @"messageLabel": self.messageLabel
     };
     
+    NSDictionary *metrics = @{
+        @"margin": @(15.0)
+    };
+    
     // Title label
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:(-5.0)]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[titleLabel]-|" options:kNilOptions metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(margin)-[titleLabel]-(margin)-|" options:kNilOptions metrics:metrics views:views]];
     
     // Message label
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.messageLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:5.0]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(15.0)-[messageLabel]-(15.0)-|" options:kNilOptions metrics:nil views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(margin)-[messageLabel]-(margin)-|" options:kNilOptions metrics:metrics views:views]];
 }
 
 @end

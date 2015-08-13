@@ -114,6 +114,11 @@ NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAc
         }
     };
     
+    if (totalCount == 0) {
+        checkNumberOfAssets();
+        return;
+    }
+    
     // NOTE: This is a quick and dirty solution
     for (NSURL *assetURL in assetURLs) {
         [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
