@@ -38,8 +38,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     _assetsGroup = assetsGroup;
     
     self.title = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
-    [self updateAssets];
-    [self.collectionView reloadData];
 }
 
 
@@ -85,6 +83,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     self.placeholderView = [[BUKNoAssetsPlaceholderView alloc] init];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
+    
+    [self updateAssets];
 }
 
 
@@ -334,6 +334,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 - (void)updateAssets {
     self.assets = [BUKAssetsManager assetsInAssetsGroup:self.assetsGroup reverse:self.reversesAssets];
     [self updatePlaceholderView:NO];
+    [self.collectionView reloadData];
 }
 
 
@@ -346,7 +347,6 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
         for (NSURL *groupURL in updatedAssetsGroupsURLs) {
             if ([groupURL isEqual:assetsGroupURL]) {
                 [self updateAssets];
-                [self.collectionView reloadData];
             }
         }
     });
