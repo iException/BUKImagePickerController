@@ -243,6 +243,13 @@ NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAc
     NSUInteger totalCount = images.count;
     NSMutableArray *mutableAssetURLs = [NSMutableArray arrayWithCapacity:totalCount];
     
+    if (totalCount == 0) {
+        if (completionBlock) {
+            completionBlock(mutableAssetURLs, nil);
+        }
+        return;
+    }
+    
     for (UIImage *image in images) {
         [self writeImageToSavedPhotosAlbum:image completion:^(NSURL *assetURL, NSError *error) {
             if (!assetURL) {

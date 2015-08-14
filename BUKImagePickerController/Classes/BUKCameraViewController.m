@@ -259,6 +259,12 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [self updateDoneButton];
+    
+    // Ugly hack
+    // If pushed, set cancel button title "Back";
+    if (self.navigationController.viewControllers.count > 1) {
+        [self.cancelButton setTitle:BUKImagePickerLocalizedString(@"Back", nil) forState:UIControlStateNormal];
+    }
 }
 
 
@@ -561,7 +567,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     NSDictionary *metrics = @{
         @"thumbnailHeight": @(self.thumbnailSize.height + 4.0),
-        @"margin": @10.0,
+        @"margin": @15.0,
     };
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topToolbarView(40.0)][cameraView][bottomToolbarView(100.0)]|" options:kNilOptions metrics:nil views:views]];

@@ -216,6 +216,11 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 }
 
 
+- (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController saveImages:(NSArray *)images withProgress:(NSUInteger)currentCount totalCount:(NSUInteger)totalCount {
+    NSLog(@"Save images...progress: %ld/%ld", currentCount, totalCount);
+}
+
+
 - (void)buk_imagePickerController:(BUKImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     NSLog(@"didFinishPickingAssets: %@", assets);
     [imagePickerController dismissViewControllerAnimated:YES completion:nil];
