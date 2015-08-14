@@ -241,12 +241,18 @@
         // Save photos to albums and pop the view controller
         if (self.savesToPhotoLibrary) {
             NSArray *images = cameraViewController.capturedFullImages;
+            if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:willSaveImages:)]) {
+                [self.delegate buk_imagePickerController:self willSaveImages:images];
+            }
             [self.assetsManager writeImagesToSavedPhotosAlbum:images progress:^(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount) {
                 if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:saveImages:withProgress:totalCount:)]) {
                     [self.delegate buk_imagePickerController:self saveImages:images withProgress:currentCount totalCount:totalCount];
                 }
-            } completion:^(NSArray *assetsURLs, NSError *error) {
-                [self.mutableSelectedAssetURLs addObjectsFromArray:assetsURLs];
+            } completion:^(NSArray *assetURLs, NSError *error) {
+                if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishSavingImages:resultAssetURLs:)]) {
+                    [self.delegate buk_imagePickerController:self didFinishSavingImages:images resultAssetURLs:assetURLs];
+                }
+                [self.mutableSelectedAssetURLs addObjectsFromArray:assetURLs];
             }];
         }
         
@@ -257,12 +263,19 @@
 
 - (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images {
     if (self.savesToPhotoLibrary) {
+        if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:willSaveImages:)]) {
+            [self.delegate buk_imagePickerController:self willSaveImages:images];
+        }
+        
         [self.assetsManager writeImagesToSavedPhotosAlbum:images progress:^(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount) {
             if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:saveImages:withProgress:totalCount:)]) {
                 [self.delegate buk_imagePickerController:self saveImages:images withProgress:currentCount totalCount:totalCount];
             }
-        } completion:^(NSArray *assetsURLs, NSError *error) {
-            [self.mutableSelectedAssetURLs addObjectsFromArray:assetsURLs];
+        } completion:^(NSArray *assetURLs, NSError *error) {
+            if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishSavingImages:resultAssetURLs:)]) {
+                [self.delegate buk_imagePickerController:self didFinishSavingImages:images resultAssetURLs:assetURLs];
+            }
+            [self.mutableSelectedAssetURLs addObjectsFromArray:assetURLs];
             [self finishPickingAssets];
         }];
     } else {

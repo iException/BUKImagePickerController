@@ -51,7 +51,7 @@ typedef void (^BUKAssetsManagerFetchAssetsCompletionBlock)(NSArray *assets, NSEr
 // Write images
 - (void)writeImagesToSavedPhotosAlbum:(NSArray *)images
                              progress:(BUKAssetsManagerWriteImagesProgressBlock)progressBlock
-                           completion:(void (^)(NSArray *assetsURLs, NSError *error))completionBlock;
+                           completion:(void (^)(NSArray *assetURLs, NSError *error))completionBlock;
 - (void)writeImageToSavedPhotosAlbum:(UIImage *)image completion:(ALAssetsLibraryWriteImageCompletionBlock)completion;
 
 // Fetch assets
