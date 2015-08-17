@@ -1,5 +1,5 @@
 PODS:
-  - BUKImagePickerController (0.1.7):
+  - BUKImagePickerController (0.1.8):
     - FastttCamera (~> 0.3)
   - Expecta (1.0.2)
   - FastttCamera (0.3.2):
@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BUKImagePickerController: 01d3b7ab8359b761a13735174cda3b6d4f614efb
+  BUKImagePickerController: bf02f83bf0429151139173b7e0cbacc237669239
   Expecta: 54e8a3530add08f4f0208c111355eda7cde74a53
   FastttCamera: 4e758cc2bf5564effc654346cac320c09a550164
   Specta: cf3e4188cf35375c3ee2cd03f8db8f1f4ef98234
