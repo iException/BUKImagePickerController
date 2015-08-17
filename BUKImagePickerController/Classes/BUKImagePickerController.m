@@ -238,12 +238,19 @@
     if (self.sourceType == BUKImagePickerControllerSourceTypeCamera) {
         [self cancelPicking];
     } else {
-        // Save photos to albums and pop the view controller
+        [self.childNavigationController popViewControllerAnimated:YES];
+        
+        // Save photos to albums if needed
+        NSArray *images = cameraViewController.capturedFullImages;
+        if (images.count == 0) {
+            return;
+        }
+        
         if (self.savesToPhotoLibrary) {
-            NSArray *images = cameraViewController.capturedFullImages;
             if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:willSaveImages:)]) {
                 [self.delegate buk_imagePickerController:self willSaveImages:images];
             }
+            
             [self.assetsManager writeImagesToSavedPhotosAlbum:images progress:^(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount) {
                 if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:saveImages:withProgress:totalCount:)]) {
                     [self.delegate buk_imagePickerController:self saveImages:images withProgress:currentCount totalCount:totalCount];
@@ -255,14 +262,18 @@
                 [self.mutableSelectedAssetURLs addObjectsFromArray:assetURLs];
             }];
         }
-        
-        [self.childNavigationController popViewControllerAnimated:YES];
     }
 }
 
 
 - (void)cameraViewController:(BUKCameraViewController *)cameraViewController didFinishCapturingImages:(NSArray *)images {
     if (self.savesToPhotoLibrary) {
+        if (images.count == 0) {
+            [self finishPickingAssets];
+            return;
+        }
+        
+        // Start saving
         if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:willSaveImages:)]) {
             [self.delegate buk_imagePickerController:self willSaveImages:images];
         }
