@@ -149,6 +149,7 @@ static NSString *const kBUKViewControllerCellIdentifier = @"cell";
     imagePickerController.allowsMultipleSelection = YES;
     imagePickerController.showsCameraCell = YES;
     imagePickerController.reversesAssets = YES;
+    imagePickerController.usesScaledImage = YES;
     [self.navigationController presentViewController:imagePickerController animated:YES completion:nil];
 }
 

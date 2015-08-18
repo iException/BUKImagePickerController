@@ -79,6 +79,8 @@
         _savesToPhotoLibrary = NO;
         _needsConfirmation = NO;
         _reversesAssets = NO;
+        _maxScaledDimension = 0;
+        _usesScaledImage = NO;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
         _minimumNumberOfSelection = 1;
@@ -248,7 +250,7 @@
         [self.childNavigationController popViewControllerAnimated:YES];
         
         // Save photos to albums if needed
-        NSArray *images = cameraViewController.capturedFullImages;
+        NSArray *images = cameraViewController.capturedImages;
         if (images.count == 0) {
             return;
         }
@@ -315,10 +317,10 @@
 
 - (BOOL)cameraViewControllerShouldTakePicture:(BUKCameraViewController *)cameraViewController {
     if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:shouldTakePictureWithCapturedImages:)]) {
-        return [self.delegate buk_imagePickerController:self shouldTakePictureWithCapturedImages:cameraViewController.capturedFullImages];
+        return [self.delegate buk_imagePickerController:self shouldTakePictureWithCapturedImages:cameraViewController.capturedImages];
     }
     
-    NSUInteger numberOfCapturedImages = cameraViewController.capturedFullImages.count;
+    NSUInteger numberOfCapturedImages = cameraViewController.capturedImages.count;
     BOOL result = self.minimumNumberOfSelection > self.maximumNumberOfSelection;
     
     return result || (self.selectedAssetURLs.count + numberOfCapturedImages) < self.maximumNumberOfSelection;
@@ -330,7 +332,7 @@
         return [self.delegate buk_imagePickerControllerShouldEnableDoneButton:self];
     }
     
-    NSUInteger numberOfCapturedImages = cameraViewController.capturedFullImages.count;
+    NSUInteger numberOfCapturedImages = cameraViewController.capturedImages.count;
     NSUInteger numberOfSelection = self.selectedAssetURLs.count;
     
     return [self isNumberOfSelectionValid:(numberOfSelection + numberOfCapturedImages)];
@@ -398,6 +400,8 @@
     cameraViewController.delegate = self;
     cameraViewController.allowsMultipleSelection = self.allowsMultipleSelection;
     cameraViewController.needsConfirmation = self.needsConfirmation;
+    cameraViewController.usesScaledImage = self.usesScaledImage;
+    cameraViewController.maxScaledDimension = self.maxScaledDimension;
     return cameraViewController;
 }
 

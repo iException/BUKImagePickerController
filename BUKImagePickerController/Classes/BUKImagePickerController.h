@@ -29,17 +29,20 @@ typedef NS_ENUM(NSUInteger, BUKImagePickerControllerSourceType) {
 @property (nonatomic, readonly) NSArray *selectedAssetURLs;
 @property (nonatomic, weak) id<BUKImagePickerControllerDelegate> delegate;
 
+@property (nonatomic) BOOL excludesEmptyAlbums;
 @property (nonatomic) BOOL allowsMultipleSelection;
 @property (nonatomic) BOOL showsCameraCell;
 @property (nonatomic) BOOL reversesAssets;
-@property (nonatomic) BOOL savesToPhotoLibrary;
-@property (nonatomic) BOOL needsConfirmation;
-@property (nonatomic) BOOL excludesEmptyAlbums;
 @property (nonatomic) NSUInteger minimumNumberOfSelection;
 @property (nonatomic) NSUInteger maximumNumberOfSelection;
 
 @property (nonatomic) NSUInteger numberOfColumnsInPortrait;
 @property (nonatomic) NSUInteger numberOfColumnsInLandscape;
+
+@property (nonatomic) BOOL savesToPhotoLibrary;
+@property (nonatomic) BOOL needsConfirmation;
+@property (nonatomic) BOOL usesScaledImage;
+@property (nonatomic) BOOL maxScaledDimension;
 
 @end
 

@@ -10,6 +10,10 @@
 
 NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAccessDenied";
 
+@interface BUKAssetsManager ()
+@property (nonatomic) dispatch_queue_t saveImagesQueue;
+@end
+
 @implementation BUKAssetsManager
 
 #pragma mark - Class Methods
@@ -206,6 +210,7 @@ NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAc
         _groupTypes = ALAssetsGroupSavedPhotos | ALAssetsGroupPhotoStream | ALAssetsGroupAlbum;
         _mediaType = BUKImagePickerControllerMediaTypeAny;
         _excludesEmptyGroups = NO;
+        _saveImagesQueue = dispatch_queue_create("com.buk-image-picker-controller.save-images-queue", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
@@ -250,27 +255,40 @@ NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAc
         return;
     }
     
+    __block NSUInteger count = 0;
+    __weak typeof(self)weakSelf = self;
+    
     for (UIImage *image in images) {
-        [self writeImageToSavedPhotosAlbum:image completion:^(NSURL *assetURL, NSError *error) {
-            if (!assetURL) {
-                NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
-                if (completionBlock) {
-                    completionBlock(nil, error);
+        dispatch_async(self.saveImagesQueue, ^(void) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            [strongSelf writeImageToSavedPhotosAlbum:image completion:^(NSURL *assetURL, NSError *error) {
+                count ++;
+                if (assetURL) {
+                    NSLog(@"[BUKImagePicker] Saved image to photos album.");
+                    
+                    [mutableAssetURLs addObject:assetURL];
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        if (progressBlock) {
+                            progressBlock(assetURL, count, totalCount);
+                        }
+                    });
+                } else {
+                    NSLog(@"[BUKImagePicker] Saving images failed: %@", error);
                 }
-            }
-            
-            NSLog(@"[BUKImagePicker] Saved image to photos album.");
-            [mutableAssetURLs addObject:assetURL];
-            if (progressBlock) {
-                progressBlock(assetURL, mutableAssetURLs.count, totalCount);
-            }
-            
-            if (mutableAssetURLs.count == totalCount) {
-                if (completionBlock) {
-                    completionBlock(mutableAssetURLs, nil);
+                
+                if (count == totalCount) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        if (completionBlock) {
+                            completionBlock(mutableAssetURLs, nil);
+                        }
+                    });
                 }
-            }
-        }];
+                dispatch_semaphore_signal(semaphore);
+            }];
+            
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        });
     }
 }
 

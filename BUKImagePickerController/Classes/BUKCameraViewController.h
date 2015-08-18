@@ -8,15 +8,19 @@
 
 @import UIKit;
 
+@class FastttCamera;
 @protocol BUKCameraViewControllerDelegate;
 
 @interface BUKCameraViewController : UIViewController
 
 @property (nonatomic, weak) id<BUKCameraViewControllerDelegate> delegate;
-@property (nonatomic, readonly) NSArray *capturedFullImages;
+@property (nonatomic, readonly) FastttCamera *fastCamera;
+@property (nonatomic, readonly) NSArray *capturedImages;
 @property (nonatomic) CGSize thumbnailSize;
 @property (nonatomic) BOOL allowsMultipleSelection;
 @property (nonatomic) BOOL needsConfirmation;
+@property (nonatomic) BOOL usesScaledImage;
+@property (nonatomic) CGFloat maxScaledDimension;
 
 @end
 

@@ -86,7 +86,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.previewImageView.image = self.capturedImage.rotatedPreviewImage;
+    if (self.capturedImage.rotatedPreviewImage) {
+        self.previewImageView.image = self.capturedImage.rotatedPreviewImage;
+    } else {
+        self.previewImageView.image = self.capturedImage.fullImage;
+    }
 }
 
 

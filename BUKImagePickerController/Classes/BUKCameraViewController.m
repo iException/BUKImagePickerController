@@ -17,7 +17,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 @interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BUKImageCollectionViewCellDelegate, BUKCameraConfirmViewControllerDelegate>
 
-@property (nonatomic) FastttCamera *fastCamera;
 @property (nonatomic) UIButton *takePictureButton;
 @property (nonatomic) UIButton *flashModeButton;
 @property (nonatomic) UIButton *cameraDeviceButton;
@@ -38,6 +37,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 #pragma mark - Accessors
 
+@synthesize fastCamera = _fastCamera;
 @dynamic flashMode;
 @dynamic cameraDevice;
 
@@ -45,6 +45,15 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_fastCamera) {
         _fastCamera = [[FastttCamera alloc] init];
         _fastCamera.delegate = self;
+        _fastCamera.normalizesImageOrientations = NO;
+        _fastCamera.returnsRotatedPreview = self.needsConfirmation;
+        if (self.usesScaledImage) {
+            if (self.maxScaledDimension > 0) {
+                _fastCamera.maxScaledDimension = self.maxScaledDimension;
+            }
+        } else {
+            _fastCamera.maxScaledDimension = MAX(self.thumbnailSize.width, self.thumbnailSize.height);
+        }
     }
     return _fastCamera;
 }
@@ -196,10 +205,16 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
-- (NSArray *)capturedFullImages {
+- (NSArray *)capturedImages {
     NSMutableArray *mutableFullImages = [NSMutableArray arrayWithCapacity:self.mutableCapturedImages.count];
-    for (FastttCapturedImage *capturedImage in self.mutableCapturedImages) {
-        [mutableFullImages addObject:capturedImage.fullImage];
+    if (self.usesScaledImage) {
+        for (FastttCapturedImage *capturedImage in self.mutableCapturedImages) {
+            [mutableFullImages addObject:capturedImage.scaledImage];
+        }
+    } else {
+        for (FastttCapturedImage *capturedImage in self.mutableCapturedImages) {
+            [mutableFullImages addObject:capturedImage.fullImage];
+        }
     }
     return mutableFullImages;
 }
@@ -211,6 +226,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if ((self = [super init])) {
         _thumbnailSize = CGSizeMake(72.0, 72.0);
         _mutableCapturedImages = [NSMutableArray array];
+        _needsConfirmation = NO;
+        _allowsMultipleSelection = NO;
     }
     return self;
 }
@@ -287,7 +304,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 - (void)done:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cameraViewController:didFinishCapturingImages:)]) {
-        [self.delegate cameraViewController:self didFinishCapturingImages:self.capturedFullImages];
+        [self.delegate cameraViewController:self didFinishCapturingImages:self.capturedImages];
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
@@ -449,6 +466,11 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     // Since we don't need preview image, release it to save memory.
     capturedImage.rotatedPreviewImage = nil;
+    if (self.usesScaledImage) {
+        // If the client want to use scaled image, release the full image data.
+        capturedImage.fullImage = nil;
+    }
+    
     [self.mutableCapturedImages addObject:capturedImage];
     
     if (!self.allowsMultipleSelection) {
@@ -547,7 +569,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (void)configureCell:(BUKImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    cell.imageView.image = [[self objectAtIndexPath:indexPath] scaledImage];
+    FastttCapturedImage *capturedImage = [self objectAtIndexPath:indexPath];
+    cell.imageView.image = capturedImage.scaledImage;
     cell.delegate = self;
 }
 
