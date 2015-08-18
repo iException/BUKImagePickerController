@@ -22,6 +22,8 @@
 @property (nonatomic) BUKAssetsManager *assetsManager;
 @property (nonatomic) UINavigationController *childNavigationController;
 @property (nonatomic) UIView *accessDeniedPlaceholderView;
+@property (nonatomic, weak) BUKAssetsViewController *assetsViewController;
+@property (nonatomic, weak) BUKAlbumsViewController *albumsViewController;
 
 @end
 
@@ -106,6 +108,8 @@
             self.childNavigationController = [[UINavigationController alloc] init];
             BUKAlbumsViewController *albumsViewController = [self createAlbumsViewController];
             BUKAssetsViewController *assetsViewController = [self createAssetsViewController];
+            self.albumsViewController = albumsViewController;
+            self.assetsViewController = assetsViewController;
             [self.childNavigationController setViewControllers:@[albumsViewController, assetsViewController]];
             viewController = self.childNavigationController;
             
@@ -114,10 +118,12 @@
                     assetsViewController.assetsGroup = [assetsGroups firstObject];
                 }
             } failureBlock:nil];
+            
             break;
         }
         case BUKImagePickerControllerSourceTypeLibrary: {
             BUKAlbumsViewController *albumsViewController = [self createAlbumsViewController];
+            self.albumsViewController = albumsViewController;
             self.childNavigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
             viewController = self.childNavigationController;
             break;
@@ -148,6 +154,7 @@
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup {
     BUKAssetsViewController *assetsViewController = [self createAssetsViewController];
     assetsViewController.assetsGroup = assetsGroup;
+    self.assetsViewController = assetsViewController;
     [self.childNavigationController pushViewController:assetsViewController animated:YES];
 }
 
@@ -251,6 +258,8 @@
                 [self.delegate buk_imagePickerController:self willSaveImages:images];
             }
             
+            self.assetsViewController.ignoreChange = YES;
+            
             [self.assetsManager writeImagesToSavedPhotosAlbum:images progress:^(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount) {
                 if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:saveImages:withProgress:totalCount:)]) {
                     [self.delegate buk_imagePickerController:self saveImages:images withProgress:currentCount totalCount:totalCount];
@@ -259,6 +268,10 @@
                 if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:didFinishSavingImages:resultAssetURLs:)]) {
                     [self.delegate buk_imagePickerController:self didFinishSavingImages:images resultAssetURLs:assetURLs];
                 }
+                
+                [self.assetsViewController updateAssets];
+                self.assetsViewController.ignoreChange = NO;
+                
                 [self.mutableSelectedAssetURLs addObjectsFromArray:assetURLs];
             }];
         }
@@ -277,6 +290,7 @@
         if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:willSaveImages:)]) {
             [self.delegate buk_imagePickerController:self willSaveImages:images];
         }
+        self.assetsViewController.ignoreChange = YES;
         
         [self.assetsManager writeImagesToSavedPhotosAlbum:images progress:^(NSURL *assetURL, NSUInteger currentCount, NSUInteger totalCount) {
             if ([self.delegate respondsToSelector:@selector(buk_imagePickerController:saveImages:withProgress:totalCount:)]) {

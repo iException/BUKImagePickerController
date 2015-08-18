@@ -56,6 +56,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     if ((self = [super initWithCollectionViewLayout:layout])) {
         _minimumInteritemSpacing = 2.0;
         _minimumLineSpacing = 2.0;
+        _ignoreChange = NO;
         
         layout.minimumInteritemSpacing = _minimumInteritemSpacing;
         layout.minimumLineSpacing = _minimumLineSpacing;
@@ -347,6 +348,10 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 - (void)assetsLibraryChanged:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.ignoreChange) {
+            return;
+        }
+        
         NSURL *assetsGroupURL = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
         NSSet *updatedAssetsGroupsURLs = notification.userInfo[ALAssetLibraryUpdatedAssetGroupsKey];
         for (NSURL *groupURL in updatedAssetsGroupsURLs) {

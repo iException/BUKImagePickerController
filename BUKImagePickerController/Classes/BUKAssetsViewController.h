@@ -23,6 +23,9 @@
 @property (nonatomic) CGFloat minimumLineSpacing;
 @property (nonatomic) NSUInteger numberOfColumnsInPortrait;
 @property (nonatomic) NSUInteger numberOfColumnsInLandscape;
+@property (nonatomic) BOOL ignoreChange;
+
+- (void)updateAssets;
 
 @end
 
