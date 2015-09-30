@@ -197,7 +197,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 #pragma mark - Private
 
 - (BOOL)hasContent {
-    return self.assets.count > 0;
+    return self.assets.count > 0 || self.showsCameraCell;
 }
 
 
