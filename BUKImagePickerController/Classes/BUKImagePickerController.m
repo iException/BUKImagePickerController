@@ -81,6 +81,7 @@
         _reversesAssets = NO;
         _maxScaledDimension = 0;
         _usesScaledImage = NO;
+        _showsNumberOfSelectedAssets = YES;
         _numberOfColumnsInPortrait = 4;
         _numberOfColumnsInLandscape = 7;
         _minimumNumberOfSelection = 1;
@@ -180,6 +181,20 @@
 }
 
 
+- (BOOL)albumsViewControllerShouldShowSelectionInfo:(BUKAlbumsViewController *)viewController {
+    if (!self.showsNumberOfSelectedAssets) {
+        return NO;
+    }
+    
+    return self.mutableSelectedAssetURLs.count > 0;
+}
+
+
+- (NSString *)albumsViewControllerSelectionInfo:(BUKAlbumsViewController *)viewController {
+    return [self selectionInfo];
+}
+
+
 #pragma mark - BUKAssetsViewControllerDelegate
 
 - (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController shouldSelectAsset:(ALAsset *)asset {
@@ -231,6 +246,20 @@
     }
     
     return [self isTotalNumberOfSelectedAssetsValid];
+}
+
+
+- (BOOL)assetsViewControllerShouldShowSelectionInfo:(BUKAssetsViewController *)assetsViewController {
+    if (!self.showsNumberOfSelectedAssets) {
+        return NO;
+    }
+    
+    return self.mutableSelectedAssetURLs.count > 0;
+}
+
+
+- (NSString *)assetsViewControllerSelectionInfo:(BUKAssetsViewController *)assetsViewController {
+    return [self selectionInfo];
 }
 
 
@@ -403,6 +432,17 @@
     cameraViewController.usesScaledImage = self.usesScaledImage;
     cameraViewController.maxScaledDimension = self.maxScaledDimension;
     return cameraViewController;
+}
+
+
+- (NSString *)selectionInfo {
+    NSString *text = nil;
+    if (self.maximumNumberOfSelection > 0) {
+        text = [NSString stringWithFormat:@"Selected: %@/%@", @(self.mutableSelectedAssetURLs.count), @(self.maximumNumberOfSelection)];
+    } else {
+        text = [NSString stringWithFormat:@"Selected: %@", @(self.mutableSelectedAssetURLs.count)];
+    }
+    return text;
 }
 
 

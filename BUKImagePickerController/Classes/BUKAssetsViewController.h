@@ -46,6 +46,8 @@
 
 - (BOOL)assetsViewControllerShouldEnableDoneButton:(BUKAssetsViewController *)assetsViewController;
 - (BOOL)assetsViewController:(BUKAssetsViewController *)assetsViewController isAssetSelected:(ALAsset *)asset;
+- (BOOL)assetsViewControllerShouldShowSelectionInfo:(BUKAssetsViewController *)assetsViewController;
+- (NSString *)assetsViewControllerSelectionInfo:(BUKAssetsViewController *)assetsViewController;
 
 @end
 

@@ -30,4 +30,6 @@
 - (void)albumsViewControllerDidFinishPicking:(BUKAlbumsViewController *)viewController;
 - (void)albumsViewController:(BUKAlbumsViewController *)viewController didSelectAssetsGroup:(ALAssetsGroup *)assetsGroup;
 - (BOOL)albumsViewControllerShouldEnableDoneButton:(BUKAlbumsViewController *)viewController;
+- (BOOL)albumsViewControllerShouldShowSelectionInfo:(BUKAlbumsViewController *)viewController;
+- (NSString *)albumsViewControllerSelectionInfo:(BUKAlbumsViewController *)viewController;
 @end

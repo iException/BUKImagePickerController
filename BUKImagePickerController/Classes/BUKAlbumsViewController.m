@@ -53,6 +53,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
     
+    [self setUpToolbar];
+    
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.rowHeight = 90.0;
     [self.tableView registerClass:[BUKAlbumTableViewCell class] forCellReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
@@ -71,6 +73,7 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
     [super viewWillAppear:animated];
     
     [self updateDoneButton];
+    [self updateSelectionInfo];
 }
 
 
@@ -119,6 +122,48 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"albumCell";
 
 
 #pragma mark - Private
+
+- (void)setUpToolbar {
+    UIBarButtonItem *leftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    UIBarButtonItem *rightSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    
+    NSDictionary *attributes = @{
+        NSForegroundColorAttributeName: [UIColor blackColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:14.0],
+    };
+    UIBarButtonItem *infoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+    infoButtonItem.enabled = NO;
+    [infoButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [infoButtonItem setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
+    self.toolbarItems = @[leftSpace, infoButtonItem, rightSpace];
+}
+
+
+- (void)updateSelectionInfo {
+    BOOL shouldShow = NO;
+    NSString *text = nil;
+    if ([self.delegate respondsToSelector:@selector(albumsViewControllerShouldShowSelectionInfo:)]) {
+        shouldShow = [self.delegate albumsViewControllerShouldShowSelectionInfo:self];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(albumsViewControllerSelectionInfo:)]) {
+        text = [self.delegate albumsViewControllerSelectionInfo:self];
+    }
+    
+    shouldShow = shouldShow && text != nil;
+    
+    if (shouldShow) {
+        UIBarButtonItem *barButtonItem = self.toolbarItems[1];
+        barButtonItem.title = text;
+    }
+    
+    BOOL shoulHidden = !shouldShow;
+    if (shoulHidden != self.navigationController.toolbarHidden) {
+        [self.navigationController setToolbarHidden:shoulHidden animated:YES];
+    }
+}
+
 
 - (void)updateDoneButton {
     if ([self.delegate respondsToSelector:@selector(albumsViewControllerShouldEnableDoneButton:)]) {

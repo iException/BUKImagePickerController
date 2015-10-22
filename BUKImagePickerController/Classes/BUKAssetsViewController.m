@@ -81,6 +81,9 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:BUKImagePickerLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
     }
     
+    [self setUpToolbar];
+    
+    // Configure collection view
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     self.collectionView.allowsMultipleSelection = self.allowsMultipleSelection;
@@ -100,6 +103,7 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
     
     [self updateDoneButton];
     [self scrollToLatestPhotos];
+    [self updateSelectionInfo];
 }
 
 
@@ -176,6 +180,7 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
     }
     
     [self updateDoneButton];
+    [self updateSelectionInfo];
 }
 
 
@@ -186,6 +191,7 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
     }
     
     [self updateDoneButton];
+    [self updateSelectionInfo];
 }
 
 
@@ -266,6 +272,48 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
     } else {
         change();
         completion(YES);
+    }
+}
+
+
+- (void)setUpToolbar {
+    UIBarButtonItem *leftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    UIBarButtonItem *rightSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    
+    NSDictionary *attributes = @{
+        NSForegroundColorAttributeName: [UIColor blackColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:14.0],
+    };
+    UIBarButtonItem *infoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+    infoButtonItem.enabled = NO;
+    [infoButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [infoButtonItem setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
+    self.toolbarItems = @[leftSpace, infoButtonItem, rightSpace];
+}
+
+
+- (void)updateSelectionInfo {
+    BOOL shouldShow = NO;
+    NSString *text = nil;
+    if ([self.delegate respondsToSelector:@selector(assetsViewControllerShouldShowSelectionInfo:)]) {
+        shouldShow = [self.delegate assetsViewControllerShouldShowSelectionInfo:self];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(assetsViewControllerSelectionInfo:)]) {
+        text = [self.delegate assetsViewControllerSelectionInfo:self];
+    }
+    
+    shouldShow = shouldShow && text != nil;
+    
+    if (shouldShow) {
+        UIBarButtonItem *barButtonItem = self.toolbarItems[1];
+        barButtonItem.title = text;
+    }
+    
+    BOOL shoulHidden = !shouldShow;
+    if (shoulHidden != self.navigationController.toolbarHidden) {
+        [self.navigationController setToolbarHidden:shoulHidden animated:YES];
     }
 }
 
