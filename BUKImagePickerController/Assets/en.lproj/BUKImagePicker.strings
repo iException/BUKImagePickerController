@@ -22,6 +22,10 @@
 
 "Retake" = "Retake";
 
+"Selected: %@/%@" = "Selected: %@/%@";
+
+"Selected: %@" = "Selected: %@";
+
 "Take Photos" = "Take Photos";
 
 "This app does not have access to your photos or videos." = "This app does not have access to your photos or videos.";

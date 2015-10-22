@@ -22,6 +22,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 @property (nonatomic) UIButton *cameraDeviceButton;
 @property (nonatomic) UIButton *doneButton;
 @property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) UILabel *selectionInfoLabel;
 @property (nonatomic) UIView *topToolbarView;
 @property (nonatomic) UIView *bottomToolbarView;
 @property (nonatomic) UIView *flashView;
@@ -114,6 +115,18 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         [_doneButton addTarget:self action:@selector(done:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _doneButton;
+}
+
+
+- (UILabel *)selectionInfoLabel {
+    if (!_selectionInfoLabel) {
+        _selectionInfoLabel = [[UILabel alloc] init];
+        _selectionInfoLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _selectionInfoLabel.font = [UIFont systemFontOfSize:14.0];
+        _selectionInfoLabel.textColor = [UIColor orangeColor];
+        _selectionInfoLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    return _selectionInfoLabel;
 }
 
 
@@ -247,6 +260,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     // Top toolbar
     [self.topToolbarView addSubview:self.flashModeButton];
     [self.topToolbarView addSubview:self.cameraDeviceButton];
+    [self.topToolbarView addSubview:self.selectionInfoLabel];
     [self.view addSubview:self.topToolbarView];
     
     // Bottom toolbar
@@ -275,7 +289,9 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    [self.navigationController setToolbarHidden:YES animated:animated];
     [self updateDoneButton];
+    [self updateSelectionInfo];
     
     // Ugly hack
     // If pushed, set cancel button title "Back";
@@ -482,6 +498,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
     
     [self updateDoneButton];
+    [self updateSelectionInfo];
 }
 
 
@@ -490,6 +507,27 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         self.doneButton.enabled = [self.delegate cameraViewControllerShouldEnableDoneButton:self];
     } else {
         self.doneButton.enabled = YES;
+    }
+}
+
+
+- (void)updateSelectionInfo {
+    BOOL shouldShow = NO;
+    NSString *text = nil;
+    if ([self.delegate respondsToSelector:@selector(cameraViewControllerShouldShowSelectionInfo:)]) {
+        shouldShow = [self.delegate cameraViewControllerShouldShowSelectionInfo:self];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(cameraViewControllerSelectionInfo:)]) {
+        text = [self.delegate cameraViewControllerSelectionInfo:self];
+    }
+    
+    shouldShow = shouldShow && text != nil;
+    
+    if (shouldShow) {
+        self.selectionInfoLabel.text = text;
+    } else {
+        self.selectionInfoLabel.text = nil;
     }
 }
 
@@ -581,6 +619,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         @"bottomToolbarView": self.bottomToolbarView,
         @"cameraView": self.fastCamera.view,
         @"flashModeButton": self.flashModeButton,
+        @"selectionInfoLabel": self.selectionInfoLabel,
         @"cameraDeviceButton": self.cameraDeviceButton,
         @"takePictureButton": self.takePictureButton,
         @"doneButton": self.doneButton,
@@ -602,8 +641,9 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topToolbarView]|" options:kNilOptions metrics:nil views:views]];
     
     // Flash mode button and camera device button
-    [self.topToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(margin)-[flashModeButton]-(>=0)-[cameraDeviceButton]-(margin)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
+    [self.topToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(margin)-[flashModeButton]-(>=0)-[selectionInfoLabel]-(>=0)-[cameraDeviceButton]-(margin)-|" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
     [self.topToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.flashModeButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self.topToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.selectionInfoLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.topToolbarView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     
     // Bottom toolbar
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bottomToolbarView]|" options:kNilOptions metrics:nil views:views]];

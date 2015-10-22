@@ -405,6 +405,7 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
     if (self.isViewLoaded) {
         [self updatePlaceholderView:NO];
         [self.collectionView reloadData];
+        [self updateSelectionInfo];
     }
 }
 

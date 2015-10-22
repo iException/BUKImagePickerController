@@ -32,4 +32,8 @@
 
 - (BOOL)cameraViewControllerShouldEnableDoneButton:(BUKCameraViewController *)cameraViewController;
 - (void)userDeniedCameraPermissionsForCameraViewController:(BUKCameraViewController *)cameraViewController;
+
+- (BOOL)cameraViewControllerShouldShowSelectionInfo:(BUKCameraViewController *)cameraViewController;
+- (NSString *)cameraViewControllerSelectionInfo:(BUKCameraViewController *)cameraViewController;
+
 @end

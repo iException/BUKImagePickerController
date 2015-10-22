@@ -191,7 +191,7 @@
 
 
 - (NSString *)albumsViewControllerSelectionInfo:(BUKAlbumsViewController *)viewController {
-    return [self selectionInfo];
+    return [self selectionInfoWithNumberOfSelection:self.mutableSelectedAssetURLs.count];
 }
 
 
@@ -259,7 +259,7 @@
 
 
 - (NSString *)assetsViewControllerSelectionInfo:(BUKAssetsViewController *)assetsViewController {
-    return [self selectionInfo];
+    return [self selectionInfoWithNumberOfSelection:self.mutableSelectedAssetURLs.count];
 }
 
 
@@ -368,6 +368,22 @@
 }
 
 
+- (BOOL)cameraViewControllerShouldShowSelectionInfo:(BUKCameraViewController *)cameraViewController {
+    if (!self.showsNumberOfSelectedAssets) {
+        return NO;
+    }
+    
+    NSUInteger numberOfCapturedImages = cameraViewController.capturedImages.count;
+    NSUInteger numberOfSelection = self.selectedAssetURLs.count;
+    return (numberOfCapturedImages + numberOfSelection) > 0;
+}
+
+
+- (NSString *)cameraViewControllerSelectionInfo:(BUKCameraViewController *)cameraViewController {
+    return [self selectionInfoWithNumberOfSelection:(cameraViewController.capturedImages.count + self.mutableSelectedAssetURLs.count)];
+}
+
+
 #pragma mark - Private
 
 - (void)assetsAccessDenied:(NSNotification *)notification {
@@ -435,12 +451,12 @@
 }
 
 
-- (NSString *)selectionInfo {
+- (NSString *)selectionInfoWithNumberOfSelection:(NSInteger)count {
     NSString *text = nil;
     if (self.maximumNumberOfSelection > 0) {
-        text = [NSString stringWithFormat:@"Selected: %@/%@", @(self.mutableSelectedAssetURLs.count), @(self.maximumNumberOfSelection)];
+        text = [NSString stringWithFormat:BUKImagePickerLocalizedString(@"Selected: %@/%@", nil), @(count), @(self.maximumNumberOfSelection)];
     } else {
-        text = [NSString stringWithFormat:@"Selected: %@", @(self.mutableSelectedAssetURLs.count)];
+        text = [NSString stringWithFormat:BUKImagePickerLocalizedString(@"Selected: %@", nil), @(count)];
     }
     return text;
 }
