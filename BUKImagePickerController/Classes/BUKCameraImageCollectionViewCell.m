@@ -1,15 +1,15 @@
 //
-//  BUKImageCollectionViewCell.m
+//  BUKCameraImageCollectionViewCell.m
 //  BUKImagePickerController
 //
 //  Created by Yiming Tang on 7/13/15.
 //  Copyright (c) 2015 Yiming Tang. All rights reserved.
 //
 
-#import "BUKImageCollectionViewCell.h"
+#import "BUKCameraImageCollectionViewCell.h"
 #import "UIImage+BUKImagePickerController.h"
 
-@implementation BUKImageCollectionViewCell
+@implementation BUKCameraImageCollectionViewCell
 
 #pragma mark - Accessors
 

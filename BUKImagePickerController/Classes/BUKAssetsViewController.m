@@ -11,13 +11,16 @@
 #import "BUKAssetsViewController.h"
 #import "BUKImagePickerController.h"
 #import "BUKAssetCollectionViewCell.h"
+#import "BUKCameraCollectionViewCell.h"
 #import "BUKVideoIndicatorView.h"
 #import "BUKNoAssetsPlaceholderView.h"
 #import "BUKAssetsManager.h"
 #import "UIImage+BUKImagePickerController.h"
 #import "NSBundle+BUKImagePickerController.h"
 
-static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
+static NSString *const kBUKAssetsViewControllerAssetCellIdentifier = @"AssetCell";
+static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCell";
+
 
 @interface BUKAssetsViewController ()
 @property (nonatomic, readwrite) NSArray *assets;
@@ -81,7 +84,8 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.alwaysBounceVertical = YES;
     self.collectionView.allowsMultipleSelection = self.allowsMultipleSelection;
-    [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier];
+    [self.collectionView registerClass:[BUKAssetCollectionViewCell class] forCellWithReuseIdentifier:kBUKAssetsViewControllerAssetCellIdentifier];
+    [self.collectionView registerClass:[BUKCameraCollectionViewCell class] forCellWithReuseIdentifier:kBUKAssetsViewControllerCameraCellIdentifier];
     
     self.placeholderView = [[BUKNoAssetsPlaceholderView alloc] init];
     
@@ -132,8 +136,15 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    BUKAssetCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKAlbumsViewControllerCellIdentifier forIndexPath:indexPath];
-    [self configureCell:cell forItemAtIndexPath:indexPath];
+    UICollectionViewCell *cell = nil;
+    if (indexPath.item == 0 && self.showsCameraCell) {
+        BUKCameraCollectionViewCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKAssetsViewControllerCameraCellIdentifier forIndexPath:indexPath];
+        cell = cameraCell;
+    } else {
+        BUKAssetCollectionViewCell *assetCell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKAssetsViewControllerAssetCellIdentifier forIndexPath:indexPath];
+        [self configureCell:assetCell forItemAtIndexPath:indexPath];
+        cell = assetCell;
+    }
     
     return cell;
 }
@@ -298,16 +309,22 @@ static NSString *const kBUKAlbumsViewControllerCellIdentifier = @"AssetCell";
 
 
 - (void)configureCell:(BUKAssetCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.showsCameraCell && indexPath.item == 0) {
-        cell.imageView.image = [UIImage buk_bundleImageNamed:@"camera-icon"];
-        return;
-    }
-    
-    
     ALAsset *asset = [self assetItemAtIndexPath:indexPath];
     
+    cell.tag = indexPath.item;
     cell.showsOverlayViewWhenSelected = self.allowsMultipleSelection;
-    cell.imageView.image = [UIImage imageWithCGImage:[asset thumbnail]];
+    
+    // Load thumbnail asynchronously
+    __weak BUKAssetCollectionViewCell *weakCell = cell;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+        UIImage *thumbnailImage = [UIImage imageWithCGImage:[asset thumbnail]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            if (weakCell.tag == indexPath.item) {
+                cell.imageView.image = thumbnailImage;
+            }
+        });
+    });
     
     // Video indicator
     NSString *assetType = [asset valueForProperty:ALAssetPropertyType];

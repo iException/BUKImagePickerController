@@ -22,6 +22,8 @@
 
 "Retake" = "重拍";
 
+"Take Photos" = "点击拍照";
+
 "This app does not have access to your photos or videos." = "此应用无法访问您的照片库。";
 
 "You can enable access in \"Settings\" -> \"Privacy\" -> \"Camera\"." = "您可以在\"设置\" -> \"隐私\" -> \"照相机\"开启权限。";

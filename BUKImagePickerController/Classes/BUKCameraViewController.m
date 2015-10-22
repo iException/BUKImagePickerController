@@ -9,13 +9,13 @@
 #import <FastttCamera/FastttCamera.h>
 #import "BUKCameraViewController.h"
 #import "BUKCameraConfirmViewController.h"
-#import "BUKImageCollectionViewCell.h"
+#import "BUKCameraImageCollectionViewCell.h"
 #import "UIImage+BUKImagePickerController.h"
 #import "NSBundle+BUKImagePickerController.h"
 
 static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
-@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BUKImageCollectionViewCellDelegate, BUKCameraConfirmViewControllerDelegate>
+@interface BUKCameraViewController () <FastttCameraDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BUKCameraImageCollectionViewCellDelegate, BUKCameraConfirmViewControllerDelegate>
 
 @property (nonatomic) UIButton *takePictureButton;
 @property (nonatomic) UIButton *flashModeButton;
@@ -162,7 +162,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         _collectionView.alwaysBounceHorizontal = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        [_collectionView registerClass:[BUKImageCollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
+        [_collectionView registerClass:[BUKCameraImageCollectionViewCell class] forCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier];
     }
     return _collectionView;
 }
@@ -369,7 +369,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    BUKImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier forIndexPath:indexPath];
+    BUKCameraImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kBUKCameraViewControllerCellIdentifier forIndexPath:indexPath];
     
     [self configureCell:cell forItemAtIndexPath:indexPath];
     
@@ -434,7 +434,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 
 #pragma mark - BUKImageCollectionViewCellDelegate
 
-- (void)imageCollectionViewCell:(BUKImageCollectionViewCell *)cell didClickDeleteButton:(UIButton *)button {
+- (void)imageCollectionViewCell:(BUKCameraImageCollectionViewCell *)cell didClickDeleteButton:(UIButton *)button {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
     
     [self removeImageAtIndex:indexPath.item];
@@ -568,7 +568,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
 }
 
 
-- (void)configureCell:(BUKImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(BUKCameraImageCollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     FastttCapturedImage *capturedImage = [self objectAtIndexPath:indexPath];
     cell.imageView.image = capturedImage.scaledImage;
     cell.delegate = self;

@@ -22,6 +22,7 @@
 		6C61CE155A06DA3E3FC2B6E9 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D36B47F1FE28FE4A882144FB /* libPods-Tests.a */; };
 		7E4F0D045ACDBDAAB18A37C5 /* libPods-BUKImagePickerController-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF22DA3F2CFD2626CB54E66 /* libPods-BUKImagePickerController-Example.a */; };
 		F1511B661B4D240300534752 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F1511B641B4D240300534752 /* InfoPlist.strings */; };
+		F1BDD3121BD87E5C0058E311 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1BDD3111BD87E5C0058E311 /* LaunchScreen.xib */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		F1202B011B708DCD00C35591 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F1202B021B708DCD00C35591 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F1511B651B4D240300534752 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1BDD3111BD87E5C0058E311 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 		F1511B631B4D234900534752 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F1BDD3111BD87E5C0058E311 /* LaunchScreen.xib */,
 				6003F595195388D20070C39A /* BUKImagePickerController-Info.plist */,
 				F1511B641B4D240300534752 /* InfoPlist.strings */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
@@ -291,6 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				F1BDD3121BD87E5C0058E311 /* LaunchScreen.xib in Resources */,
 				F1511B661B4D240300534752 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
