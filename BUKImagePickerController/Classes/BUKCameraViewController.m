@@ -457,6 +457,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
     
     [self updateDoneButton];
+    [self updateSelectionInfo];
 }
 
 
