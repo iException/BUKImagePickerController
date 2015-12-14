@@ -22,7 +22,7 @@
 		6C61CE155A06DA3E3FC2B6E9 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D36B47F1FE28FE4A882144FB /* libPods-Tests.a */; };
 		7E4F0D045ACDBDAAB18A37C5 /* libPods-BUKImagePickerController-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF22DA3F2CFD2626CB54E66 /* libPods-BUKImagePickerController-Example.a */; };
 		F1511B661B4D240300534752 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F1511B641B4D240300534752 /* InfoPlist.strings */; };
-		F1BDD3121BD87E5C0058E311 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1BDD3111BD87E5C0058E311 /* LaunchScreen.xib */; settings = {ASSET_TAGS = (); }; };
+		F1BDD3121BD87E5C0058E311 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1BDD3111BD87E5C0058E311 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -260,7 +260,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = BUK;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Yiming Tang";
 				TargetAttributes = {
 					6003F5AD195388D20070C39A = {
@@ -471,6 +471,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -537,6 +538,7 @@
 				GCC_PREFIX_HEADER = "BUKImagePickerController/Other Sources/BUKImagePickerController-Prefix.pch";
 				INFOPLIST_FILE = "BUKImagePickerController/Resources/BUKImagePickerController-Info.plist";
 				MODULE_NAME = ExampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -552,6 +554,7 @@
 				GCC_PREFIX_HEADER = "BUKImagePickerController/Other Sources/BUKImagePickerController-Prefix.pch";
 				INFOPLIST_FILE = "BUKImagePickerController/Resources/BUKImagePickerController-Info.plist";
 				MODULE_NAME = ExampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -574,6 +577,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BUKImagePickerController-Example.app/BUKImagePickerController-Example";
 				WRAPPER_EXTENSION = xctest;
@@ -593,6 +597,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BUKImagePickerController-Example.app/BUKImagePickerController-Example";
 				WRAPPER_EXTENSION = xctest;
