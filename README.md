@@ -7,8 +7,7 @@
 
 BUKImagePickerController is a view controller that allows the user picking multiple assets from the photo libray or capturing images with a camera. It looks like the system built-in component UIImagePickerController at first glance . However, BUKImagePickerController is more powerful. Run the example project to take a tour.
 
-[screenshot](https://github.com/iException/BUKImagePickerController/blob/master/screenshot.png)
-
+![screenshot](screenshot.png)
 
 ## Usage
 
@@ -47,7 +46,7 @@ In your delegate:
 
 ### Advanced
 
-Run the example project and see the [full documentation](https://github.com/iException/BUKImagePickerController/blob/master/BUKImagePickerController/Classes/BUKImagePickerController.h) for more details.
+Run the example project and see the [full documentation](BUKImagePickerController/Classes/BUKImagePickerController.h) for more details.
 
 
 ## Requirements
