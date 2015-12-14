@@ -72,7 +72,7 @@ Inspired by [QBImagePicker](https://github.com/questbeat/QBImagePicker)
 
 ## Author
 
-Yiming Tang, tangyiming@baixing.com
+Yiming Tang, [@yiming_t](https://twitter.com/yiming_t)
 
 
 ## License
