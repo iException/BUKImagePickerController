@@ -136,7 +136,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        _titleLabel.text = BUKImagePickerLocalizedString(@"Camera Editor", nil);
+        _titleLabel.text = BUKImagePickerLocalizedString(@"Take Photos", nil);
         _titleLabel.font = [UIFont systemFontOfSize:14.0];
         _titleLabel.textColor = [UIColor whiteColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;

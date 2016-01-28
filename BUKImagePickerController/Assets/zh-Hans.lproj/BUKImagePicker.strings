@@ -22,13 +22,11 @@
 
 "Retake" = "重拍";
 
-"Camera Editor" = "照片编辑器";
-
 "Selected: %@/%@" = "已选中: %@/%@";
 
 "Selected: %@" = "已选中: %@";
 
-"Take Photos" = "点击拍照";
+"Take Photos" = "拍照";
 
 "This app does not have access to your photos or videos." = "此应用无法访问您的照片库。";
 
