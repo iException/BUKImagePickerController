@@ -320,14 +320,17 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
 
 - (void)scrollToLatestPhotos {
     if (self.reversesAssets) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        NSInteger section = 0;
+        NSInteger count = [self collectionView:self.collectionView numberOfItemsInSection:section] ;
+        if (count > 0) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:section] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        }
     } else {
         NSInteger section = [self numberOfSectionsInCollectionView:self.collectionView] - 1;
         NSInteger item = [self collectionView:self.collectionView numberOfItemsInSection:section] - 1;
-        if (item < 0) {
-            return;
+        if (item >= 0) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
         }
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
     }
 }
 
