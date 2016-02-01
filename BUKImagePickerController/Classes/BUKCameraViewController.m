@@ -511,8 +511,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     }
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(self.mutableCapturedImages.count - 1) inSection:0];
-    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
-    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+//    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+//    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
     
     [self updateDoneButton];
     [self updateSelectionInfo];
