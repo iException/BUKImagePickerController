@@ -641,7 +641,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         @"takePictureButton": self.takePictureButton,
         @"doneButton": self.doneButton,
         @"cancelButton": self.cancelButton,
-        @"collectionView": self.collectionView,
         @"titleLabel": self.titleLabel,
     };
     
