@@ -641,7 +641,6 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         @"takePictureButton": self.takePictureButton,
         @"doneButton": self.doneButton,
         @"cancelButton": self.cancelButton,
-        @"collectionView": self.collectionView,
         @"titleLabel": self.titleLabel,
     };
     
@@ -706,9 +705,9 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.bottomToolbarView addConstraint:[NSLayoutConstraint constraintWithItem:self.doneButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomToolbarView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[doneButton]-(bottomMargin)-|" options:kNilOptions metrics:metrics views:views]];
     
-    // Collection view
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:kNilOptions metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(thumbnailHeight)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:metrics views:views]];
+//    // Collection view
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:kNilOptions metrics:nil views:views]];
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(thumbnailHeight)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:metrics views:views]];
 }
 
 @end
