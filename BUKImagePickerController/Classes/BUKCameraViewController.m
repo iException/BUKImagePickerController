@@ -286,7 +286,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.view addSubview:self.bottomToolbarView];
     
     // Collection view
-    [self.view addSubview:self.collectionView];
+    // [self.view addSubview:self.collectionView];
     
     [self setupViewConstraints];
     

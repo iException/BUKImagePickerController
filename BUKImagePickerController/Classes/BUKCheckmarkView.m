@@ -51,7 +51,7 @@
         [appearance setBorderWidth:1.0];
         [appearance setCheckmarkColor:[UIColor whiteColor]];
         [appearance setCheckmarkLineWidth:2.0];
-        [appearance setFillColor:[UIColor colorWithRed:0.078f green:0.435f blue:0.875f alpha:1.0]];
+        [appearance setFillColor:[UIColor colorWithRed:0.27f green:0.8f blue:1.0f alpha:1.0]];
     }
 }
 
