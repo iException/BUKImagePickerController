@@ -510,9 +510,9 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
         [self done:nil];
     }
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(self.mutableCapturedImages.count - 1) inSection:0];
-    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
-    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:(self.mutableCapturedImages.count - 1) inSection:0];
+//    [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+//    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
     
     [self updateDoneButton];
     [self updateSelectionInfo];
@@ -707,8 +707,8 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     [self.bottomToolbarView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[doneButton]-(bottomMargin)-|" options:kNilOptions metrics:metrics views:views]];
     
     // Collection view
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:kNilOptions metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(thumbnailHeight)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:metrics views:views]];
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:kNilOptions metrics:nil views:views]];
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[collectionView(thumbnailHeight)]-10.0-[bottomToolbarView]" options:kNilOptions metrics:metrics views:views]];
 }
 
 @end
