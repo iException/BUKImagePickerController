@@ -541,11 +541,7 @@ static NSString *const kBUKCameraViewControllerCellIdentifier = @"cell";
     
     shouldShow = shouldShow && text != nil;
     
-    if (shouldShow) {
-        self.selectionInfoLabel.text = text;
-    } else {
-        self.selectionInfoLabel.text = nil;
-    }
+    self.selectionInfoLabel.text = nil;
 }
 
 
