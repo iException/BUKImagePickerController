@@ -1,12 +1,10 @@
-source 'https://github.com/CocoaPods/Specs.git'
-
-target 'BUKImagePickerController-Example', :exclusive => true do
-  pod "BUKImagePickerController", :path => "../"
-end
-
-target 'Tests', :exclusive => true do
+target 'BUKImagePickerController-Example' do
   pod "BUKImagePickerController", :path => "../"
 
-  pod 'Specta'
-  pod 'Expecta'
+  target 'Tests' do
+    inherit! :search_paths
+
+    pod 'Specta'
+    pod 'Expecta'
+  end
 end
