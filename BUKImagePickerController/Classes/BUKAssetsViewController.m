@@ -323,13 +323,18 @@ static NSString *const kBUKAssetsViewControllerCameraCellIdentifier = @"CameraCe
         NSInteger section = 0;
         NSInteger count = [self collectionView:self.collectionView numberOfItemsInSection:section] ;
         if (count > 0) {
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:section] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+            // Make sure the collection view scrolls to the bottom, it's a little tricky though.
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:section] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+            });
         }
     } else {
         NSInteger section = [self numberOfSectionsInCollectionView:self.collectionView] - 1;
         NSInteger item = [self collectionView:self.collectionView numberOfItemsInSection:section] - 1;
         if (item >= 0) {
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+            });
         }
     }
 }
