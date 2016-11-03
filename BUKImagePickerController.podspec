@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "BUKImagePickerController"
-  s.version          = "0.1.10"
+  s.version          = "0.1.11"
   s.summary          = "A view controller that allows the user picking multiple assets from the photo libray or capturing images with a camera."
   s.homepage         = "https://github.com/iException/BUKImagePickerController"
   s.license          = 'MIT'
