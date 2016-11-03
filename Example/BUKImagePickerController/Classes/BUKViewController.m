@@ -7,7 +7,8 @@
 //
 
 #import "BUKViewController.h"
-#import <BUKImagePickerController/BUKImagePickerController.h>
+
+@import BUKImagePickerController;
 
 static NSString *const kBUKViewControllerCellIdentifier = @"cell";
 
