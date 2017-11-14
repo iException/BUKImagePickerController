@@ -133,12 +133,11 @@ NSString *const kBUKImagePickerAccessDeniedNotificationName = @"BUKImagePickerAc
             if (progressBlock) {
                 progressBlock(asset, count, totalCount);
             }
-            
-            if (!asset) {
-                return;
+
+            if (asset) {
+                [mutableAssets addObject:asset];
             }
-            
-            [mutableAssets addObject:asset];
+
             checkNumberOfAssets();
         } failureBlock:^(NSError *error) {
             NSLog(@"[BUKImagePickerController] An error occurs while fetching asset: %@", [error localizedDescription]);
